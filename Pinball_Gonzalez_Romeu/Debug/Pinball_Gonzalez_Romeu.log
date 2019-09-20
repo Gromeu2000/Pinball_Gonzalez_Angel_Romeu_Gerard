@@ -1,5 +1,4 @@
 ﻿  Main.cpp
-
 MSVCRTD.lib(exe_winmain.obj) : error LNK2019: símbolo externo _WinMain@16 sin resolver al que se hace referencia en la función "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
 D:\grome\Documents\GitHub\Pinball_Gonzalez_Angel_Romeu_Gerard\Pinball_Gonzalez_Romeu\\..\Pinball_Gonzalez_Romeu\Box2D\lib\Box2D.lib : warning LNK4272: el tipo de máquina de biblioteca 'x64' está en conflicto con el tipo de máquina de destino 'x86'
 D:\grome\Documents\GitHub\Pinball_Gonzalez_Angel_Romeu_Gerard\Pinball_Gonzalez_Romeu\Debug\Pinball_Gonzalez_Romeu.exe : fatal error LNK1120: 1 externos sin resolver
