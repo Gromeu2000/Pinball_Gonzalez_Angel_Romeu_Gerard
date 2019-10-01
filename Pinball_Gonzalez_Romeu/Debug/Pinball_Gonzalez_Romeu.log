@@ -1,5 +1,0 @@
-﻿  Main.cpp
-d:\grome\documents\github\pinball_gonzalez_angel_romeu_gerard\pinball_gonzalez_romeu\sdl_mixer\include\sdl_mixer.h(648): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
-SDL2main.lib(SDL_windows_main.obj) : error LNK2019: símbolo externo _SDL_main sin resolver al que se hace referencia en la función _main_getcmdline
-D:\grome\Documents\GitHub\Pinball_Gonzalez_Angel_Romeu_Gerard\Pinball_Gonzalez_Romeu\\..\Pinball_Gonzalez_Romeu\Box2D\lib\Box2D.lib : warning LNK4272: el tipo de máquina de biblioteca 'x64' está en conflicto con el tipo de máquina de destino 'x86'
-D:\grome\Documents\GitHub\Pinball_Gonzalez_Angel_Romeu_Gerard\Pinball_Gonzalez_Romeu\Debug\Pinball_Gonzalez_Romeu.exe : fatal error LNK1120: 1 externos sin resolver

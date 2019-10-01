@@ -1,0 +1,5 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Physics 2 Class 1 Handout.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  ModulePhysics.cpp
+c:\users\gerardrv\documents\github\pinball_gonzalez_angel_romeu_gerard\modulephysics.cpp(75): warning C4244: 'argument': conversion from 'int' to 'float32', possible loss of data
+c:\users\gerardrv\documents\github\pinball_gonzalez_angel_romeu_gerard\modulephysics.cpp(106): warning C4244: 'argument': conversion from 'float32' to 'int', possible loss of data
+  SDL Game.vcxproj -> C:\Users\gerardrv\Documents\GitHub\Pinball_Gonzalez_Angel_Romeu_Gerard\Debug\Pinball_Romeu_Gonzalez.exe
