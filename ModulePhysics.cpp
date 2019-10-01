@@ -71,17 +71,17 @@ update_status ModulePhysics::PostUpdate()
 
 		b2BodyDef body;
 		body.type = b2_dynamicBody;
-		float radius = PIXELS_TO_METERS(80);
+		float radius = PIXELS_TO_METERS(50);
 		body.position.Set(PIXELS_TO_METERS(App->input->GetMouseX()), PIXELS_TO_METERS(App->input->GetMouseY()));
 
-		b2Body* b = world->CreateBody(&body);
+		b2Body* body2 = world->CreateBody(&body);
 
 		b2CircleShape shape;
 		shape.m_radius = radius;
 		b2FixtureDef fixture;
 		fixture.shape = &shape;
 
-		b->CreateFixture(&fixture);
+		body2->CreateFixture(&fixture);
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
