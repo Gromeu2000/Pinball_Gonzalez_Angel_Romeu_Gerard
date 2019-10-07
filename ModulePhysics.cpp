@@ -43,11 +43,23 @@ bool ModulePhysics::Start()
 	b2Body* body = world->CreateBody(&circle1);
 
 	b2CircleShape shape;
-	shape.m_radius = PIXELS_TO_METERS(SCREEN_WIDTH/3);
+	shape.m_radius = PIXELS_TO_METERS(SCREEN_WIDTH/4);
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	body->CreateFixture(&fixture);
+
+	b2BodyDef box;
+	box.type = b2_staticBody;
+	box.position.Set(25, 50);
+	b2Body* body_b = world->CreateBody(&box);
+
+	b2PolygonShape shape_b;
+	shape_b.SetAsBox(27, 15);
+
+	b2FixtureDef fixture_b;
+	fixture_b.shape = &shape_b;
+	body_b->CreateFixture(&fixture_b);
 
 	return true;
 }
@@ -71,16 +83,14 @@ update_status ModulePhysics::PostUpdate()
 
 		b2BodyDef body;
 		body.type = b2_dynamicBody;
-		float radius = PIXELS_TO_METERS(50);
 		body.position.Set(PIXELS_TO_METERS(App->input->GetMouseX()), PIXELS_TO_METERS(App->input->GetMouseY()));
-
 		b2Body* body2 = world->CreateBody(&body);
 
 		b2CircleShape shape;
-		shape.m_radius = radius;
+		shape.m_radius = rand() % 5 + 1;
+
 		b2FixtureDef fixture;
 		fixture.shape = &shape;
-
 		body2->CreateFixture(&fixture);
 	}
 
@@ -106,7 +116,21 @@ update_status ModulePhysics::PostUpdate()
 					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
 				}
 				break;
+				case b2Shape::e_polygon:
+				{
+					b2PolygonShape* groundBox = (b2PolygonShape*)f->GetShape();
+					int32 count = groundBox->GetVertexCount();
+					b2Vec2 previous, a_vector;
 
+					for (int32 i = 0; i < count; ++i)
+					{
+						a_vector = b->GetWorldPoint(groundBox->GetVertex(i));
+						if (i > 0)
+							App->renderer->DrawLine(METERS_TO_PIXELS(previous.x), METERS_TO_PIXELS(previous.y), METERS_TO_PIXELS(a_vector.x), METERS_TO_PIXELS(a_vector.y), 255, 100, 100);
+						previous = a_vector;
+					}
+				}
+				break;
 				// You will have to add more cases to draw boxes, edges, and polygons ...
 			}
 		}
