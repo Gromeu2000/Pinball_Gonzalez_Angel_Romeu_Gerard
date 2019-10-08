@@ -90,6 +90,7 @@ update_status ModulePhysics::PostUpdate()
 		shape.m_radius = rand() % 5 + 1;
 
 		b2FixtureDef fixture;
+		fixture.density = 1.0f;
 		fixture.shape = &shape;
 		body2->CreateFixture(&fixture);
 	}
