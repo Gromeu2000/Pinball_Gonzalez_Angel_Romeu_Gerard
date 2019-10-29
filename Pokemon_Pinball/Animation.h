@@ -1,42 +1,44 @@
-#pragma once
-#include "p2DynArray.h"
+#ifndef __ANIMATION_H__
+#define __ANIMATION_H__
+#include <assert.h>
+#include "SDL/include/SDL_rect.h"
+
+#define MAX_FRAMES 100
 
 class Animation
 {
 public:
-	float speed;
-	bool loop;
-	p2DynArray<SDL_Rect> frames;
+	bool loop = true;
+	float speed = 1.0f;
+	SDL_Rect frames[MAX_FRAMES];
 
 private:
 	float current_frame;
-	int loops;
+	int last_frame = 0;
+	int loops = 0;
 
 public:
-	Animation() : frames(5), speed(1.0f), current_frame(0), loop(true), loops(0)
-	{}
 
-	Animation(const Animation& a) : frames(a.frames), speed(a.speed), current_frame(0), loop(a.loop), loops(0)
-	{}
+	void PushBack(const SDL_Rect& rect)
+	{
+		if (last_frame < MAX_FRAMES)
+			frames[last_frame++] = rect;
+		assert(last_frame < MAX_FRAMES);
+	}
 
 	SDL_Rect& GetCurrentFrame()
 	{
 		current_frame += speed;
-		if(current_frame >= frames.Count())
+		if (current_frame >= last_frame)
 		{
-			current_frame = (loop) ? 0.0f : frames.Count() - 1;
+			current_frame = (loop) ? 0.0f : last_frame - 1;
 			loops++;
 		}
 
 		return frames[(int)current_frame];
 	}
 
-	const SDL_Rect& PeekCurrentFrame() const
-	{
-		return frames[(int)current_frame];
-	}
-
-	bool Finished()
+	bool Finished() const
 	{
 		return loops > 0;
 	}
@@ -46,3 +48,5 @@ public:
 		current_frame = 0;
 	}
 };
+
+#endif

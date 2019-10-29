@@ -21,14 +21,12 @@ enum update_status
 };
 
 // Configuration -----------
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 758
+#define SCREEN_WIDTH 384
+#define SCREEN_HEIGHT 556
 #define SCREEN_SIZE 1
 #define WIN_FULLSCREEN false
 #define WIN_RESIZABLE false
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
-#define TITLE "2D Physics Playground"
-#define PIXELS_TO_METERS(p) (p/50.f)
-#define METERS_TO_PIXELS(m) (m*50.f)
+#define TITLE "Pokemon Pinball"
