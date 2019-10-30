@@ -28,10 +28,17 @@ public:
 
 	//Rects
 	SDL_Rect background;
-	
+	SDL_Rect ditto;
+	SDL_Rect ditto_expanded;
+	SDL_Rect voltorb_boost;
+
 	//Animations
-	Animation* current_animation;
-	Animation ditto;
-	Animation dugtrio;
+	Animation dugtrio_R;
+	Animation dugtrio_L;
+	Animation diglett_side_R;
+	Animation diglett_side_L;
 	Animation starmie1;
+	Animation pikachu;
+	Animation bellsprout;
+	
 };
