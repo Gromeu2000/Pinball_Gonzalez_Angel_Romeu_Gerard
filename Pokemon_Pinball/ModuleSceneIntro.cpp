@@ -39,6 +39,7 @@ bool ModuleSceneIntro::Start()
 
 	//Load textures
 	background_tex = App->textures->Load("images/Background.png");
+	mid_tex = App->textures->Load("images/Mid_Screen.png");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -87,6 +88,41 @@ bool ModuleSceneIntro::Start()
 	bellsprout.loop = true;
 	bellsprout.speed = 0.03;
 
+	starmie2.PushBack({ 411, 1309, 44, 46 });
+	starmie2.PushBack({ 411, 1309, 44, 46 });
+	starmie2.PushBack({ 411, 1309, 44, 46 });
+	starmie2.PushBack({ 457, 1311, 44, 48 });
+	starmie2.PushBack({ 457, 1311, 44, 48 });
+	starmie2.PushBack({ 457, 1311, 44, 48 });
+	starmie2.loop = true;
+	starmie2.speed = 0.03;
+
+	flipper_L.PushBack({ 277, 1625, 48, 34 });
+	flipper_L.PushBack({ 327, 1625, 50, 20 });
+	flipper_L.PushBack({ 379, 1613, 48, 32 });
+	flipper_L.loop = false;
+	flipper_L.speed = 0.06;
+
+	mid_screen.PushBack({ 1103, 10, 98, 66 });
+	mid_screen.PushBack({ 1203, 10, 98, 66 });
+	mid_screen.PushBack({ 1303, 10, 98, 66 });
+	mid_screen.PushBack({ 1403, 10, 98, 66 });
+	mid_screen.PushBack({ 1503, 10, 98, 66 });
+	mid_screen.PushBack({ 1603, 10, 98, 66 });
+	mid_screen.PushBack({ 1703, 10, 98, 66 });
+	mid_screen.PushBack({ 203, 78, 98, 64 });
+	mid_screen.PushBack({ 303, 78, 98, 64 });
+	mid_screen.PushBack({ 403, 78, 98, 64 });
+	mid_screen.PushBack({ 503, 78, 98, 64 });
+	mid_screen.PushBack({ 603, 78, 98, 64 });
+	mid_screen.PushBack({ 703, 78, 98, 64 });
+	mid_screen.PushBack({ 803, 78, 98, 64 });
+	mid_screen.PushBack({ 903, 78, 98, 64 });
+	mid_screen.PushBack({ 1003, 78, 98, 64 });
+	mid_screen.PushBack({ 1103, 78, 98, 64 });
+	mid_screen.PushBack({ 1203, 78, 98, 64 });
+	mid_screen.loop = true;
+	mid_screen.speed = 0.009;
 
 	return ret;
 }
@@ -98,6 +134,8 @@ bool ModuleSceneIntro::CleanUp()
 
 	//Unload textures
 	App->textures->Unload(background_tex);
+	App->textures->Unload(mid_tex);
+
 	return true;
 }
 
@@ -140,6 +178,12 @@ update_status ModuleSceneIntro::Update()
 
 	//Bellsprout animation
 	App->renderer->Blit(background_tex, 210, 160, &(bellsprout.GetCurrentFrame()));
+
+	//Starmie2 animation
+	App->renderer->Blit(background_tex, 87, 209, &(starmie2.GetCurrentFrame()));
+
+	//Mid screen animation
+	App->renderer->Blit(mid_tex, 109, 332, &(mid_screen.GetCurrentFrame()));
 	return UPDATE_CONTINUE;
 }
 

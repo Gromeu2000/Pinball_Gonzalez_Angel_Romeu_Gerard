@@ -25,6 +25,7 @@ public:
 
 	//Textures
 	SDL_Texture* background_tex;
+	SDL_Texture* mid_tex;
 
 	//Rects
 	SDL_Rect background;
@@ -40,5 +41,10 @@ public:
 	Animation starmie1;
 	Animation pikachu;
 	Animation bellsprout;
+	Animation starmie2;
+	Animation flipper_L;
+	Animation flipper_R;
+
+	Animation mid_screen;
 	
 };
