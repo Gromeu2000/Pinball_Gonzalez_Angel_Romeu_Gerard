@@ -100,7 +100,7 @@ bool ModuleSceneIntro::Start()
 	pinball.flipper_L.PushBack({ 277, 1625, 48, 34 });
 	pinball.flipper_L.PushBack({ 327, 1625, 50, 20 });
 	pinball.flipper_L.PushBack({ 379, 1613, 48, 32 });
-	pinball.flipper_L.loop = false;
+	pinball.flipper_L.loop = true;
 	pinball.flipper_L.speed = 0.06;
 
 	pinball.mid_screen.PushBack({ 1103, 10, 98, 66 });
@@ -190,6 +190,9 @@ update_status ModuleSceneIntro::Update()
 
 		//Mid screen animation
 		App->renderer->Blit(pinball.mid_tex, 109, 332, &(pinball.mid_screen.GetCurrentFrame()));
+
+		//Mid screen animation
+		App->renderer->Blit(pinball.background_tex, 109, 332, &(pinball.flipper_L.GetCurrentFrame()));
 		return UPDATE_CONTINUE;
 	}
 }
