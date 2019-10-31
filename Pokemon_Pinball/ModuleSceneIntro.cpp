@@ -9,40 +9,40 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	pinball.background.x = 786;
-	pinball.background.y = 8;
-	pinball.background.w = 385;
-	pinball.background.h = 557;
+	pinball.background.x = 1100.4;
+	pinball.background.y = 11.2;
+	pinball.background.w = 539;
+	pinball.background.h = 780;
 
-	pinball.ditto.x = 331;
-	pinball.ditto.y = 1189;
-	pinball.ditto.w = 53;
-	pinball.ditto.h = 91;
+	pinball.ditto.x = 463.4;
+	pinball.ditto.y = 1664.6;
+	pinball.ditto.w = 74.2;
+	pinball.ditto.h = 127.4;
 
-	pinball.ditto_expanded.x = 398;
-	pinball.ditto_expanded.y = 623;
-	pinball.ditto_expanded.w = 79;
-	pinball.ditto_expanded.h = 137;
+	pinball.ditto_expanded.x = 557.2;
+	pinball.ditto_expanded.y = 872.2;
+	pinball.ditto_expanded.w = 110.6;
+	pinball.ditto_expanded.h = 191.8;
 
-	pinball.voltorb_boost.x = 519;
-	pinball.voltorb_boost.y = 1171;
-	pinball.voltorb_boost.w = 34;
-	pinball.voltorb_boost.h = 35;
+	pinball.voltorb_boost.x = 726.6;
+	pinball.voltorb_boost.y = 1639.4;
+	pinball.voltorb_boost.w = 47.6;
+	pinball.voltorb_boost.h = 49;
 
-	pinball.blocker.x = 586;
-	pinball.blocker.y = 616;
-	pinball.blocker.w = 106;
-	pinball.blocker.h = 100;
+	pinball.blocker.x = 820.4;
+	pinball.blocker.y = 862.4;
+	pinball.blocker.w = 148.4;
+	pinball.blocker.h = 140;
 
-	pinball.triangle_boosted_L.x = 464;
-	pinball.triangle_boosted_L.y = 1602;
-	pinball.triangle_boosted_L.w = 32;
-	pinball.triangle_boosted_L.h = 57;
+	pinball.triangle_boosted_L.x = 649.6;
+	pinball.triangle_boosted_L.y = 2242.8;
+	pinball.triangle_boosted_L.w = 47;
+	pinball.triangle_boosted_L.h = 79.8;
 
-	pinball.triangle_boosted_R.x = 645;
-	pinball.triangle_boosted_R.y = 1602;
-	pinball.triangle_boosted_R.w = 33;
-	pinball.triangle_boosted_R.h = 59;
+	pinball.triangle_boosted_R.x = 903;
+	pinball.triangle_boosted_R.y = 2242.8;
+	pinball.triangle_boosted_R.w = 46.2;
+	pinball.triangle_boosted_R.h = 82.6;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -64,40 +64,40 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//LOAD ANIMATIONS------------------------------------------------
-	pinball.starmie1.PushBack({ 312, 1515, 38, 40 });
-	pinball.starmie1.PushBack({ 352, 1515, 38, 40 });
+	pinball.starmie1.PushBack({ 437, 2121, 54, 56 });
+	pinball.starmie1.PushBack({ 493, 2121, 54, 56 });
 	pinball.starmie1.loop = true;
 	pinball.starmie1.speed = 0.1;
 
-	pinball.dugtrio_L.PushBack({ 264, 1443, 48, 62 });
-	pinball.dugtrio_L.PushBack({ 314, 1443, 48, 62 });
-	pinball.dugtrio_L.PushBack({ 364, 1443, 48, 62 });
-	pinball.dugtrio_L.PushBack({ 414, 1443, 48, 62 });
+	pinball.dugtrio_L.PushBack({ 370, 2020, 67, 87 });
+	pinball.dugtrio_L.PushBack({ 440, 2020, 67, 87 });
+	pinball.dugtrio_L.PushBack({ 510, 2020, 67, 87 });
+	pinball.dugtrio_L.PushBack({ 580, 2020, 67, 87 });
 	pinball.dugtrio_L.loop = true;
 	pinball.dugtrio_L.speed = 0.08;
 	
-	pinball.dugtrio_R.PushBack({ 645, 1443, 49, 62 });
-	pinball.dugtrio_R.PushBack({ 695, 1443, 49, 62 });
-	pinball.dugtrio_R.PushBack({ 745, 1443, 49, 62 });
-	pinball.dugtrio_R.PushBack({ 795, 1443, 49, 62 });
+	pinball.dugtrio_R.PushBack({ 903, 2020, 69, 87 });
+	pinball.dugtrio_R.PushBack({ 973, 2020, 69, 87 });
+	pinball.dugtrio_R.PushBack({ 1043, 2020, 69, 87 });
+	pinball.dugtrio_R.PushBack({ 1113, 2020, 69, 87 });
 	pinball.dugtrio_R.loop = true;
 	pinball.dugtrio_R.speed = 0.08;
 
-	pinball.diglett_Left_Side.PushBack({ 394, 1511, 24, 30});
-	pinball.diglett_Left_Side.PushBack({ 420, 1511, 22, 30 });
-	pinball.diglett_Left_Side.PushBack({ 444, 1511, 18, 30 });
+	pinball.diglett_Left_Side.PushBack({ 552, 2115, 35, 42});
+	pinball.diglett_Left_Side.PushBack({ 588, 2115, 31, 42 });
+	pinball.diglett_Left_Side.PushBack({ 622, 2115, 25, 42 });
 	pinball.diglett_Left_Side.loop = true;
 	pinball.diglett_Left_Side.speed = 0.06;
 	
 
-	pinball.diglett_Right_Side.PushBack({ 670, 1511, 24, 30 });
-	pinball.diglett_Right_Side.PushBack({ 644, 1511, 24, 31 });
-	pinball.diglett_Right_Side.PushBack({ 695, 1511, 24, 30 });
+	pinball.diglett_Right_Side.PushBack({ 938, 2115, 37, 42 });
+	pinball.diglett_Right_Side.PushBack({ 902, 2115, 37, 43 });
+	pinball.diglett_Right_Side.PushBack({ 973, 2115, 37, 42 });
 	pinball.diglett_Right_Side.loop = true;
 	pinball.diglett_Right_Side.speed = 0.06;
 	
-	pinball.pikachu.PushBack({ 341, 1675, 34, 33 });
-	pinball.pikachu.PushBack({ 378, 1675, 30, 33 });
+	pinball.pikachu.PushBack({ 477, 2345, 48, 46 });
+	pinball.pikachu.PushBack({ 529, 2345, 42, 46 });
 	pinball.pikachu.loop = true;
 	pinball.pikachu.speed = 0.03;
 
@@ -170,51 +170,51 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(pinball.background_tex, 0, 0, &pinball.background);
 
 		//Load ditto
-		App->renderer->Blit(pinball.background_tex, 3, 43, &pinball.ditto);
+		App->renderer->Blit(pinball.background_tex, 4.2, 60.2, &pinball.ditto);
 
 		//Load expanded ditto
-		//App->renderer->Blit(pinball.background_tex, 5, 50, &pinball.ditto_expanded);
+		//App->renderer->Blit(pinball.background_tex, 7, 70, &pinball.ditto_expanded);
 
 		//Load voltorb
-		App->renderer->Blit(pinball.background_tex, 150, 193, &pinball.voltorb_boost);
-		App->renderer->Blit(pinball.background_tex, 170, 133, &pinball.voltorb_boost);
-		App->renderer->Blit(pinball.background_tex, 110, 153, &pinball.voltorb_boost);
+		App->renderer->Blit(pinball.background_tex, 210, 270.2, &pinball.voltorb_boost);
+		App->renderer->Blit(pinball.background_tex, 238, 186.2, &pinball.voltorb_boost);
+		App->renderer->Blit(pinball.background_tex, 154, 214.2, &pinball.voltorb_boost);
 
 		//Load blocker
-		App->renderer->Blit(pinball.background_tex, 188, 46, &pinball.blocker);
+		App->renderer->Blit(pinball.background_tex, 263.2, 64.4, &pinball.blocker);
 
 		//Load left triangle when hit
-		//App->renderer->Blit(pinball.background_tex, 68, 420, &pinball.triangle_boosted_L);
+		App->renderer->Blit(pinball.background_tex, 95.2, 588, &pinball.triangle_boosted_L);
 
 		//Load right triangle when hit
-		//App->renderer->Blit(pinball.background_tex, 216, 420, &pinball.triangle_boosted_R);
+		App->renderer->Blit(pinball.background_tex, 302.4, 588, &pinball.triangle_boosted_R);
 
 		//ANIMATIONS----------------------------------------
 
 		//Little starmie animation
-		App->renderer->Blit(pinball.background_tex, -2, 300, &(pinball.starmie1.GetCurrentFrame()));
+		App->renderer->Blit(pinball.background_tex, -2.8, 420, &(pinball.starmie1.GetCurrentFrame()));
 
 		//Left dugtrios animation
-		App->renderer->Blit(pinball.background_tex, -2, 337, &(pinball.dugtrio_L.GetCurrentFrame()));
+		App->renderer->Blit(pinball.background_tex, -2.8, 471.8, &(pinball.dugtrio_L.GetCurrentFrame()));
 
 		//Right dugtrios animation
-		App->renderer->Blit(pinball.background_tex, 271, 337, &(pinball.dugtrio_R.GetCurrentFrame()));
+		App->renderer->Blit(pinball.background_tex, 379.4, 471.8, &(pinball.dugtrio_R.GetCurrentFrame()));
 
 		//Diglett at left side animation
-		App->renderer->Blit(pinball.background_tex, 46, 350, &(pinball.diglett_Left_Side.GetCurrentFrame()));
+		App->renderer->Blit(pinball.background_tex, 64.4, 490, &(pinball.diglett_Left_Side.GetCurrentFrame()));
 
 		//Diglett at right side animation
-		App->renderer->Blit(pinball.background_tex, 248, 350, &(pinball.diglett_Right_Side.GetCurrentFrame()));
+		App->renderer->Blit(pinball.background_tex, 347, 490, &(pinball.diglett_Right_Side.GetCurrentFrame()));
 
 		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) 
 		{
 			//Pikachu right animation
-			App->renderer->Blit(pinball.background_tex, 275, 490, &(pinball.pikachu.GetCurrentFrame()));
+			App->renderer->Blit(pinball.background_tex, 385, 686, &(pinball.pikachu.GetCurrentFrame()));
 		}
 		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		{
 			//Pikachu left animation
-			App->renderer->Blit(pinball.background_tex, 13, 490, &(pinball.pikachu.GetCurrentFrame()));
+			App->renderer->Blit(pinball.background_tex, 18.2, 686, &(pinball.pikachu.GetCurrentFrame()));
 		}
 
 		//Bellsprout animation
