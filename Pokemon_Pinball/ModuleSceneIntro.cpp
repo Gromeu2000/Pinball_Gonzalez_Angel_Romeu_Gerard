@@ -29,8 +29,8 @@ bool ModuleSceneIntro::Start()
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 
 	//Load textures
-	board.background_tex = App->textures->Load("images/Background.png");
-	board.mid_tex = App->textures->Load("images/Mid_Screen.png");
+	board.background_tex = App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
+	board.mid_tex = App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
