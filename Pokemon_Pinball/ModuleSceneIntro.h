@@ -20,6 +20,11 @@ struct PinballMachine
 	SDL_Rect ditto;
 	SDL_Rect ditto_expanded;
 	SDL_Rect voltorb_boost;
+	SDL_Rect blocker;
+	SDL_Rect triangle_boosted_L;
+	SDL_Rect triangle_boosted_R;
+	SDL_Rect flipper_L;
+	SDL_Rect flipper_R;
 
 	//Animations
 	Animation dugtrio_R;
@@ -30,9 +35,7 @@ struct PinballMachine
 	Animation pikachu;
 	Animation bellsprout;
 	Animation starmie2;
-	Animation flipper_L;
-	Animation flipper_R;
-
+	
 	Animation mid_screen;
 };
 
