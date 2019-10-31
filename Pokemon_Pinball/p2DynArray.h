@@ -69,14 +69,14 @@ public:
 	}
 
 	// Data Management
-	void PushBack(const VALUE& element)
+	void PushBack(const VALUE& board)
 	{
 		if(num_elements >= mem_capacity)
 		{
 			Alloc(mem_capacity + DYN_ARRAY_BLOCK_SIZE);
 		}
 
-		data[num_elements++] = element;
+		data[num_elements++] = board;
 	}
 
 	bool Pop(VALUE& value)
@@ -94,14 +94,14 @@ public:
 		num_elements = 0;
 	}
 
-	bool Insert(const VALUE& element, unsigned int position)
+	bool Insert(const VALUE& board, unsigned int position)
 	{
 		if(position > num_elements)
 			return false;
 
 		if(position == num_elements)
 		{
-			PushBack(element);
+			PushBack(board);
 			return true;
 		}
 
@@ -113,7 +113,7 @@ public:
 			data[i] = data[i - 1];
 		}
 
-		data[position] = element;
+		data[position] = board;
 		++num_elements;
 
 		return true;

@@ -46,7 +46,8 @@ public:
 	PhysBody* CreateCircle(int x, int y, int radius);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
-	PhysBody* CreateChain(int x, int y, int* points, int size, bool isStatic);
+	PhysBody* CreateChain(int x, int y, int* points, int size, bool isStatic);	//Method that creates chains. Has a bool to make the chain static or dynamic.
+	PhysBody* CreateStaticChain(int x, int y, int* points, int size);			//Alternative method to draw Static chains
 
 
 	// b2ContactListener ---
@@ -61,3 +62,31 @@ private:
 
 	friend class ModuleSceneIntro; //Gives the ModuleSceneIntro class access to private methods and variables from class ModulePhysics. (friend class) Temporal.
 };
+
+//Chains (Revise)
+		//Declaring the Background Chains (Maybe move to ModuleIntroScene):
+
+	//No need to create a b2Vec2 as the creation of it is already done in the CreateChain() method.
+	//b2Vec2 exterior_Vec[62];				//This array is uninitialized. To initalize all the elements of the array to zero: b2Vec2 bckgndExteriorVec[62] = {};
+
+	//Exterior Background chain.
+
+
+	/*for (int i = 0; backgroundExterior[i] != NULL; i++)
+	{
+		exterior_Vec[i].Set(PIXEL_TO_METERS(backgroundExterior[i * 2]), PIXEL_TO_METERS(backgroundExterior[i * 2 + 1]));
+	}*/
+
+	//b2BodyDef exteriorChain_Def;				//Defines the frame of a geometrical body/shape
+	//exteriorChain_Def.type = b2_staticBody;		//Sets the type of the body definition to static. Static bodies cannot be affected by any forces.
+
+	//exteriorChain_Def.position.Set(0, 0);		//Sets the initial position of the exterior chain.
+
+	//b2Body * extChain_Body = world->CreateBody(&exteriorChain_Def);	//The  exterior_chain body definition is passed to the world object to create the body.
+
+	//b2ChainShape exterior_chain;				//Creates the exterior chain. Chains have two-sided collisions and generate smooth collisions with information connectivity. Holds ALL the data required to construct a rigid body. In this case a chain.
+
+	//exterior_chain.CreateLoop(exterior_Vec, 62);
+
+	//Interior Background Chain 
+	// Pivot 0, 0
