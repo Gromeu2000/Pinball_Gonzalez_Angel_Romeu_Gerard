@@ -9,20 +9,20 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	background.x = 786;
-	background.y = 8;
-	background.w = 384;
-	background.h = 556;
+	pinball.background.x = 786;
+	pinball.background.y = 8;
+	pinball.background.w = 385;
+	pinball.background.h = 557;
 
-	ditto.x = 331;
-	ditto.y = 1189;
-	ditto.w = 53;
-	ditto.h = 91;
+	pinball.ditto.x = 331;
+	pinball.ditto.y = 1189;
+	pinball.ditto.w = 53;
+	pinball.ditto.h = 91;
 
-	voltorb_boost.x = 519;
-	voltorb_boost.y = 1171;
-	voltorb_boost.w = 34;
-	voltorb_boost.h = 35;
+	pinball.voltorb_boost.x = 519;
+	pinball.voltorb_boost.y = 1171;
+	pinball.voltorb_boost.w = 34;
+	pinball.voltorb_boost.h = 35;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -38,91 +38,91 @@ bool ModuleSceneIntro::Start()
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 
 	//Load textures
-	background_tex = App->textures->Load("images/Background.png");
-	mid_tex = App->textures->Load("images/Mid_Screen.png");
+	pinball.background_tex = App->textures->Load("images/Background.png");
+	pinball.mid_tex = App->textures->Load("images/Mid_Screen.png");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//LOAD ANIMATIONS------------------------------------------------
-	starmie1.PushBack({ 312, 1515, 38, 40 });
-	starmie1.PushBack({ 352, 1515, 38, 40 });
-	starmie1.loop = true;
-	starmie1.speed = 0.1;
+	pinball.starmie1.PushBack({ 312, 1515, 38, 40 });
+	pinball.starmie1.PushBack({ 352, 1515, 38, 40 });
+	pinball.starmie1.loop = true;
+	pinball.starmie1.speed = 0.1;
 
-	dugtrio_L.PushBack({ 264, 1443, 48, 62 });
-	dugtrio_L.PushBack({ 314, 1443, 48, 62 });
-	dugtrio_L.PushBack({ 364, 1443, 48, 62 });
-	dugtrio_L.PushBack({ 414, 1443, 48, 62 });
-	dugtrio_L.loop = true;
-	dugtrio_L.speed = 0.08;
+	pinball.dugtrio_L.PushBack({ 264, 1443, 48, 62 });
+	pinball.dugtrio_L.PushBack({ 314, 1443, 48, 62 });
+	pinball.dugtrio_L.PushBack({ 364, 1443, 48, 62 });
+	pinball.dugtrio_L.PushBack({ 414, 1443, 48, 62 });
+	pinball.dugtrio_L.loop = true;
+	pinball.dugtrio_L.speed = 0.08;
 	
-	dugtrio_R.PushBack({ 645, 1443, 49, 62 });
-	dugtrio_R.PushBack({ 695, 1443, 49, 62 });
-	dugtrio_R.PushBack({ 745, 1443, 49, 62 });
-	dugtrio_R.PushBack({ 795, 1443, 49, 62 });
-	dugtrio_R.loop = true;
-	dugtrio_R.speed = 0.08;
+	pinball.dugtrio_R.PushBack({ 645, 1443, 49, 62 });
+	pinball.dugtrio_R.PushBack({ 695, 1443, 49, 62 });
+	pinball.dugtrio_R.PushBack({ 745, 1443, 49, 62 });
+	pinball.dugtrio_R.PushBack({ 795, 1443, 49, 62 });
+	pinball.dugtrio_R.loop = true;
+	pinball.dugtrio_R.speed = 0.08;
 
-	diglett_side_L.PushBack({ 394, 1511, 24, 30});
-	diglett_side_L.PushBack({ 420, 1511, 22, 30 });
-	diglett_side_L.PushBack({ 444, 1511, 18, 30 });
-	diglett_side_L.loop = true;
-	diglett_side_L.speed = 0.06;
+	pinball.diglett_Left_Side.PushBack({ 394, 1511, 24, 30});
+	pinball.diglett_Left_Side.PushBack({ 420, 1511, 22, 30 });
+	pinball.diglett_Left_Side.PushBack({ 444, 1511, 18, 30 });
+	pinball.diglett_Left_Side.loop = true;
+	pinball.diglett_Left_Side.speed = 0.06;
+	
 
+	pinball.diglett_Right_Side.PushBack({ 670, 1511, 24, 30 });
+	pinball.diglett_Right_Side.PushBack({ 644, 1511, 24, 31 });
+	pinball.diglett_Right_Side.PushBack({ 695, 1511, 24, 30 });
+	pinball.diglett_Right_Side.loop = true;
+	pinball.diglett_Right_Side.speed = 0.06;
+	
+	pinball.pikachu.PushBack({ 341, 1675, 34, 33 });
+	pinball.pikachu.PushBack({ 378, 1675, 30, 33 });
+	pinball.pikachu.loop = true;
+	pinball.pikachu.speed = 0.03;
 
-	diglett_side_R.PushBack({ 670, 1511, 24, 30 });
-	diglett_side_R.PushBack({ 644, 1511, 24, 31 });
-	diglett_side_R.PushBack({ 695, 1511, 24, 30 });
-	diglett_side_R.loop = true;
-	diglett_side_R.speed = 0.06;
+	pinball.bellsprout.PushBack({ 615, 1203, 59, 74 });
+	pinball.bellsprout.PushBack({ 673, 1205, 59, 74 });
+	pinball.bellsprout.PushBack({ 731, 1205, 59, 74 });
+	pinball.bellsprout.PushBack({ 791, 1207, 59, 74 });
+	pinball.bellsprout.loop = true;
+	pinball.bellsprout.speed = 0.03;
 
-	pikachu.PushBack({ 341, 1675, 34, 33 });
-	pikachu.PushBack({ 378, 1675, 30, 33 });
-	pikachu.loop = true;
-	pikachu.speed = 0.03;
+	pinball.starmie2.PushBack({ 411, 1309, 44, 46 });
+	pinball.starmie2.PushBack({ 411, 1309, 44, 46 });
+	pinball.starmie2.PushBack({ 411, 1309, 44, 46 });
+	pinball.starmie2.PushBack({ 457, 1311, 44, 48 });
+	pinball.starmie2.PushBack({ 457, 1311, 44, 48 });
+	pinball.starmie2.PushBack({ 457, 1311, 44, 48 });
+	pinball.starmie2.loop = true;
+	pinball.starmie2.speed = 0.03;
 
-	bellsprout.PushBack({ 615, 1203, 59, 74 });
-	bellsprout.PushBack({ 673, 1205, 59, 74 });
-	bellsprout.PushBack({ 731, 1205, 59, 74 });
-	bellsprout.PushBack({ 791, 1207, 59, 74 });
-	bellsprout.loop = true;
-	bellsprout.speed = 0.03;
+	pinball.flipper_L.PushBack({ 277, 1625, 48, 34 });
+	pinball.flipper_L.PushBack({ 327, 1625, 50, 20 });
+	pinball.flipper_L.PushBack({ 379, 1613, 48, 32 });
+	pinball.flipper_L.loop = false;
+	pinball.flipper_L.speed = 0.06;
 
-	starmie2.PushBack({ 411, 1309, 44, 46 });
-	starmie2.PushBack({ 411, 1309, 44, 46 });
-	starmie2.PushBack({ 411, 1309, 44, 46 });
-	starmie2.PushBack({ 457, 1311, 44, 48 });
-	starmie2.PushBack({ 457, 1311, 44, 48 });
-	starmie2.PushBack({ 457, 1311, 44, 48 });
-	starmie2.loop = true;
-	starmie2.speed = 0.03;
-
-	flipper_L.PushBack({ 277, 1625, 48, 34 });
-	flipper_L.PushBack({ 327, 1625, 50, 20 });
-	flipper_L.PushBack({ 379, 1613, 48, 32 });
-	flipper_L.loop = false;
-	flipper_L.speed = 0.06;
-
-	mid_screen.PushBack({ 1103, 10, 98, 66 });
-	mid_screen.PushBack({ 1203, 10, 98, 66 });
-	mid_screen.PushBack({ 1303, 10, 98, 66 });
-	mid_screen.PushBack({ 1403, 10, 98, 66 });
-	mid_screen.PushBack({ 1503, 10, 98, 66 });
-	mid_screen.PushBack({ 1603, 10, 98, 66 });
-	mid_screen.PushBack({ 1703, 10, 98, 66 });
-	mid_screen.PushBack({ 203, 78, 98, 64 });
-	mid_screen.PushBack({ 303, 78, 98, 64 });
-	mid_screen.PushBack({ 403, 78, 98, 64 });
-	mid_screen.PushBack({ 503, 78, 98, 64 });
-	mid_screen.PushBack({ 603, 78, 98, 64 });
-	mid_screen.PushBack({ 703, 78, 98, 64 });
-	mid_screen.PushBack({ 803, 78, 98, 64 });
-	mid_screen.PushBack({ 903, 78, 98, 64 });
-	mid_screen.PushBack({ 1003, 78, 98, 64 });
-	mid_screen.PushBack({ 1103, 78, 98, 64 });
-	mid_screen.PushBack({ 1203, 78, 98, 64 });
-	mid_screen.loop = true;
-	mid_screen.speed = 0.009;
+	pinball.mid_screen.PushBack({ 1103, 10, 98, 66 });
+	pinball.mid_screen.PushBack({ 1203, 10, 98, 66 });
+	pinball.mid_screen.PushBack({ 1303, 10, 98, 66 });
+	pinball.mid_screen.PushBack({ 1403, 10, 98, 66 });
+	pinball.mid_screen.PushBack({ 1503, 10, 98, 66 });
+	pinball.mid_screen.PushBack({ 1603, 10, 98, 66 });
+	pinball.mid_screen.PushBack({ 1703, 10, 98, 66 });
+	pinball.mid_screen.PushBack({ 203, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 303, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 403, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 503, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 603, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 703, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 803, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 903, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 1003, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 1103, 78, 98, 64 });
+	pinball.mid_screen.PushBack({ 1203, 78, 98, 64 });
+	pinball.mid_screen.loop = true;
+	pinball.mid_screen.speed = 0.009;
 
 	return ret;
 }
@@ -133,8 +133,8 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading Intro scene");
 
 	//Unload textures
-	App->textures->Unload(background_tex);
-	App->textures->Unload(mid_tex);
+	App->textures->Unload(pinball.background_tex);
+	App->textures->Unload(pinball.mid_tex);
 
 	return true;
 }
@@ -142,49 +142,56 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		PhysBody* Circle = App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(16));
+	}
+
 	//TEXTURES-----------------------------------------
+	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
+	{
+		//Load background
+		App->renderer->Blit(pinball.background_tex, 0, 0, &pinball.background);
 
-	//Load background
-	App->renderer->Blit(background_tex, 0, 0, &background);
+		//Load ditto
+		App->renderer->Blit(pinball.background_tex, 3, 43, &pinball.ditto);
 
-	//Load ditto
-	App->renderer->Blit(background_tex, 3, 43, &ditto);
+		//Load voltorb
+		App->renderer->Blit(pinball.background_tex, 150, 193, &pinball.voltorb_boost);
+		App->renderer->Blit(pinball.background_tex, 170, 133, &pinball.voltorb_boost);
+		App->renderer->Blit(pinball.background_tex, 110, 153, &pinball.voltorb_boost);
 
-	//Load voltorb
-	App->renderer->Blit(background_tex, 150, 193, &voltorb_boost);
-	App->renderer->Blit(background_tex, 170, 133, &voltorb_boost);
-	App->renderer->Blit(background_tex, 110, 153, &voltorb_boost);
+		//ANIMATIONS----------------------------------------
 
-	//ANIMATIONS----------------------------------------
+		//Little starmie animation
+		App->renderer->Blit(pinball.background_tex, -2, 300, &(pinball.starmie1.GetCurrentFrame()));
 
-	//Little starmie animation
-	App->renderer->Blit(background_tex, -2, 300, &(starmie1.GetCurrentFrame()));
+		//Left dugtrios animation
+		App->renderer->Blit(pinball.background_tex, -2, 337, &(pinball.dugtrio_L.GetCurrentFrame()));
 
-	//Left dugtrios animation
-	App->renderer->Blit(background_tex, -2, 337, &(dugtrio_L.GetCurrentFrame()));
-	
-	//Right dugtrios animation
-	App->renderer->Blit(background_tex, 271, 337, &(dugtrio_R.GetCurrentFrame()));
+		//Right dugtrios animation
+		App->renderer->Blit(pinball.background_tex, 271, 337, &(pinball.dugtrio_R.GetCurrentFrame()));
 
-	//Diglett at left side animation
-	App->renderer->Blit(background_tex, 46, 350, &(diglett_side_L.GetCurrentFrame()));
+		//Diglett at left side animation
+		App->renderer->Blit(pinball.background_tex, 46, 350, &(pinball.diglett_Left_Side.GetCurrentFrame()));
 
-	//Diglett at right side animation
-	App->renderer->Blit(background_tex, 248, 350, &(diglett_side_R.GetCurrentFrame()));
+		//Diglett at right side animation
+		App->renderer->Blit(pinball.background_tex, 248, 350, &(pinball.diglett_Right_Side.GetCurrentFrame()));
 
-	//Pikachus animation
-	App->renderer->Blit(background_tex, 275, 490, &(pikachu.GetCurrentFrame()));
-	App->renderer->Blit(background_tex, 13, 490, &(pikachu.GetCurrentFrame()));
+		//Pikachus animation
+		App->renderer->Blit(pinball.background_tex, 275, 490, &(pinball.pikachu.GetCurrentFrame()));
+		App->renderer->Blit(pinball.background_tex, 13, 490, &(pinball.pikachu.GetCurrentFrame()));
 
-	//Bellsprout animation
-	App->renderer->Blit(background_tex, 210, 160, &(bellsprout.GetCurrentFrame()));
+		//Bellsprout animation
+		App->renderer->Blit(pinball.background_tex, 210, 160, &(pinball.bellsprout.GetCurrentFrame()));
 
-	//Starmie2 animation
-	App->renderer->Blit(background_tex, 87, 209, &(starmie2.GetCurrentFrame()));
+		//Starmie2 animation
+		App->renderer->Blit(pinball.background_tex, 87, 209, &(pinball.starmie2.GetCurrentFrame()));
 
-	//Mid screen animation
-	App->renderer->Blit(mid_tex, 109, 332, &(mid_screen.GetCurrentFrame()));
-	return UPDATE_CONTINUE;
+		//Mid screen animation
+		App->renderer->Blit(pinball.mid_tex, 109, 332, &(pinball.mid_screen.GetCurrentFrame()));
+		return UPDATE_CONTINUE;
+	}
 }
 
 void ModuleSceneIntro::AddSceneAnimations()
