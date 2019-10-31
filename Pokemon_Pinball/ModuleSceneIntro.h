@@ -30,6 +30,9 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody*	bellsprout_Wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
 	PhysBody*	spinner;					//Sensor that detects if the ball has passed through the spinner at the right of the bellsprout wall.
 
+	p2List<PhysBody*> dynamicBody_List;
+	p2List<PhysBody*> staticBody_List;
+
 	//--------------------------Animation declarations--------------------------
 	//Textures
 	SDL_Texture*	background_tex;
@@ -61,74 +64,74 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 };
 
-struct PinballBoardBodies		//Learn how to implement it with private elements instead of public.
-{
-	//------------------------------ Chains ------------------------------
-	int backgroundExterior[124] = {			//Coordinates of the points that conform the Exterior background chain. 
-		351, 557,		//Maybe need to change the 351 to 357
-		351, 169,
-		348, 153,
-		346, 145,
-		343, 137,
-		341, 131,
-		338, 122,
-		334, 113,
-		331, 107,
-		326, 98,
-		321, 90,
-		315, 82,
-		309, 74,
-		292, 57,
-		273, 43,
-		262, 36,
-		246, 29,
-		236, 25,
-		226, 22,
-		214, 19,
-		201, 17,
-		142, 17,
-		130, 20,
-		118, 23,
-		106, 27,
-		97, 31,
-		84, 38,
-		72, 47,
-		62, 56,
-		56, 65,
-		53, 65,
-		53, 28,
-		45, 18,
-		41, 16,
-		31, 16,
-		27, 19,
-		19, 28,
-		19, 201,
-		21, 222,
-		23, 236,
-		25, 249,
-		27, 261,
-		31, 273,
-		35, 288,
-		39, 302,
-		43, 312,
-		51, 324,
-		57, 333,
-		57, 337,
-		46, 350,
-		46, 385,
-		36, 388,
-		27, 392,
-		20, 400,
-		14, 413,
-		14, 492,
-		45, 512,
-		113, 557,
-		0, 557,
-		0, 0,
-		385, 0,
-		385, 557
-	};
-};
+//struct PinballBoardBodies		//Learn how to implement it with private elements instead of public.
+//{
+//	//------------------------------ Chains ------------------------------
+//	int backgroundExterior[124] = {			//Coordinates of the points that conform the Exterior background chain. 
+//		351, 557,		//Maybe need to change the 351 to 357
+//		351, 169,
+//		348, 153,
+//		346, 145,
+//		343, 137,
+//		341, 131,
+//		338, 122,
+//		334, 113,
+//		331, 107,
+//		326, 98,
+//		321, 90,
+//		315, 82,
+//		309, 74,
+//		292, 57,
+//		273, 43,
+//		262, 36,
+//		246, 29,
+//		236, 25,
+//		226, 22,
+//		214, 19,
+//		201, 17,
+//		142, 17,
+//		130, 20,
+//		118, 23,
+//		106, 27,
+//		97, 31,
+//		84, 38,
+//		72, 47,
+//		62, 56,
+//		56, 65,
+//		53, 65,
+//		53, 28,
+//		45, 18,
+//		41, 16,
+//		31, 16,
+//		27, 19,
+//		19, 28,
+//		19, 201,
+//		21, 222,
+//		23, 236,
+//		25, 249,
+//		27, 261,
+//		31, 273,
+//		35, 288,
+//		39, 302,
+//		43, 312,
+//		51, 324,
+//		57, 333,
+//		57, 337,
+//		46, 350,
+//		46, 385,
+//		36, 388,
+//		27, 392,
+//		20, 400,
+//		14, 413,
+//		14, 492,
+//		45, 512,
+//		113, 557,
+//		0, 557,
+//		0, 0,
+//		385, 0,
+//		385, 557
+//	};
+//};
 
 class ModuleSceneIntro : public Module
 {
@@ -141,13 +144,14 @@ public:
 	bool CleanUp();
 
 private:
-	void AddSceneAnimations(); //Load animations
 
 public:
-	p2List<PhysBody*> body_list;
-	
 	PinballBoardElements board;			//As it is a class, it needs to be a pointer to be accessed from outside.
-	PinballBoardBodies* body;
+	//PinballBoardBodies* body;
+	
+	void SetAnimationRectPosition();	//Sets each rect's data members with their corresponding measures.
+	void AddAnimationPushbacks();		//Load animations
+	void InitializeBoard();
 };
 
 

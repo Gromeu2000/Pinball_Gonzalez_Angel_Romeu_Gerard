@@ -9,40 +9,7 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	board.background.x = 1100.4;
-	board.background.y = 11.2;
-	board.background.w = 539;
-	board.background.h = 780;
-
-	board.ditto.x = 463.4;
-	board.ditto.y = 1664.6;
-	board.ditto.w = 74.2;
-	board.ditto.h = 127.4;
-
-	board.ditto_expanded.x = 557.2;
-	board.ditto_expanded.y = 872.2;
-	board.ditto_expanded.w = 110.6;
-	board.ditto_expanded.h = 191.8;
-
-	board.voltorb_boost.x = 726.6;
-	board.voltorb_boost.y = 1639.4;
-	board.voltorb_boost.w = 47.6;
-	board.voltorb_boost.h = 49;
-
-	board.blocker.x = 820.4;
-	board.blocker.y = 862.4;
-	board.blocker.w = 148.4;
-	board.blocker.h = 140;
-
-	board.triangle_boosted_L.x = 649.6;
-	board.triangle_boosted_L.y = 2242.8;
-	board.triangle_boosted_L.w = 47;
-	board.triangle_boosted_L.h = 79.8;
-
-	board.triangle_boosted_R.x = 903;
-	board.triangle_boosted_R.y = 2242.8;
-	board.triangle_boosted_R.w = 46.2;
-	board.triangle_boosted_R.h = 82.6;
+	SetAnimationRectPosition();
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -68,79 +35,7 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//LOAD ANIMATIONS------------------------------------------------
-	board.starmie1.PushBack({ 437, 2121, 54, 56 });
-	board.starmie1.PushBack({ 493, 2121, 54, 56 });
-	board.starmie1.loop = true;
-	board.starmie1.speed = 0.1;
-
-	board.dugtrio_L.PushBack({ 370, 2020, 67, 87 });
-	board.dugtrio_L.PushBack({ 440, 2020, 67, 87 });
-	board.dugtrio_L.PushBack({ 510, 2020, 67, 87 });
-	board.dugtrio_L.PushBack({ 580, 2020, 67, 87 });
-	board.dugtrio_L.loop = true;
-	board.dugtrio_L.speed = 0.08;
-	
-	board.dugtrio_R.PushBack({ 903, 2020, 69, 87 });
-	board.dugtrio_R.PushBack({ 973, 2020, 69, 87 });
-	board.dugtrio_R.PushBack({ 1043, 2020, 69, 87 });
-	board.dugtrio_R.PushBack({ 1113, 2020, 69, 87 });
-	board.dugtrio_R.loop = true;
-	board.dugtrio_R.speed = 0.08;
-
-	board.diglett_Left_Side.PushBack({ 552, 2115, 35, 42});
-	board.diglett_Left_Side.PushBack({ 588, 2115, 31, 42 });
-	board.diglett_Left_Side.PushBack({ 622, 2115, 25, 42 });
-	board.diglett_Left_Side.loop = true;
-	board.diglett_Left_Side.speed = 0.06;
-	
-
-	board.diglett_Right_Side.PushBack({ 938, 2115, 37, 42 });
-	board.diglett_Right_Side.PushBack({ 902, 2115, 37, 43 });
-	board.diglett_Right_Side.PushBack({ 973, 2115, 37, 42 });
-	board.diglett_Right_Side.loop = true;
-	board.diglett_Right_Side.speed = 0.06;
-	
-	board.pikachu.PushBack({ 477, 2345, 48, 46 });
-	board.pikachu.PushBack({ 529, 2345, 42, 46 });
-	board.pikachu.loop = true;
-	board.pikachu.speed = 0.03;
-
-	board.bellsprout.PushBack({ 615, 1203, 59, 74 });
-	board.bellsprout.PushBack({ 673, 1205, 59, 74 });
-	board.bellsprout.PushBack({ 731, 1205, 59, 74 });
-	board.bellsprout.PushBack({ 791, 1207, 59, 74 });
-	board.bellsprout.loop = true;
-	board.bellsprout.speed = 0.03;
-
-	board.starmie2.PushBack({ 411, 1309, 44, 46 });
-	board.starmie2.PushBack({ 411, 1309, 44, 46 });
-	board.starmie2.PushBack({ 411, 1309, 44, 46 });
-	board.starmie2.PushBack({ 457, 1311, 44, 48 });
-	board.starmie2.PushBack({ 457, 1311, 44, 48 });
-	board.starmie2.PushBack({ 457, 1311, 44, 48 });
-	board.starmie2.loop = true;
-	board.starmie2.speed = 0.03;
-
-	board.mid_screen.PushBack({ 1103, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1203, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1303, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1403, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1503, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1603, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1703, 10, 98, 66 });
-	board.mid_screen.PushBack({ 203, 78, 98, 64 });
-	board.mid_screen.PushBack({ 303, 78, 98, 64 });
-	board.mid_screen.PushBack({ 403, 78, 98, 64 });
-	board.mid_screen.PushBack({ 503, 78, 98, 64 });
-	board.mid_screen.PushBack({ 603, 78, 98, 64 });
-	board.mid_screen.PushBack({ 703, 78, 98, 64 });
-	board.mid_screen.PushBack({ 803, 78, 98, 64 });
-	board.mid_screen.PushBack({ 903, 78, 98, 64 });
-	board.mid_screen.PushBack({ 1003, 78, 98, 64 });
-	board.mid_screen.PushBack({ 1103, 78, 98, 64 });
-	board.mid_screen.PushBack({ 1203, 78, 98, 64 });
-	board.mid_screen.loop = true;
-	board.mid_screen.speed = 0.009;
+	AddAnimationPushbacks();
 
 	return ret;
 }
@@ -235,7 +130,123 @@ update_status ModuleSceneIntro::Update()
 	}
 }
 
-void ModuleSceneIntro::AddSceneAnimations()
+void InitializeBoard()
 {
-	
+
+}
+
+void ModuleSceneIntro::AddAnimationPushbacks()
+{
+	board.starmie1.PushBack({ 437, 2121, 54, 56 });
+	board.starmie1.PushBack({ 493, 2121, 54, 56 });
+	board.starmie1.loop = true;
+	board.starmie1.speed = 0.1;
+
+	board.dugtrio_L.PushBack({ 370, 2020, 67, 87 });
+	board.dugtrio_L.PushBack({ 440, 2020, 67, 87 });
+	board.dugtrio_L.PushBack({ 510, 2020, 67, 87 });
+	board.dugtrio_L.PushBack({ 580, 2020, 67, 87 });
+	board.dugtrio_L.loop = true;
+	board.dugtrio_L.speed = 0.08;
+
+	board.dugtrio_R.PushBack({ 903, 2020, 69, 87 });
+	board.dugtrio_R.PushBack({ 973, 2020, 69, 87 });
+	board.dugtrio_R.PushBack({ 1043, 2020, 69, 87 });
+	board.dugtrio_R.PushBack({ 1113, 2020, 69, 87 });
+	board.dugtrio_R.loop = true;
+	board.dugtrio_R.speed = 0.08;
+
+	board.diglett_Left_Side.PushBack({ 552, 2115, 35, 42 });
+	board.diglett_Left_Side.PushBack({ 588, 2115, 31, 42 });
+	board.diglett_Left_Side.PushBack({ 622, 2115, 25, 42 });
+	board.diglett_Left_Side.loop = true;
+	board.diglett_Left_Side.speed = 0.06;
+
+
+	board.diglett_Right_Side.PushBack({ 938, 2115, 37, 42 });
+	board.diglett_Right_Side.PushBack({ 902, 2115, 37, 43 });
+	board.diglett_Right_Side.PushBack({ 973, 2115, 37, 42 });
+	board.diglett_Right_Side.loop = true;
+	board.diglett_Right_Side.speed = 0.06;
+
+	board.pikachu.PushBack({ 477, 2345, 48, 46 });
+	board.pikachu.PushBack({ 529, 2345, 42, 46 });
+	board.pikachu.loop = true;
+	board.pikachu.speed = 0.03;
+
+	board.bellsprout.PushBack({ 615, 1203, 59, 74 });
+	board.bellsprout.PushBack({ 673, 1205, 59, 74 });
+	board.bellsprout.PushBack({ 731, 1205, 59, 74 });
+	board.bellsprout.PushBack({ 791, 1207, 59, 74 });
+	board.bellsprout.loop = true;
+	board.bellsprout.speed = 0.03;
+
+	board.starmie2.PushBack({ 411, 1309, 44, 46 });
+	board.starmie2.PushBack({ 411, 1309, 44, 46 });
+	board.starmie2.PushBack({ 411, 1309, 44, 46 });
+	board.starmie2.PushBack({ 457, 1311, 44, 48 });
+	board.starmie2.PushBack({ 457, 1311, 44, 48 });
+	board.starmie2.PushBack({ 457, 1311, 44, 48 });
+	board.starmie2.loop = true;
+	board.starmie2.speed = 0.03;
+
+	board.mid_screen.PushBack({ 1103, 10, 98, 66 });
+	board.mid_screen.PushBack({ 1203, 10, 98, 66 });
+	board.mid_screen.PushBack({ 1303, 10, 98, 66 });
+	board.mid_screen.PushBack({ 1403, 10, 98, 66 });
+	board.mid_screen.PushBack({ 1503, 10, 98, 66 });
+	board.mid_screen.PushBack({ 1603, 10, 98, 66 });
+	board.mid_screen.PushBack({ 1703, 10, 98, 66 });
+	board.mid_screen.PushBack({ 203, 78, 98, 64 });
+	board.mid_screen.PushBack({ 303, 78, 98, 64 });
+	board.mid_screen.PushBack({ 403, 78, 98, 64 });
+	board.mid_screen.PushBack({ 503, 78, 98, 64 });
+	board.mid_screen.PushBack({ 603, 78, 98, 64 });
+	board.mid_screen.PushBack({ 703, 78, 98, 64 });
+	board.mid_screen.PushBack({ 803, 78, 98, 64 });
+	board.mid_screen.PushBack({ 903, 78, 98, 64 });
+	board.mid_screen.PushBack({ 1003, 78, 98, 64 });
+	board.mid_screen.PushBack({ 1103, 78, 98, 64 });
+	board.mid_screen.PushBack({ 1203, 78, 98, 64 });
+	board.mid_screen.loop = true;
+	board.mid_screen.speed = 0.009;
+}
+
+//New This
+void ModuleSceneIntro::SetAnimationRectPosition()
+{
+	board.background.x = 1100.4;
+	board.background.y = 11.2;
+	board.background.w = 539;
+	board.background.h = 780;
+
+	board.ditto.x = 463.4;
+	board.ditto.y = 1664.6;
+	board.ditto.w = 74.2;
+	board.ditto.h = 127.4;
+
+	board.ditto_expanded.x = 557.2;
+	board.ditto_expanded.y = 872.2;
+	board.ditto_expanded.w = 110.6;
+	board.ditto_expanded.h = 191.8;
+
+	board.voltorb_boost.x = 726.6;
+	board.voltorb_boost.y = 1639.4;
+	board.voltorb_boost.w = 47.6;
+	board.voltorb_boost.h = 49;
+
+	board.blocker.x = 820.4;
+	board.blocker.y = 862.4;
+	board.blocker.w = 148.4;
+	board.blocker.h = 140;
+
+	board.triangle_boosted_L.x = 649.6;
+	board.triangle_boosted_L.y = 2242.8;
+	board.triangle_boosted_L.w = 47;
+	board.triangle_boosted_L.h = 79.8;
+
+	board.triangle_boosted_R.x = 903;
+	board.triangle_boosted_R.y = 2242.8;
+	board.triangle_boosted_R.w = 46.2;
+	board.triangle_boosted_R.h = 82.6;
 }
