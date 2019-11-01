@@ -53,9 +53,10 @@ public:
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
 
+	bool debug;
+
 private:
 
-	bool debug;
 	b2World* world = nullptr;
 	b2MouseJoint* mouse_joint;
 	b2Body* ground;

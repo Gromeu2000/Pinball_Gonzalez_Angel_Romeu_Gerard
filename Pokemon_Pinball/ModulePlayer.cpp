@@ -1,7 +1,10 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModulePlayer.h"
+#include "ModuleTextures.h"
 #include "ModuleInput.h"
+#include "ModulePhysics.h"
+#include "ModuleRender.h"
 #include "PhysBody.h"
 
 #include "SDL_image/include/SDL_image.h"
@@ -17,7 +20,25 @@ ModulePlayer::~ModulePlayer()
 // Load assets
 bool ModulePlayer::Start()
 {
+	//Load rects
+	player.flipper_L.x = 390;
+	player.flipper_L.y = 2276;
+	player.flipper_L.w = 64;
+	player.flipper_L.h = 46;
+
+	player.flipper_R.x = 955;
+	player.flipper_R.y = 2276;
+	player.flipper_R.w = 66;
+	player.flipper_R.h = 45;
+
 	LOG("Loading player");
+
+	//ball texture
+	player.flippers_texture = App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
+
+	//set score to 0
+	player.score = 0;
+
 	return true;
 }
 
@@ -25,6 +46,9 @@ bool ModulePlayer::Start()
 bool ModulePlayer::CleanUp()
 {
 	LOG("Unloading player");
+
+	//Unload textures
+	App->textures->Unload(player.flippers_texture);
 
 	return true;
 }
@@ -43,6 +67,41 @@ update_status ModulePlayer::Update()
 		player.lastWasRight = false;
 	}
 	
+	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects
+	{
+		//Load left flipper
+		App->renderer->Blit(player.flippers_texture, 146, 710, &player.flipper_L);
+
+		//Load right flipper
+		App->renderer->Blit(player.flippers_texture, 238, 710, &player.flipper_R);
+	}
+
+	//Reset max score
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		if (player.score > player.maxscore)
+		{
+			player.maxscore = player.score;
+		}
+
+		//Destroybody
+		//Restart pos ball
+		player.score = 0;
+	}
+
+	//If ball out of boundaries
+	//if (position.y > SCREEN_HEIGHT + 30) {
+
+	//	//Destroy body
+
+	//	//Restart ball
+	//	if (player.score > player.maxscore) {
+	//		player.maxscore = player.score;
+	//	}
+
+	//	playerscore = 0;
+	//}
+
 	return UPDATE_CONTINUE;
 }
 

@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModulePlayer.h"
 #include "ModuleTextures.h"
+#include "ModuleFonts.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 
@@ -40,6 +41,9 @@ bool ModuleSceneIntro::Start()
 	board.background_tex = App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
 	board.mid_tex = App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
 
+	//Load fonts 
+	board.score = App->fonts->Load("sprites/score.png", "0123456789", 1);
+
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//LOAD ANIMATIONS------------------------------------------------
@@ -57,6 +61,9 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(board.background_tex);
 	App->textures->Unload(board.mid_tex);
 
+	//Unload fonts
+	App->fonts->Unload(board.score);
+
 	return true;
 }
 
@@ -69,47 +76,63 @@ update_status ModuleSceneIntro::Update()
 		board.dynamicBody_List.add(board.ball);
 	}
 
-	
+	//Load fonts (high score & score)
 	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
+	{	
+		//Blit fonts
+		sprintf_s(board.player_score, 10, "%d", App->player->player.score);
+		App->fonts->BlitText(0, 0, board.score, board.player_score, 0.7f);
 
-	{	//TEXTURES-----------------------------------------
+		sprintf_s(board.max_score, 10, "%d", App->player->player.maxscore);
+		App->fonts->BlitText(259, 10, board.score, board.max_score, 0.7f);
+
+		sprintf_s(board.player_score, 10, "%d", App->player->player.score);
+		App->fonts->BlitText(120, 353, board.score, board.player_score, 0.7f);
+
+		//TEXTURES-----------------------------------------
 
 		//Load background
 		App->renderer->Blit(board.background_tex, 0, 0, &board.background);
 
 		//Load ditto
-		App->renderer->Blit(board.background_tex, 4.2, 60.2, &board.ditto);
+		App->renderer->Blit(board.background_tex, 4, 60, &board.ditto);
 
 		//Load expanded ditto
 		//App->renderer->Blit(element->background_tex, 7, 70, &element->ditto_expanded);
-
+		
 		//Load voltorb
-		App->renderer->Blit(board.background_tex, 210, 270.2, &board.voltorb_boost);
-		App->renderer->Blit(board.background_tex, 238, 186.2, &board.voltorb_boost);
-		App->renderer->Blit(board.background_tex, 154, 214.2, &board.voltorb_boost);
+		App->renderer->Blit(board.background_tex, 210, 270, &board.voltorb_boost);
+		App->renderer->Blit(board.background_tex, 238, 186, &board.voltorb_boost);
+		App->renderer->Blit(board.background_tex, 154, 214, &board.voltorb_boost);
+
+		
+		//Load boosted voltorb
+		App->renderer->Blit(board.background_tex, 212, 270, &board.voltorb_boosted);
+		App->renderer->Blit(board.background_tex, 240, 186, &board.voltorb_boosted);
+		App->renderer->Blit(board.background_tex, 156, 214, &board.voltorb_boosted);
 
 		//Load blocker
-		App->renderer->Blit(board.background_tex, 263.2, 64.4, &board.blocker);
+		App->renderer->Blit(board.background_tex, 263, 64, &board.blocker);
 
 		//Load left triangle when hit
-		App->renderer->Blit(board.background_tex, 95.2, 588, &board.triangle_boosted_L);
+		App->renderer->Blit(board.background_tex, 95, 588, &board.triangle_boosted_L);
 
 		//Load right triangle when hit
-		App->renderer->Blit(board.background_tex, 302.4, 588, &board.triangle_boosted_R);
+		App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
 
 		//ANIMATIONS----------------------------------------
 
 		//Little starmie animation
-		App->renderer->Blit(board.background_tex, -2.8, 420, &(board.starmie1.GetCurrentFrame()));
+		App->renderer->Blit(board.background_tex, -3, 420, &(board.starmie1.GetCurrentFrame()));
 
 		//Left dugtrios animation
-		App->renderer->Blit(board.background_tex, -2.8, 471.8, &(board.dugtrio_L.GetCurrentFrame()));
+		App->renderer->Blit(board.background_tex, -3, 472, &(board.dugtrio_L.GetCurrentFrame()));
 
 		//Right dugtrios animation
-		App->renderer->Blit(board.background_tex, 379.4, 471.8, &(board.dugtrio_R.GetCurrentFrame()));
+		App->renderer->Blit(board.background_tex, 379, 472, &(board.dugtrio_R.GetCurrentFrame()));
 
 		//Diglett at left side animation
-		App->renderer->Blit(board.background_tex, 64.4, 490, &(board.diglett_Left_Side.GetCurrentFrame()));
+		App->renderer->Blit(board.background_tex, 64, 490, &(board.diglett_Left_Side.GetCurrentFrame()));
 
 		//Diglett at right side animation
 		App->renderer->Blit(board.background_tex, 347, 490, &(board.diglett_Right_Side.GetCurrentFrame()));
@@ -123,18 +146,17 @@ update_status ModuleSceneIntro::Update()
 		else if (App->player->player.lastWasLeft == true)
 		{
 			//Pikachu left animation
-			App->renderer->Blit(board.background_tex, 18.2, 686, &(board.pikachu.GetCurrentFrame()));
+			App->renderer->Blit(board.background_tex, 18, 686, &(board.pikachu.GetCurrentFrame()));
 		}
 
 		//Bellsprout animation
-		App->renderer->Blit(board.background_tex, 210, 160, &(board.bellsprout.GetCurrentFrame()));
+		App->renderer->Blit(board.background_tex, 294, 224, &(board.bellsprout.GetCurrentFrame()));
 
 		//Starmie2 animation
-		App->renderer->Blit(board.background_tex, 87, 209, &(board.starmie2.GetCurrentFrame()));
+		App->renderer->Blit(board.background_tex, 122, 293, &(board.starmie2.GetCurrentFrame()));
 
 		//Mid screen animation
-		App->renderer->Blit(board.mid_tex, 109, 332, &(board.mid_screen.GetCurrentFrame()));
-
+		App->renderer->Blit(board.mid_tex, 153, 465, &(board.mid_screen.GetCurrentFrame()));
 		
 		return UPDATE_CONTINUE;
 	}
@@ -184,40 +206,40 @@ void ModuleSceneIntro::AddAnimationPushbacks()
 	board.pikachu.loop = true;
 	board.pikachu.speed = 0.03;
 
-	board.bellsprout.PushBack({ 615, 1203, 59, 74 });
-	board.bellsprout.PushBack({ 673, 1205, 59, 74 });
-	board.bellsprout.PushBack({ 731, 1205, 59, 74 });
-	board.bellsprout.PushBack({ 791, 1207, 59, 74 });
+	board.bellsprout.PushBack({ 861, 1684, 83, 104 });
+	board.bellsprout.PushBack({ 942, 1687, 83, 104 });
+	board.bellsprout.PushBack({ 1023, 1687, 83, 104 });
+	board.bellsprout.PushBack({ 1107, 1690, 83, 104 });
 	board.bellsprout.loop = true;
 	board.bellsprout.speed = 0.03;
 
-	board.starmie2.PushBack({ 411, 1309, 44, 46 });
-	board.starmie2.PushBack({ 411, 1309, 44, 46 });
-	board.starmie2.PushBack({ 411, 1309, 44, 46 });
-	board.starmie2.PushBack({ 457, 1311, 44, 48 });
-	board.starmie2.PushBack({ 457, 1311, 44, 48 });
-	board.starmie2.PushBack({ 457, 1311, 44, 48 });
+	board.starmie2.PushBack({ 575, 1833, 62, 64 });
+	board.starmie2.PushBack({ 575, 1833, 62, 64 });
+	board.starmie2.PushBack({ 575, 1833, 62, 64 });
+	board.starmie2.PushBack({ 640, 1835, 62, 64 });
+	board.starmie2.PushBack({ 640, 1835, 62, 64 });
+	board.starmie2.PushBack({ 640, 1835, 62, 64 });
 	board.starmie2.loop = true;
 	board.starmie2.speed = 0.03;
 
-	board.mid_screen.PushBack({ 1103, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1203, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1303, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1403, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1503, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1603, 10, 98, 66 });
-	board.mid_screen.PushBack({ 1703, 10, 98, 66 });
-	board.mid_screen.PushBack({ 203, 78, 98, 64 });
-	board.mid_screen.PushBack({ 303, 78, 98, 64 });
-	board.mid_screen.PushBack({ 403, 78, 98, 64 });
-	board.mid_screen.PushBack({ 503, 78, 98, 64 });
-	board.mid_screen.PushBack({ 603, 78, 98, 64 });
-	board.mid_screen.PushBack({ 703, 78, 98, 64 });
-	board.mid_screen.PushBack({ 803, 78, 98, 64 });
-	board.mid_screen.PushBack({ 903, 78, 98, 64 });
-	board.mid_screen.PushBack({ 1003, 78, 98, 64 });
-	board.mid_screen.PushBack({ 1103, 78, 98, 64 });
-	board.mid_screen.PushBack({ 1203, 78, 98, 64 });
+	board.mid_screen.PushBack({ 1544, 14, 137, 92 });
+	board.mid_screen.PushBack({ 1732, 14, 137, 92 });
+	board.mid_screen.PushBack({ 1824, 14, 137, 92 });
+	board.mid_screen.PushBack({ 1964, 14, 137, 92 });
+	board.mid_screen.PushBack({ 2104, 14, 137, 92 });
+	board.mid_screen.PushBack({ 2244, 14, 137, 92 });
+	board.mid_screen.PushBack({ 2384, 14, 137, 92 });
+	board.mid_screen.PushBack({ 284, 109, 137, 90 });
+	board.mid_screen.PushBack({ 424, 109, 137, 90 });
+	board.mid_screen.PushBack({ 564, 109, 137, 90 });
+	board.mid_screen.PushBack({ 704, 109, 137, 90 });
+	board.mid_screen.PushBack({ 844, 109, 137, 90 });
+	board.mid_screen.PushBack({ 984, 109, 137, 90 });
+	board.mid_screen.PushBack({ 1124, 109, 137, 90 });
+	board.mid_screen.PushBack({ 1264, 109, 137, 90 });
+	board.mid_screen.PushBack({ 1404, 109, 137, 90 });
+	board.mid_screen.PushBack({ 1544, 109, 137, 90 });
+	board.mid_screen.PushBack({ 1684, 109, 137, 90 });
 	board.mid_screen.loop = true;
 	board.mid_screen.speed = 0.009;
 }
@@ -245,6 +267,11 @@ void ModuleSceneIntro::SetAnimationRectPosition()
 	board.voltorb_boost.w = 47.6;
 	board.voltorb_boost.h = 49;
 
+	board.voltorb_boosted.x = 779;
+	board.voltorb_boosted.y = 1639.4;
+	board.voltorb_boosted.w = 46;
+	board.voltorb_boosted.h = 44;
+
 	board.blocker.x = 820.4;
 	board.blocker.y = 862.4;
 	board.blocker.w = 148.4;
@@ -259,4 +286,5 @@ void ModuleSceneIntro::SetAnimationRectPosition()
 	board.triangle_boosted_R.y = 2242.8;
 	board.triangle_boosted_R.w = 46.2;
 	board.triangle_boosted_R.h = 82.6;
+
 }

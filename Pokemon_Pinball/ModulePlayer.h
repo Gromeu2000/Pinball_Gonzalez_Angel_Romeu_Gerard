@@ -1,13 +1,36 @@
 #pragma once
 #include "Module.h"
 #include "Animation.h"
+#include "ModuleTextures.h"
 #include "Globals.h"
+#include "p2List.h"
 #include "p2Point.h"
+#include "Box2D/Box2D/Box2D.h"
+
+#define PLAYER_POS_X 
+#define PLAYER_POS_Y 
 
 struct Player
 {
 	bool lastWasRight;
 	bool lastWasLeft;
+
+	//Texture
+	SDL_Texture* flippers_texture;
+
+	//Rects
+	SDL_Rect	flipper_L;
+	SDL_Rect	flipper_R;
+
+	//Player position
+	//iPoint position;
+
+	//Score
+	uint score = 0;
+	uint maxscore = 0;
+
+	//lives
+	uint lives;
 };
 
 class ModulePlayer : public Module
