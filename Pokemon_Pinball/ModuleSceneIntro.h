@@ -248,7 +248,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	75, 342,
 	81, 369,
 	89, 389,
-	99, 412
+	99, 412 
 	};
 
 	int starmie_Wall[38] = {
