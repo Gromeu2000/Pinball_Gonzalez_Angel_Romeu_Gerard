@@ -3,6 +3,7 @@
 #include "Animation.h"
 #include "p2DynArray.h"
 #include "Globals.h"
+#include "p2List.h"
 
 class PhysBody;
 class ModuleSceneIntro;
@@ -66,10 +67,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	Animation	mid_screen;
 
-	//Score
-	char player_score[10];
-	char max_score[10];
-	int score = -1;
+	
 
 	//--------------------------Shape Declarations--------------------------
 	//Tweak until it feels right.
@@ -367,6 +365,12 @@ public:
 	bool InitializeBoard();				//Initializes all elements of the board.
 	bool SetAnimationRectPosition();	//Sets each rect's data members with their corresponding measures.
 	bool AddAnimationPushbacks();		//Load animations
+
+	//Score
+	
+	char player_score[10];
+	char max_score[10];
+	int score = -1;
 };
 
 

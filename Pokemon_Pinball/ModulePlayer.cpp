@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModulePlayer.h"
 #include "ModuleTextures.h"
+#include "ModuleAudio.h"
 #include "ModuleInput.h"
 #include "ModulePhysics.h"
 #include "ModuleRender.h"
@@ -37,7 +38,17 @@ bool ModulePlayer::Start()
 	player.flippers_texture = App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
 
 	//set score to 0
-	player.score = 0;
+	score = 0;
+
+	//Loading FX
+	App->audio->LoadFx("audio/FX/050 Diglett Cry.wav");
+	App->audio->LoadFx("audio/FX/100 Voltorb Cry.wav");
+	App->audio->LoadFx("audio/FX/121 Starmie Cry.wav");
+	App->audio->LoadFx("audio/FX/132 Ditto Cry.wav");
+	App->audio->LoadFx("audio/FX/Flipper.wav");
+	App->audio->LoadFx("audio/FX/Lose Ball.wav");
+	App->audio->LoadFx("audio/FX/Restart.wav");
+	App->audio->LoadFx("audio/FX/Triangles.wav");
 
 	return true;
 }
@@ -79,14 +90,19 @@ update_status ModulePlayer::Update()
 	//Reset max score
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 	{
-		if (player.score > player.maxscore)
+		if (score > maxscore)
 		{
-			player.maxscore = player.score;
+			maxscore = score;
 		}
 
 		//Destroybody
 		//Restart pos ball
-		player.score = 0;
+		score = 0;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
+	{
+		score=score + 1000;
 	}
 
 	//If ball out of boundaries

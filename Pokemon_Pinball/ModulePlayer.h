@@ -25,10 +25,6 @@ struct Player
 	//Player position
 	//iPoint position;
 
-	//Score
-	uint score = 0;
-	uint maxscore = 0;
-
 	//lives
 	uint lives;
 };
@@ -47,4 +43,9 @@ public:
 	Player player;
 	
 	void InitPlayer();
+
+public:
+	//Score
+	uint score = 0;
+	uint maxscore = 0;
 };

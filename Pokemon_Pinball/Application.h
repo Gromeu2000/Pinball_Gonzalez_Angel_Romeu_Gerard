@@ -20,12 +20,13 @@ public:
 	ModuleRender* renderer;
 	ModuleWindow* window;
 	ModuleTextures* textures;
+	ModuleFonts* fonts;
 	ModuleInput* input;
 	ModuleAudio* audio;
 	ModulePlayer* player;
 	ModuleSceneIntro* scene_intro;
 	ModulePhysics* physics;
-	ModuleFonts* fonts;
+	
 
 private:
 
