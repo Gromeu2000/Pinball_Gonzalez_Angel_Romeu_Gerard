@@ -10,7 +10,7 @@ class ModuleSceneIntro;
 struct PinballBoardElements		//Learn how to conver it into a class without recieving a nullptr at execution start.
 {
 	bool		debugMode;					//Bool for the debug mode, unused at the moment.
-	
+
 	//--------------------------PhysBodies declarations--------------------------
 	PhysBody*	background_exterior;		//Static Chain that stablishes the exerior background of the Pinball Machine's Board
 	PhysBody*	background_interior;		//Static Chain that stablishes the interior background of the Pinbal Machine' Board 

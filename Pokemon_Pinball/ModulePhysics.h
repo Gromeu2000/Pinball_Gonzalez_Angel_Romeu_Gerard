@@ -43,11 +43,10 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(int x, int y, int radius);
-	PhysBody* CreateRectangle(int x, int y, int width, int height);
+	PhysBody* CreateCircle(b2BodyType type, int x, int y, int radius, int restitution);
+	PhysBody* CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
-	PhysBody* CreateChain(int x, int y, int* points, int size, bool isStatic);	//Method that creates chains. Has a bool to make the chain static or dynamic.
-	PhysBody* CreateStaticChain(int x, int y, int* points, int size);			//Alternative method to draw Static chains
+	PhysBody* CreateChain(b2BodyType type, int x, int y, int* points, int size, int restitution);	//Method that creates chains. Has a bool to make the chain static or dynamic.
 
 
 	// b2ContactListener ---

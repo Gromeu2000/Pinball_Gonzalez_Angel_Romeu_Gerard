@@ -142,10 +142,10 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
+PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius, int restitution)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = type;
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
@@ -155,6 +155,7 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
+	fixture.restitution = restitution;
 
 	b->CreateFixture(&fixture);
 
@@ -166,10 +167,10 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
+PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = type;
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
@@ -179,6 +180,7 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 	b2FixtureDef fixture;
 	fixture.shape = &box;
 	fixture.density = 1.0f;
+	fixture.restitution = restitution;
 
 	b->CreateFixture(&fixture);
 
@@ -218,20 +220,14 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool isStatic) //Chapuza to be able to pass the function a bool that sets the type of the definition.
+PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points, int size, int restitution)
 {
 	b2BodyDef body;													//Declares the frame of the geometrical form.
 	
-	if (isStatic)
-	{
-		body.type = b2_staticBody;
-	}
-	else
-	{
-		body.type = b2_dynamicBody;
-	}
+	body.type = type;												//Defines the body as static. Will remain unaffected by exterior forces.
+
 																	//Sets the type of frame to dynamic, which means that it can be affected by external forces.
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));		//Sets the position in the world where the shape will be placed at.
+	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));	//Sets the position in the world where the shape will be placed at.
 
 	b2Body* b = world->CreateBody(&body);							//Creates a body given a definition.
 
@@ -249,6 +245,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool i
 																	//Fixture has a bool (isSensor) that if set to true, it identifies the body/shape as a sensor which detects contact but does not return a collision.
 	b2FixtureDef fixture;											//Definition of the fixture. It has multiple elements: Shape(circle), Density(Weight), Friction(How it drags along surfaces) and Restitution(how much it bounces back after impact)
 	fixture.shape = &shape;											//Defines which shape will the fixture have. Assigns a shape, in this case a chain.
+	fixture.restitution = restitution;								//
 
 	b->CreateFixture(&fixture);										//This method creates a fixture and adds it to a body. Used to assing parameters like denisity, friction, restitution...
 

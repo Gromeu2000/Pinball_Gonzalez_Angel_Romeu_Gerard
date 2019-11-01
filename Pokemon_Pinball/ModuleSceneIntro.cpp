@@ -27,22 +27,22 @@ bool ModuleSceneIntro::Start()
 	//----------------------------Static Shapes----------------------------
 	//Static Chains:
 	//Background Chains. All chains have their pivot at (0, 0) due to Ric's vector drawing program
-	board.background_exterior = App->physics->CreateChain(0, 0, board.backgroundExterior, 114, true);
-	board.background_interior = App->physics->CreateChain(0, 0, board.backgroundInterior, 116, true);
-	board.left_kicker = App->physics->CreateChain(0, 0, board.left_Kicker, 6, true);
-	board.right_kicker = App->physics->CreateChain(0, 0, board.right_Kicker, 6, true);
-	board.left_arm = App->physics->CreateChain(0, 0, board.left_Arm, 16, true);
-	board.right_arm = App->physics->CreateChain(0, 0, board.right_Arm, 16, true);
+	board.background_exterior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundExterior, 114, 0);
+	board.background_interior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundInterior, 116, 0);
+	board.left_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Kicker, 6, 0);
+	board.right_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Kicker, 6, 0);
+	board.left_arm					= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Arm, 16, 0);
+	board.right_arm					= App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Arm, 16, 0);
 
 	//Load music
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 
 	//Load textures
-	board.background_tex = App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
-	board.mid_tex = App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
+	board.background_tex		= App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
+	board.mid_tex				= App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
 
 	//Load fonts 
-	board.score = App->fonts->Load("sprites/score.png", "0123456789", 1);
+	board.score					= App->fonts->Load("sprites/score.png", "0123456789", 1);
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -72,7 +72,7 @@ update_status ModuleSceneIntro::Update()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		board.ball = App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 20);
+		board.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 20, 0);
 		board.dynamicBody_List.add(board.ball);
 	}
 
