@@ -21,14 +21,15 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody*	stopper;					//Static chain that stablishes the stopper between the flippers.
 	PhysBody*	left_kicker;				//Static Chain that stablishes the left bumper triangle (kicker). It's restitution value (0 (no bounce) - 1 (bounces back with the same force)) needs to be modified to make it bounce the ball back.
 	PhysBody*	right_kicker;				//Static Chain that stablishes the right bumper triangle (kicker). It's restitution value (0 (no bounce) - 1 (bounces back with the same force)) needs to be modified to make it bounce the ball back.
-	PhysBody*	left_flipper_base;			//Static Chain that stablishes the left canal just below the left triangle.
-	PhysBody*	right_flipper_base;			//Static Chain that stablishes the right canal just below the right triangle.
+	PhysBody*	left_arm;					//Static Chain that stablishes the left arm just below the left triangle.
+	PhysBody*	right_arm;					//Static Chain that stablishes the right arm just below the right triangle.
 	PhysBody*	topLeft_Wall;				//Static Chain that stablishes the blue top-left wall just above the left Digglet.
 	PhysBody*	starmie_Wall;				//Static Chain that stablihes the wall with the starmie on top. (Revise name)
 	PhysBody*	centerLeft_miniWall;		//Static Chain that stablishes the center left wall just above the voltorbs.
 	PhysBody*	centerRight_miniWall;		//Static Chain that stablishes the center right wall just above the voltorbs.
 	PhysBody*	bellsprout_Wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
 	PhysBody*	spinner;					//Sensor that detects if the ball has passed through the spinner at the right of the bellsprout wall.
+	PhysBody*	ball;						//Dynamic circle that will act as the ball.
 
 	p2List<PhysBody*> dynamicBody_List;
 	p2List<PhysBody*> staticBody_List;
@@ -61,76 +62,167 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	Animation	mid_screen;
 
+	//--------------------------Shape Declarations--------------------------
+	//Tweak until it feels right.
+	int backgroundExterior[114] = {
+	493, 780,
+	493, 235,
+	487, 202,
+	481, 182,
+	472, 158,
+	458, 132,
+	438, 103,
+	417, 81,
+	392, 62,
+	367, 46,
+	340, 32,
+	311, 22,
+	280, 19,
+	240, 16, 
+	200, 19,
+	180, 25,
+	152, 33,
+	130, 42,
+	110, 54,
+	100, 62,
+	79, 82,  //Out of the initial step.
+	73, 82,
+	73, 44,
+	68, 33,
+	61, 25,
+	49, 22,
+	39, 25,
+	30, 33,
+	23, 42,
+	23, 90,
+	22, 283,
+	25, 316,
+	31, 352,
+	37, 377,
+	43, 398,
+	51, 420,
+	59, 437,
+	67, 450,
+	74, 460,
+	80, 466,
+	80, 472,
+	74, 475,
+	69, 481,
+	65, 490,
+	65, 536,
+	57, 536,
+	46, 541,
+	35, 547,
+	27, 555,
+	20, 566,
+	12, 579, //Left canal
+	12, 686,
+	158, 780,
+	0, 780,
+	0, 0,
+	538, 0,
+	538, 780
+	};
 
+	int backgroundInterior[116] = {
+	447, 780,
+	447, 239,
+	438, 205,
+	427, 175,
+	414, 149,
+	399, 128,
+	387, 116,
+	349, 89,
+	324, 78,
+	302, 71,
+	269, 66,
+	256, 64,
+	244, 64,
+	213, 66,
+	192, 70,
+	174, 76,
+	152, 85,
+	129, 100,
+	108, 125, //Out of the initial step
+	107, 128,
+	112, 125,
+	135, 104,
+	164, 89,
+	189, 81,
+	202, 77,
+	228, 73,
+	256, 74,
+	280, 78,
+	302, 86,
+	320, 96,
+	342, 110,
+	362, 127,
+	381, 146,
+	399, 169,
+	415, 201,
+	426, 236,
+	427, 284,
+	428, 307,
+	426, 335,
+	421, 365,
+	409, 395,
+	395, 424,
+	385, 442,
+	376, 456,
+	369, 465,
+	369, 469,
+	377, 474,
+	382, 480,
+	384, 487,
+	384, 536,
+	397, 536,
+	410, 542,
+	422, 551,
+	429, 562,
+	435, 579, //Right Canal
+	435, 686,
+	388, 715,
+	290, 780
+	};
+
+	int left_Kicker[6] = {
+	104, 585,
+	140, 655,
+	104, 630
+	};
+
+	int right_Kicker[6] = {
+	345, 585,
+	309, 655,
+	345, 630
+	};
+
+	int left_Arm[16] = {
+	62, 645,
+	62, 586,
+	60, 584,
+	57, 586,
+	57, 660,
+	154, 724,
+	155, 715,
+	62, 653
+	};
+
+	int right_Arm[16] = {
+	386, 645,
+	386, 586,
+	387, 584,
+	391, 586,
+	391, 660,
+	296, 724,
+	296, 715,
+	386, 653
+	};
 };
 
 //struct PinballBoardBodies		//Learn how to implement it with private elements instead of public.
 //{
-//	//------------------------------ Chains ------------------------------
-//	int backgroundExterior[124] = {			//Coordinates of the points that conform the Exterior background chain. 
-//		351, 557,		//Maybe need to change the 351 to 357
-//		351, 169,
-//		348, 153,
-//		346, 145,
-//		343, 137,
-//		341, 131,
-//		338, 122,
-//		334, 113,
-//		331, 107,
-//		326, 98,
-//		321, 90,
-//		315, 82,
-//		309, 74,
-//		292, 57,
-//		273, 43,
-//		262, 36,
-//		246, 29,
-//		236, 25,
-//		226, 22,
-//		214, 19,
-//		201, 17,
-//		142, 17,
-//		130, 20,
-//		118, 23,
-//		106, 27,
-//		97, 31,
-//		84, 38,
-//		72, 47,
-//		62, 56,
-//		56, 65,
-//		53, 65,
-//		53, 28,
-//		45, 18,
-//		41, 16,
-//		31, 16,
-//		27, 19,
-//		19, 28,
-//		19, 201,
-//		21, 222,
-//		23, 236,
-//		25, 249,
-//		27, 261,
-//		31, 273,
-//		35, 288,
-//		39, 302,
-//		43, 312,
-//		51, 324,
-//		57, 333,
-//		57, 337,
-//		46, 350,
-//		46, 385,
-//		36, 388,
-//		27, 392,
-//		20, 400,
-//		14, 413,
-//		14, 492,
-//		45, 512,
-//		113, 557,
-//		0, 557,
-//		0, 0,
-//		385, 0,
-//		385, 557
-//	};
+//	
 //};
 
 class ModuleSceneIntro : public Module

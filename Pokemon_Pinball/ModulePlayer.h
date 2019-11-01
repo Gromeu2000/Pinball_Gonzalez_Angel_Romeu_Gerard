@@ -4,6 +4,12 @@
 #include "Globals.h"
 #include "p2Point.h"
 
+struct Player
+{
+	bool lastWasRight;
+	bool lastWasLeft;
+};
+
 class ModulePlayer : public Module
 {
 public:
@@ -15,5 +21,7 @@ public:
 	bool CleanUp();
 
 public:
-
+	Player player;
+	
+	void InitPlayer();
 };

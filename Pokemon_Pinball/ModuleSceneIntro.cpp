@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleInput.h"
+#include "ModulePlayer.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
@@ -23,7 +24,14 @@ bool ModuleSceneIntro::Start()
 
 	//Load Shapes:
 	//----------------------------Static Shapes----------------------------
-	//board.background_exterior = App->physics->CreateChain(0, 0, body->backgroundExterior, 80, true);
+	//Static Chains:
+	//Background Chains. All chains have their pivot at (0, 0) due to Ric's vector drawing program
+	board.background_exterior = App->physics->CreateChain(0, 0, board.backgroundExterior, 114, true);
+	board.background_interior = App->physics->CreateChain(0, 0, board.backgroundInterior, 116, true);
+	board.left_kicker = App->physics->CreateChain(0, 0, board.left_Kicker, 6, true);
+	board.right_kicker = App->physics->CreateChain(0, 0, board.right_Kicker, 6, true);
+	board.left_arm = App->physics->CreateChain(0, 0, board.left_Arm, 16, true);
+	board.right_arm = App->physics->CreateChain(0, 0, board.right_Arm, 16, true);
 
 	//Load music
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
@@ -57,7 +65,8 @@ update_status ModuleSceneIntro::Update()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		PhysBody* Circle = App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(16));
+		board.ball = App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 20);
+		board.dynamicBody_List.add(board.ball);
 	}
 
 	
@@ -105,12 +114,13 @@ update_status ModuleSceneIntro::Update()
 		//Diglett at right side animation
 		App->renderer->Blit(board.background_tex, 347, 490, &(board.diglett_Right_Side.GetCurrentFrame()));
 
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) 
+		if (App->player->player.lastWasRight == true)
 		{
 			//Pikachu right animation
 			App->renderer->Blit(board.background_tex, 385, 686, &(board.pikachu.GetCurrentFrame()));
 		}
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+
+		else if (App->player->player.lastWasLeft == true)
 		{
 			//Pikachu left animation
 			App->renderer->Blit(board.background_tex, 18.2, 686, &(board.pikachu.GetCurrentFrame()));
