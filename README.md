@@ -1,16 +1,21 @@
-﻿Pokemon Pinball
+﻿# Pokemon Pinball
 
-Made by Gerard Romeu and Ángel González
+This a version of a the Pokemon Pinball for Game Boy made by Gerard Romeu and Ángel González, tow students from UPC.
 
-https://github.com/Gromeu2000/Pinball_Gonzalez_Angel_Romeu_Gerard
+# Creators' repositories 
 
-https://kbhgames.com/game/pokemon-pinball
+- Gerard Romeu: https://github.com/BarcinoLechiguino
+- Ángel González: https://github.com/Gromeu2000
 
-Differences
+# Original game
+
+You can play the originall game here->https://kbhgames.com/game/pokemon-pinball
+
+# Differences
 
 
 
-Controls 
+# Controls 
 
 Left arrow - Left flipper
 
@@ -21,3 +26,7 @@ Down arrow - Kicker
 R - Restart game
 
 F1 - Degug
+
+# Projet repository
+
+https://github.com/Gromeu2000/Pinball_Gonzalez_Angel_Romeu_Gerard

@@ -52,7 +52,7 @@ bool ModuleSceneIntro::Start()
 	board.mid_tex				= App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
 
 	//Load fonts 
-	board.score					= App->fonts->Load("sprites/score.png", "0123456789", 1);
+	score					= App->fonts->Load("sprites/score.png", "0123456789", 1);
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -72,7 +72,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(board.mid_tex);
 
 	//Unload fonts
-	App->fonts->Unload(board.score);
+	App->fonts->Unload(score);
 
 	return true;
 }
@@ -86,20 +86,12 @@ update_status ModuleSceneIntro::Update()
 		board.dynamicBody_List.add(board.ball);
 	}
 
-
+	
 
 	//Load fonts (high score & score)
 	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
 	{	
-		//Blit fonts
-		sprintf_s(board.player_score, 10, "%d", App->player->player.score);
-		App->fonts->BlitText(0, 0, board.score, board.player_score, 0.7f);
-
-		sprintf_s(board.max_score, 10, "%d", App->player->player.maxscore);
-		App->fonts->BlitText(259, 10, board.score, board.max_score, 0.7f);
-
-		sprintf_s(board.player_score, 10, "%d", App->player->player.score);
-		App->fonts->BlitText(120, 353, board.score, board.player_score, 0.7f);
+		
 
 		//TEXTURES-----------------------------------------
 
@@ -169,7 +161,17 @@ update_status ModuleSceneIntro::Update()
 
 		//Mid screen animation
 		App->renderer->Blit(board.mid_tex, 153, 465, &(board.mid_screen.GetCurrentFrame()));
-		
+	
+
+		//Blit fonts
+		sprintf_s(player_score, 10, "%7d", App->player->score);
+		App->fonts->BlitText(130, 625, score, player_score, 0.7f);
+
+		sprintf_s(max_score, 10, "%7d", App->player->maxscore);
+		App->fonts->BlitText(289, 15, score, max_score, 0.7f);
+
+
+
 		return UPDATE_CONTINUE;
 	}
 }

@@ -15,11 +15,11 @@ Application::Application()
 	renderer = new ModuleRender(this);
 	window = new ModuleWindow(this);
 	textures = new ModuleTextures(this);
+	fonts = new ModuleFonts(this);
 	input = new ModuleInput(this);
 	audio = new ModuleAudio(this, true);
 	player = new ModulePlayer(this);
 	scene_intro = new ModuleSceneIntro(this);
-	fonts = new ModuleFonts(this);
 	physics = new ModulePhysics(this);
 
 	// The order of calls is very important!
@@ -32,8 +32,8 @@ Application::Application()
 	AddModule(renderer);
 	AddModule(textures);
 	AddModule(input);
-	AddModule(fonts);
 	AddModule(audio);
+	AddModule(fonts);
 	
 	// Scenes
 	AddModule(scene_intro);
