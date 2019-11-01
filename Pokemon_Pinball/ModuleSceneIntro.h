@@ -9,7 +9,7 @@ class ModuleSceneIntro;
 
 struct PinballBoardElements		//Learn how to conver it into a class without recieving a nullptr at execution start.
 {
-	bool		debugMode;					//Bool for the debug mode, unused at the moment.
+	bool		debugMode;					//Bool for the debug mode, blits or unblits all images on screen.
 
 	//--------------------------PhysBodies declarations--------------------------
 	PhysBody*	background_exterior;		//Static Chain that stablishes the exerior background of the Pinball Machine's Board
@@ -23,13 +23,16 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody*	right_kicker;				//Static Chain that stablishes the right bumper triangle (kicker). It's restitution value (0 (no bounce) - 1 (bounces back with the same force)) needs to be modified to make it bounce the ball back.
 	PhysBody*	left_arm;					//Static Chain that stablishes the left arm just below the left triangle.
 	PhysBody*	right_arm;					//Static Chain that stablishes the right arm just below the right triangle.
-	PhysBody*	topLeft_Wall;				//Static Chain that stablishes the blue top-left wall just above the left Digglet.
-	PhysBody*	starmie_Wall;				//Static Chain that stablihes the wall with the starmie on top. (Revise name)
-	PhysBody*	centerLeft_miniWall;		//Static Chain that stablishes the center left wall just above the voltorbs.
-	PhysBody*	centerRight_miniWall;		//Static Chain that stablishes the center right wall just above the voltorbs.
-	PhysBody*	bellsprout_Wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
+	PhysBody*	topLeft_wall;				//Static Chain that stablishes the blue top-left wall just above the left Digglet.
+	PhysBody*	starmie_wall;				//Static Chain that stablihes the wall with the starmie on top. (Revise name)
+	PhysBody*	centerLeft_miniwall;		//Static Chain that stablishes the center left wall just above the voltorbs.
+	PhysBody*	centerRight_miniwall;		//Static Chain that stablishes the center right wall just above the voltorbs.
+	PhysBody*	bellsprout_wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
 	PhysBody*	spinner;					//Sensor that detects if the ball has passed through the spinner at the right of the bellsprout wall.
+	PhysBody*	plunger_base;				//Static Rectangle that stablishes the plunger's base. Will have a spring joint where the plunger-ram will be attached to.
+	PhysBody*	plunger_ram;				//Dynamic Rectangle that stablishes the plunger's ram. Will be the one to send the ball inside the board. Will have a spring joint attached to p_base.
 	PhysBody*	ball;						//Dynamic circle that will act as the ball.
+	
 
 	p2List<PhysBody*> dynamicBody_List;
 	p2List<PhysBody*> staticBody_List;
@@ -130,7 +133,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	538, 780
 	};
 
-	int backgroundInterior[116] = {
+	int backgroundInterior[120] = {
 	447, 780,
 	447, 239,
 	438, 205,
@@ -160,9 +163,11 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	256, 74,
 	280, 78,
 	302, 86,
-	320, 96,
-	342, 110,
-	362, 127,
+	325, 96,
+	345, 110,
+	350, 114,
+	355, 118,
+	366, 127, //Curve
 	381, 146,
 	399, 169,
 	415, 201,
@@ -224,9 +229,121 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	296, 715,
 	386, 653
 	};
+
+	int topLeft_Wall[36] = {
+	110, 423,
+	126, 407,
+	126, 404,
+	99, 366,
+	89, 339,
+	80, 305,
+	78, 276,
+	80, 257,	//Topmost part of the wall
+	82, 242,
+	79, 240,
+	78, 242,
+	73, 257,
+	71, 270,
+	71, 317,
+	75, 342,
+	81, 369,
+	89, 389,
+	99, 412
+	};
+
+	int starmie_Wall[38] = {
+	157, 361,
+	170, 361,
+	185, 346,
+	185, 333,
+	179, 319,
+	153, 293,
+	141, 278,
+	135, 266,
+	130, 249,
+	130, 229,
+	138, 211, //Topmost part of starmie wall
+	138, 185,
+	130, 205, //Left part of the wall
+	127, 219,
+	125, 229,
+	125, 300,
+	129, 318,
+	135, 335,
+	147, 353
+	};
+
+	int centerLeft_MiniWall[16] = {
+	200, 136,
+	196, 133,
+	192, 134,
+	187, 139,
+	187, 176,
+	189, 179,
+	194, 179,
+	200, 174
+	};
+
+	int centerRight_MiniWall[18] = {
+	256, 120,
+	260, 121,
+	261, 127,
+	261, 158,
+	259, 160,
+	252, 160,
+	249, 157,
+	249, 127,
+	251, 122
+	};
+
+	int bellsprout_Wall[86] = {
+	310, 141, //Top part of the wall
+	310, 235,
+	307, 258,
+	305, 277,
+	302, 297,
+	297, 315,
+	297, 328,
+	301, 334,
+	304, 339,
+	307, 339,
+	313, 327,
+	319, 312,
+	322, 297,
+	322, 267,
+	322, 252,
+	332, 229,
+	357, 229,
+	369, 243,
+	369, 298,
+	367, 311,
+	365, 323,
+	362, 337,
+	356, 353,
+	351, 366,
+	344, 377,
+	334, 391,
+	325, 403,
+	325, 407,
+	337, 420,
+	342, 418,
+	352, 402,
+	359, 386,
+	365, 369,
+	370, 355,
+	374, 340,
+	378, 318,
+	378, 234,
+	373, 219,
+	367, 202,
+	359, 188,
+	351, 177,
+	338, 162,
+	324, 150 //Top part of the wall
+	};
 };
 
-//struct PinballBoardBodies		//Learn how to implement it with private elements instead of public.
+//struct PinballBoardBodies				//Learn how to implement it with private elements instead of public.
 //{
 //	
 //};
@@ -247,9 +364,9 @@ public:
 	PinballBoardElements board;			//As it is a class, it needs to be a pointer to be accessed from outside.
 	//PinballBoardBodies* body;
 	
-	void SetAnimationRectPosition();	//Sets each rect's data members with their corresponding measures.
-	void AddAnimationPushbacks();		//Load animations
-	void InitializeBoard();
+	bool InitializeBoard();				//Initializes all elements of the board.
+	bool SetAnimationRectPosition();	//Sets each rect's data members with their corresponding measures.
+	bool AddAnimationPushbacks();		//Load animations
 };
 
 

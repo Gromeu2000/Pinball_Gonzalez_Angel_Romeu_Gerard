@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModuleSceneIntro.h"		//Temporarily added due to debug key
 #include "p2Point.h"
 #include "math.h"
 
@@ -48,12 +49,28 @@ update_status ModulePhysics::PreUpdate()
 
 update_status ModulePhysics::PostUpdate()
 {
-	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)		//Debug Key. Draws on screen al the shapes and allows to use a mouse joint.
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)		//Debug Key. Draws on screen al the shapes and allows to use a mouse joint.
+	{
 		debug = !debug;
-
-	if(!debug)
+	}
+		
+	if (!debug)
+	{
 		return UPDATE_CONTINUE;
+	}
 
+	//if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)		//Debug Key. Temporarily here, will move it somewhere else later (probably).
+	//{
+	//	if (App->scene_intro->board.debugMode == true)
+	//	{
+	//		App->scene_intro->board.debugMode == false;
+	//	}
+	//	else
+	//	{
+	//		App->scene_intro->board.debugMode == true;
+	//	}
+	//}
+	
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
 	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())

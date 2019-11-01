@@ -23,16 +23,26 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	InitializeBoard();
+
 	//Load Shapes:
 	//----------------------------Static Shapes----------------------------
 	//Static Chains:
 	//Background Chains. All chains have their pivot at (0, 0) due to Ric's vector drawing program
 	board.background_exterior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundExterior, 114, 0);
-	board.background_interior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundInterior, 116, 0);
+	board.background_interior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundInterior, 120, 0);
 	board.left_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Kicker, 6, 0);
 	board.right_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Kicker, 6, 0);
 	board.left_arm					= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Arm, 16, 0);
 	board.right_arm					= App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Arm, 16, 0);
+	board.topLeft_wall				= App->physics->CreateChain(b2_staticBody, 0, 0, board.topLeft_Wall, 36, 0);
+	board.starmie_wall				= App->physics->CreateChain(b2_staticBody, 0, 0, board.starmie_Wall, 38, 0);
+	board.centerLeft_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerLeft_MiniWall, 16, 0);
+	board.centerRight_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerRight_MiniWall, 18, 0);
+	board.bellsprout_wall			= App->physics->CreateChain(b2_staticBody, 0, 0, board.bellsprout_Wall, 86, 0);
+
+	//Static Rectangles:
+	board.plunger_base				= App->physics->CreateRectangle(b2_staticBody, 469, 769, 34, 15, 0);
 
 	//Load music
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
@@ -75,6 +85,8 @@ update_status ModuleSceneIntro::Update()
 		board.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 20, 0);
 		board.dynamicBody_List.add(board.ball);
 	}
+
+
 
 	//Load fonts (high score & score)
 	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
@@ -162,12 +174,13 @@ update_status ModuleSceneIntro::Update()
 	}
 }
 
-void InitializeBoard()
+bool ModuleSceneIntro::InitializeBoard()
 {
-
+	board.debugMode = true;
+	return true;
 }
 
-void ModuleSceneIntro::AddAnimationPushbacks()
+bool ModuleSceneIntro::AddAnimationPushbacks()
 {
 	board.starmie1.PushBack({ 437, 2121, 54, 56 });
 	board.starmie1.PushBack({ 493, 2121, 54, 56 });
@@ -242,10 +255,12 @@ void ModuleSceneIntro::AddAnimationPushbacks()
 	board.mid_screen.PushBack({ 1684, 109, 137, 90 });
 	board.mid_screen.loop = true;
 	board.mid_screen.speed = 0.009;
+
+	return true;
 }
 
 //New This
-void ModuleSceneIntro::SetAnimationRectPosition()
+bool ModuleSceneIntro::SetAnimationRectPosition()
 {
 	board.background.x = 1100.4;
 	board.background.y = 11.2;
@@ -287,4 +302,5 @@ void ModuleSceneIntro::SetAnimationRectPosition()
 	board.triangle_boosted_R.w = 46.2;
 	board.triangle_boosted_R.h = 82.6;
 
+	return true;
 }
