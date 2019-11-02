@@ -94,12 +94,12 @@ public:
 		num_elements = 0;
 	}
 
-	bool Insert(const VALUE& board, unsigned int position)
+	bool Insert(const VALUE& board, unsigned int mouse_position)
 	{
-		if(position > num_elements)
+		if(mouse_position > num_elements)
 			return false;
 
-		if(position == num_elements)
+		if(mouse_position == num_elements)
 		{
 			PushBack(board);
 			return true;
@@ -108,12 +108,12 @@ public:
 		if(num_elements + 1 > mem_capacity)
 			Alloc(mem_capacity + DYN_ARRAY_BLOCK_SIZE);
 
-		for(unsigned int i = num_elements; i > position; --i)
+		for(unsigned int i = num_elements; i > mouse_position; --i)
 		{
 			data[i] = data[i - 1];
 		}
 
-		data[position] = board;
+		data[mouse_position] = board;
 		++num_elements;
 
 		return true;

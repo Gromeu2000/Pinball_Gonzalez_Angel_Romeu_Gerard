@@ -44,15 +44,19 @@ bool ModuleSceneIntro::Start()
 	//Static Rectangles:
 	board.plunger_base				= App->physics->CreateRectangle(b2_staticBody, 469, 769, 34, 15, 0);
 
+	//Dynamic Rectangles:
+	board.plunger_ram				= App->physics->CreateRectangle(b2_dynamicBody, 469, 750, 34, 40, 0);
+
 	//Load music
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 
 	//Load textures
 	board.background_tex		= App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
 	board.mid_tex				= App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
+	board.pokeball_tex			= App->textures->Load("sprites/ball_40px.png");
 
 	//Load fonts 
-	score					= App->fonts->Load("sprites/score.png", "0123456789", 1);
+	score						= App->fonts->Load("sprites/score.png", "0123456789", 1);
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -70,6 +74,7 @@ bool ModuleSceneIntro::CleanUp()
 	//Unload textures
 	App->textures->Unload(board.background_tex);
 	App->textures->Unload(board.mid_tex);
+	App->textures->Unload(board.pokeball_tex);
 
 	//Unload fonts
 	App->fonts->Unload(score);
@@ -86,13 +91,9 @@ update_status ModuleSceneIntro::Update()
 		board.dynamicBody_List.add(board.ball);
 	}
 
-	
-
 	//Load fonts (high score & score)
 	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
 	{	
-		
-
 		//TEXTURES-----------------------------------------
 
 		//Load background
@@ -170,7 +171,34 @@ update_status ModuleSceneIntro::Update()
 		sprintf_s(max_score, 10, "%7d", App->player->maxscore);
 		App->fonts->BlitText(289, 15, score, max_score, 0.7f);
 
+		
+		int x;
+		int	y;
 
+		if (board.dynamicBody_List.getFirst() != NULL)
+		{
+			p2List_item<PhysBody*>* dynBody_iterator = board.dynamicBody_List.getFirst();
+
+			while (dynBody_iterator != NULL)
+			{
+				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 0)		//Type 0 means the shape of the fixture is a circle.
+				{
+					dynBody_iterator->data->GetPosition(x, y);
+					App->renderer->Blit(board.pokeball_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+				}
+				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 2)		//Type 2 means the shape of the fixture is a polygon.
+				{
+					dynBody_iterator->data->GetPosition(x, y);
+					App->renderer->Blit(board.diglett_plunger_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+				}
+				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 3)		//Type 3 means the shape of the fixture is a chain.
+				{
+					dynBody_iterator->data->GetPosition(x, y);
+					App->renderer->Blit(board.voltorb_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+				}
+				dynBody_iterator = dynBody_iterator->next;
+			}
+		}
 
 		return UPDATE_CONTINUE;
 	}

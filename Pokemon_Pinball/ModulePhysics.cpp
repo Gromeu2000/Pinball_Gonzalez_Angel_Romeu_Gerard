@@ -33,6 +33,10 @@ bool ModulePhysics::Start()
 
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
 
+	//Joint relevant variables
+	b2BodyDef  body_def;					//b2BodyDef holds all the information needed to create a rigid body.
+	ground = world->CreateBody(&body_def);  //CreateBody() creates a rigid body given a definition. Sets ground as a rigid body.
+	
 	//Chains were declared here before.
 
 	return true;
@@ -58,94 +62,157 @@ update_status ModulePhysics::PostUpdate()
 	{
 		return UPDATE_CONTINUE;
 	}
-
-	//if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)		//Debug Key. Temporarily here, will move it somewhere else later (probably).
-	//{
-	//	if (App->scene_intro->board.debugMode == true)
-	//	{
-	//		App->scene_intro->board.debugMode == false;
-	//	}
-	//	else
-	//	{
-	//		App->scene_intro->board.debugMode == true;
-	//	}
-	//}
+	
+	hit = false;
 	
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
-	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+	for (b2Body* body = world->GetBodyList(); body; body = body->GetNext())							//Loop that iterates all objects that are in world->GetBodyList().
 	{
-		for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
+		for (b2Fixture* fixture = body->GetFixtureList(); fixture; fixture = fixture->GetNext())	//Loop that iterates all the fixtures of an object. In this case the object is passed by the loop.
 		{
-			switch (f->GetType())
+			switch (fixture->GetType())																//Switch that checks the type of the object being iterated.
 			{
 				// Draw circles ------------------------------------------------
-			case b2Shape::e_circle:
-			{
-				b2CircleShape* shape = (b2CircleShape*)f->GetShape();
-				b2Vec2 pos = f->GetBody()->GetPosition();
-				App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 0, 0);
-			}
-			break;
-
-			// Draw polygons ------------------------------------------------
-			case b2Shape::e_polygon:
-			{
-				b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
-				int32 count = polygonShape->GetVertexCount();
-				b2Vec2 prev, v;
-
-				for (int32 i = 0; i < count; ++i)
+				case b2Shape::e_circle:																//If the fixture type of the object being passed is circle, then it runs.
 				{
-					v = b->GetWorldPoint(polygonShape->GetVertex(i));
-					if (i > 0)
-						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
-
-					prev = v;
+					b2CircleShape* shape = (b2CircleShape*)fixture->GetShape();																		//Gets the shape of the object being iterated and sets it as a b2PolygonShape
+					b2Vec2 pos = fixture->GetBody()->GetPosition();																					//Gets the position vector of the object being passed.
+					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 0, 0);		//Draws the circle object being iterated on screen using the DrawCircle() method.
 				}
-
-				v = b->GetWorldPoint(polygonShape->GetVertex(0));
-				App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
-			}
-			break;
-
-			// Draw chains contour -------------------------------------------
-			case b2Shape::e_chain:
-			{
-				b2ChainShape* shape = (b2ChainShape*)f->GetShape();
-				b2Vec2 prev, v;
-
-				for (int32 i = 0; i < shape->m_count; ++i)
+				break;
+	
+				// Draw polygons ------------------------------------------------
+				case b2Shape::e_polygon:															//If the fixture type of the object being passed is a poligon, then it runs.
 				{
-					v = b->GetWorldPoint(shape->m_vertices[i]);
-					if (i > 0)
-						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
-					prev = v;
+					b2PolygonShape* polygonShape = (b2PolygonShape*)fixture->GetShape();			//Gets the shape of the object being iterated and sets it as a b2PolygonShape.
+					int32 count = polygonShape->GetVertexCount();									//Gets the number of vertexs of the polygon object that is being iterated.
+					b2Vec2 prev, v;																	//Declares two b2Vec2 that will be used to define the origin vector and the end vector.
+					
+					for (int32 i = 0; i < count; ++i)												//Revise all the draw loop and make comments.
+					{
+						v = body->GetWorldPoint(polygonShape->GetVertex(i));
+						if (i > 0) 
+						{
+							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+						}
+
+						prev = v;
+					}
+
+					v = body->GetWorldPoint(polygonShape->GetVertex(0));
+					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 				}
+				break;
 
-				v = b->GetWorldPoint(shape->m_vertices[0]);
-				App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
-			}
-			break;
+				// Draw chains contour -------------------------------------------
+				case b2Shape::e_chain:
+				{
+					b2ChainShape* shape = (b2ChainShape*)fixture->GetShape();
+					b2Vec2 prev, v;
+	
+					for (int32 i = 0; i < shape->m_count; ++i)
+					{
+						v = body->GetWorldPoint(shape->m_vertices[i]);
+						if (i > 0)
+						{
+							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+						}
 
-			// Draw a single segment(edge) ----------------------------------
-			case b2Shape::e_edge:
+						prev = v;
+					}
+	
+					v = body->GetWorldPoint(shape->m_vertices[0]);
+					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+				}
+				break;
+	
+				// Draw a single segment(edge) ----------------------------------
+				case b2Shape::e_edge:
+				{
+					b2EdgeShape* shape = (b2EdgeShape*)fixture->GetShape();
+					b2Vec2 v1, v2;
+					
+					v1 = body->GetWorldPoint(shape->m_vertex0);
+					v1 = body->GetWorldPoint(shape->m_vertex1);
+					App->renderer->DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), 100, 100, 255);
+				}
+				break;
+			} //----------------------------------------Switch Ends Here------------------------------------
+
+			//Mouse Joint Method: Checking if there is an object where the mouse is at.
+			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)		//Checks if the player has pressed the left button of the mouse, SDL_BUTTON_LEFT returns 1.
 			{
-				b2EdgeShape* shape = (b2EdgeShape*)f->GetShape();
-				b2Vec2 v1, v2;
+				//MouseJoint Method I
+				mouse_position.x = PIXELS_TO_METERS(App->input->GetMouseX());	//Gets the position of the mouse in the X axis.
+				mouse_position.y = PIXELS_TO_METERS(App->input->GetMouseY());	//Gets the position of the mouse in the Y axis. 
 
-				v1 = b->GetWorldPoint(shape->m_vertex0);
-				v1 = b->GetWorldPoint(shape->m_vertex1);
-				App->renderer->DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), 100, 100, 255);
-			}
-			break;
+				if (fixture->TestPoint(mouse_position))							//TestPoint() checks if a given position is inside a given object. Used to check if the point where the mouse was when it was clicked was inside the object being iterated.
+				{
+					hit = true;													//Sets to true the bool that checks if an object has been clicked on.
+					clickedObj = fixture->GetBody();							//Sets the pointer to b2Body of the object currently being iterated to clicked. Sets the object clicked.
+					//clickedObj = body; //Also works.
+				}
+				
+				//MouseJoint Method II
+				/*mouse_position.x = PIXELS_TO_METERS(App->input->GetMouseX());				//Gets the position of the mouse in the X axis.
+				mouse_position.y = PIXELS_TO_METERS(App->input->GetMouseY());				//Gets the position of the mouse in the Y axis.
+
+				clickedObject = (PhysBody*)body->GetUserData();								//Gets the data memebers of a given object and fills the data members of foundBody with them. GetUserData() is used to store application data.
+
+				if (clickedObject->Contains(mouse_position.x, mouse_position.y) == true)	//If the bool Contains() returns false, then it means that there is no object being clicked. (see above how TestPoint(mouse_position.x, mouse_position.y) is used to check whether or not the position passed as an argument is inside a given object.
+				{
+					clickedObject = (PhysBody*)body;													//Sets foundBody pointer to NULL.
+				}*/
 			}
 		}
 	}
 
+	//-----------------------------------------Mouse Joint Method-----------------------------------------
+	//MouseJoint Method I
+	if (hit == true)												//If clickedBody pointer is not NULL.
+	{
+		b2MouseJointDef mouseJoint_def;									//Defines a mouse joint frame.
+
+		mouseJoint_def.bodyA = ground;							//Sets the unmovable object anchor point of the joint. BodyA is the first attached object.
+		mouseJoint_def.bodyB = clickedObj;						//Sets the moving object anchor point of the joint. BodyB is the second attached object.
+		mouseJoint_def.target = mouse_position;					//Sets the position to where BodyB will move to. It sets where the clicked body will move towards.
+		mouseJoint_def.dampingRatio = 0.5f;								//Sets the damping ratio of the joint.
+		mouseJoint_def.frequencyHz = 2.0f;								//Sets the response speed of the joint. It sets how fast the clicked object responds to the joint.
+		mouseJoint_def.maxForce = 100.0f * clickedObj->GetMass();	//Sets the maximum constrain force that can be exerted. Sets the limits of how much force will the joint exert on the clicked object.
+
+		mouse_joint = (b2MouseJoint*)world->CreateJoint(&mouseJoint_def);		//Creates the actual joint with the data members of mouseJoint_def and sets its data members to mouse_joint.
+	}
+
+	if (mouse_joint && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)				//Checks if the player is still pressing the left mouse button.
+	{
+		mouse_joint->SetTarget({ PIXELS_TO_METERS(App->input->GetMouseX()), PIXELS_TO_METERS(App->input->GetMouseY()) });																			//Set Target updates the target's position, in this case the mouse's position.
+		App->renderer->DrawLine((App->input->GetMouseX()), (App->input->GetMouseY()), METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), 255, 255, 255);	//Draws a line from the clicked object to the mouse. GetAnchorB() gets the current position of the clicked body.
+	}
+
+	if (mouse_joint && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)					//Checks if the player has released the left mouse button.
+	{
+		world->DestroyJoint(mouse_joint);											//Destroys the mouse_joint that was created in the world.
+		mouse_joint = nullptr;														//Sets the pointer of the mouse_joint back to nullptr.
+	}
+	
+	//MouseJoint Method II
+	/*if (clickedObject != NULL)												//Does not work bc clicked object is null the moment the ball gets out of the mouse position. Does not actualize AnchorB position.
+	{
+		b2MouseJointDef mouseJoint_def;											//Defines a mouse joint frame.
+
+		mouseJoint_def.bodyA		= ground;									//Sets the unmovable object anchor point of the joint. BodyA is the first attached object.
+		mouseJoint_def.bodyB		= clickedObject->body;						//Sets the moving object anchor point of the joint. BodyB is the second attached object.
+		mouseJoint_def.target		= mouse_position;							//Sets the position to where BodyB will move to. It sets where the clicked body will move towards.
+		mouseJoint_def.dampingRatio = 0.5f;										//Sets the damping ratio of the joint.
+		mouseJoint_def.frequencyHz	= 2.0f;										//Sets the response speed of the joint. It sets how fast the clicked object responds to the joint.
+		mouseJoint_def.maxForce		= 100.0f * clickedObject->body->GetMass();	//Sets the maximum constrain force that can be exerted. Sets the limits of how much force will the joint exert on the clicked object.
+		
+		mouse_joint = (b2MouseJoint*)world->CreateJoint(&mouseJoint_def);		//Creates the actual joint with the data members of mouseJoint_def and sets its data members to mouse_joint.
+	}*/
+
 	return UPDATE_CONTINUE;
 }
-
 
 // Called before quitting
 bool ModulePhysics::CleanUp()
@@ -163,7 +230,7 @@ PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius,
 {
 	b2BodyDef body;
 	body.type = type;
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+	body.mouse_position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
 
@@ -188,7 +255,7 @@ PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int widt
 {
 	b2BodyDef body;
 	body.type = type;
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+	body.mouse_position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
 	b2PolygonShape box;
@@ -214,7 +281,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 {
 	b2BodyDef rectSensorBody;
 	rectSensorBody.type = b2_staticBody;
-	rectSensorBody.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+	rectSensorBody.mouse_position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&rectSensorBody);
 
@@ -244,7 +311,7 @@ PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points,
 	body.type = type;												//Defines the body as static. Will remain unaffected by exterior forces.
 
 																	//Sets the type of frame to dynamic, which means that it can be affected by external forces.
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));	//Sets the position in the world where the shape will be placed at.
+	body.mouse_position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));	//Sets the position in the world where the shape will be placed at.
 
 	b2Body* b = world->CreateBody(&body);							//Creates a body given a definition.
 
@@ -262,7 +329,7 @@ PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points,
 																	//Fixture has a bool (isSensor) that if set to true, it identifies the body/shape as a sensor which detects contact but does not return a collision.
 	b2FixtureDef fixture;											//Definition of the fixture. It has multiple elements: Shape(circle), Density(Weight), Friction(How it drags along surfaces) and Restitution(how much it bounces back after impact)
 	fixture.shape = &shape;											//Defines which shape will the fixture have. Assigns a shape, in this case a chain.
-	fixture.restitution = restitution;								//
+	fixture.restitution = restitution;								//Defines the restitution value of a body. It normally ranges from 0 (no bounce) to 1 (bounces back to the same position)
 
 	b->CreateFixture(&fixture);										//This method creates a fixture and adds it to a body. Used to assing parameters like denisity, friction, restitution...
 

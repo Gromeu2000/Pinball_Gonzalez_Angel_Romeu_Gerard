@@ -127,5 +127,10 @@ void ModulePlayer::InitPlayer()
 	player.lastWasLeft = false;
 }
 
+//This
+void ModulePlayer::CreatePlunger()
+{
+	b2PrismaticJointDef plungerJoint;
+}
 
 

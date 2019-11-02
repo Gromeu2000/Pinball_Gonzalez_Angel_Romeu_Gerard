@@ -42,8 +42,11 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	//Textures
 	SDL_Texture*	background_tex;
 	SDL_Texture*	mid_tex;
-	SDL_Texture*	flipper_Left;
-	SDL_Texture*	flipper_Right;
+	SDL_Texture*	flipper_Left_tex;
+	SDL_Texture*	flipper_Right_tex;
+	SDL_Texture*	pokeball_tex;
+	SDL_Texture*	voltorb_tex;
+	SDL_Texture*	diglett_plunger_tex;
 
 	//Rects
 	SDL_Rect	background;
@@ -111,8 +114,8 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	59, 437,
 	67, 450,
 	74, 460,
-	80, 466,
-	80, 472,
+	80, 466, //Left Spike
+	80, 472, //Left Spike
 	74, 475,
 	69, 481,
 	65, 490,
@@ -162,24 +165,24 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	280, 78,
 	302, 86,
 	325, 96,
-	345, 110,
-	350, 114,
+	347, 110,
+	352, 114, //Up-Right Curve
 	355, 118,
-	366, 127, //Curve
+	366, 127, //Up-Right Curve
 	381, 146,
 	399, 169,
 	415, 201,
 	426, 236,
 	427, 284,
 	428, 307,
-	426, 335,
+	426, 335, //Right Curve
 	421, 365,
 	409, 395,
 	395, 424,
 	385, 442,
 	376, 456,
-	369, 465,
-	369, 469,
+	369, 465, //Right Spike
+	369, 469, //Right Spike
 	377, 474,
 	382, 480,
 	384, 487,

@@ -56,9 +56,17 @@ public:
 
 private:
 
-	b2World* world = nullptr;
-	b2MouseJoint* mouse_joint;
-	b2Body* ground;
+	b2World* world = nullptr;		//Creates a pointer to a b2World
+	b2MouseJoint* mouse_joint;		//Creates a pointer to a MouseJoint
+	b2Body* ground;					//Creates a pointer to a body. In this case this body will be used to set the anchor point in a mouseJoint.
+	b2Body* clickedObj;				
+
+	PhysBody* clickedObject;		//Body that will get the pointer of a clicked object.
+
+	b2Vec2 mouse_position;
+	b2Vec2 object_position;
+	b2Body* clicked;
+	bool hit;
 
 	friend class ModuleSceneIntro; //Gives the ModuleSceneIntro class access to private methods and variables from class ModulePhysics. (friend class) Temporal.
 };

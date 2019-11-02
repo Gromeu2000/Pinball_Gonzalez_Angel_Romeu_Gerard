@@ -43,8 +43,8 @@ public:
 	Player player;
 	
 	void InitPlayer();
+	void CreatePlunger();
 
-public:
 	//Score
 	uint score = 0;
 	uint maxscore = 0;
