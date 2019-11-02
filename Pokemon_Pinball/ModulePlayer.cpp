@@ -88,6 +88,8 @@ update_status ModulePlayer::Update()
 		App->renderer->Blit(player.flippers_texture, 238, 710, &player.flipper_R);
 	}
 
+	//GAMEPLAY LOGIC-------------------------------------------------------------
+
 	//Reset max score
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 	{
@@ -106,18 +108,32 @@ update_status ModulePlayer::Update()
 		score=score + 1000;
 	}
 
-	//If ball out of boundaries
-	//if (position.y > SCREEN_HEIGHT + 30) {
+	//If ball out of boundaries (falta cambiar condicion)
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) {
 
 	//	//Destroy body
 
 	//	//Restart ball
-	//	if (player.score > player.maxscore) {
-	//		player.maxscore = player.score;
-	//	}
+		lives--;
+		App->audio->PlayFx(6, 0);
+		if (score > maxscore) 
+		{
+			maxscore = score;
+		}
 
-	//	playerscore = 0;
-	//}
+		if (lives == 0) {
+
+			App->audio->PlayFx(7, 0);
+			//Destroybody
+			//Restart pos ball
+			maxscore = 0;
+		}
+
+		score = 0;
+	}
+
+
+
 
 	return UPDATE_CONTINUE;
 }

@@ -49,4 +49,6 @@ public:
 	//Score
 	uint score = 0;
 	uint maxscore = 0;
+
+	uint lives = 3;
 };

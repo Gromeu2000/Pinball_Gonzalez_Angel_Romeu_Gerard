@@ -209,6 +209,8 @@ update_status ModuleSceneIntro::Update()
 		board.triangle_sensors[0] = App->physics->CreateCircle();
 		board.triangle_sensors[1] = App->physics->CreateCircle();*/
 
+		//
+
 		int x;
 		int	y;
 
