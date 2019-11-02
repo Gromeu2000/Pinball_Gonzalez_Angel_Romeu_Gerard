@@ -41,6 +41,7 @@ struct Player
 
 	bool lastWasRight;
 	bool lastWasLeft;
+	bool destroy_ball;
 	
 	//-----------------------Shapes---------------------
 	int Left_Flipper[16] = {
@@ -91,7 +92,7 @@ public:
 	
 	void InitPlayer();
 	void CreatePlunger();
-	//void CreateFlippers(PhysBody* dynamicB, PhysBody* staticB);
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB); //This
 
 	//Score
 	uint score = 0;

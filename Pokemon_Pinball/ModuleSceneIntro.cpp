@@ -29,8 +29,8 @@ bool ModuleSceneIntro::Start()
 	//----------------------------Static Shapes----------------------------
 	//Static Chains:
 	//Background Chains. All chains have their pivot at (0, 0) due to Ric's vector drawing program
-	board.background_exterior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundExterior, 114, 0);
-	board.background_interior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundInterior, 120, 0);
+	board.background_exterior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundExterior, 132, 0);
+	board.background_interior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundInterior, 138, 0);
 	board.left_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Kicker, 6, 0);
 	board.right_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Kicker, 6, 0);
 	board.left_arm					= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Arm, 16, 0);
@@ -43,26 +43,31 @@ bool ModuleSceneIntro::Start()
 	board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
 
 	//Static Circles (Bouncers)
-	bouncers[0] = App->physics->CreateCircle(b2_staticBody, 234, 290, 20, 1);
-	bouncers[1] = App->physics->CreateCircle(b2_staticBody, 260, 209, 20, 1);
-	bouncers[2] = App->physics->CreateCircle(b2_staticBody, 176, 234, 20, 1);
+	bouncers[0] = App->physics->CreateCircle(b2_staticBody, 234, 290, 18, 1);
+	bouncers[1] = App->physics->CreateCircle(b2_staticBody, 260, 209, 18, 1);
+	bouncers[2] = App->physics->CreateCircle(b2_staticBody, 186, 234, 18, 1);
+
+
 
 	//Blit triangles
 
 
 	//SENSORS-------------------------------------------
 
-	board.dying_sensor = App->physics->CreateCircle(b2_staticBody, SCREEN_HEIGHT + 50, SCREEN_WIDTH, 50, 20);
-	/*	board.diglett_sensor1 = App->physics->CreateCircle();
-		board.diglett_sensor2 = App->physics->CreateCircle();
-		board.ball_catcher = App->physics->CreateCircle();
-		board.bellsprout_S = App->physics->CreateCircle();
-		board.starmie_S = App->physics->CreateCircle();
-		board.voltorb_sensor[0] = App->physics->CreateCircle();
-		board.voltorb_sensor[1] = App->physics->CreateCircle();
-		board.voltorb_sensor[2] = App->physics->CreateCircle();
-		board.triangle_sensors[0] = App->physics->CreateCircle();
-		board.triangle_sensors[1] = App->physics->CreateCircle();*/
+	board.dying_sensor			= App->physics->CreateCircleSensor( 270, 750, 50);
+	board.left_kicker_sensor	= App->physics->CreateRectangleSensor(120, 612, 5, 51, -30);
+	board.right_kicker_sensor	= App->physics->CreateRectangleSensor(330, 612, 5, 51, 30);
+	board.diglett_sensor1		= App->physics->CreateCircleSensor(90, 512, 20);
+	
+	/*board.diglett_sensor2 = App->physics->CreateCircleSensor();
+	board.ball_catcher = App->physics->CreateCircleSensor();
+	board.bellsprout_S = App->physics->CreateCircleSensor();
+	board.starmie_S = App->physics->CreateCircleSensor();
+	board.voltorb_sensor[0] = App->physics->CreateCircleSensor();
+	board.voltorb_sensor[1] = App->physics->CreateCircleSensor();
+	board.voltorb_sensor[2] = App->physics->CreateCircleSensor();
+	board.triangle_sensors[0] = App->physics->CreateCircleSensor();
+	board.triangle_sensors[1] = App->physics->CreateCircleSensor();*/
 
 
 	//OBJECTS---------------------------------------------
@@ -98,6 +103,15 @@ bool ModuleSceneIntro::CleanUp()
 	//Unload textures
 	App->textures->Unload(board.background_tex);
 	App->textures->Unload(board.mid_tex);
+
+	/*p2List_item<PhysBody*>* dynBody_iterator = board.dynamicBody_List.getFirst();
+
+	while (dynBody_iterator != NULL)
+	{
+		board.dynamicBody_List.del(dynBody_iterator);
+
+		dynBody_iterator = dynBody_iterator->next;
+	}*/
 
 	//Unload fonts
 	App->fonts->Unload(score);
@@ -211,12 +225,12 @@ update_status ModuleSceneIntro::Update()
 					if (dynBody_iterator->data == App->player->player.left_flipper)
 					{
 						dynBody_iterator->data->GetPosition(x, y);
-						App->renderer->Blit(App->player->player.flipper_Left_tex, x - 5, y + 5, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+						App->renderer->Blit(App->player->player.flipper_Left_tex, x - 5, y + 5, NULL, 1.0f, dynBody_iterator->data->GetRotation());		//Fix rotation blit
 					}
 					else if (dynBody_iterator->data == App->player->player.right_flipper)
 					{
 						dynBody_iterator->data->GetPosition(x, y);
-						App->renderer->Blit(App->player->player.flipper_Right_tex, x + 7, y - 15, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+						App->renderer->Blit(App->player->player.flipper_Right_tex, x + 7, y - 15, NULL, 1.0f, dynBody_iterator->data->GetRotation());	//Fix rotation blit
 					}
 				}
 				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 3)		//Type 3 means the shape of the fixture is a chain.
@@ -361,8 +375,4 @@ bool ModuleSceneIntro::SetAnimationRectPosition()
 	board.triangle_boosted_R.h = 82.6;
 
 	return true;
-}
-
-void ModuleSceneIntro::OnCollision(PhysBody* A, PhysBody* B)
-{
 }

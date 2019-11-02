@@ -33,6 +33,7 @@ bool ModulePhysics::Start()
 	LOG("Creating Physics 2D environment");
 
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
+	world->SetContactListener(this);						//This makes ModulePhysics a contact listener, whithout this collisions are not detected.
 
 	//Joint relevant variables
 	b2BodyDef  body_def;					//b2BodyDef holds all the information needed to create a rigid body.
@@ -47,6 +48,20 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
 	world->Step(1.0f / 60.0f, 8, 3);
+
+	for (b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
+	{
+		if (contact->GetFixtureA()->IsSensor() && contact->IsTouching())
+		{
+			PhysBody* pb1 = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+			PhysBody* pb2 = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+			if (pb1 && pb2 && pb1->listener)
+			{
+				pb1->listener->OnCollision(pb1, pb2);
+			}
+		}
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -226,13 +241,43 @@ PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius,
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution)
+//Creates a circle sensor. Sensors are always static and detect contact. They do not return a collision however.
+PhysBody* ModulePhysics::CreateCircleSensor(int x, int y, int radius, int score)
+{
+	b2BodyDef circleSensorBody;
+	circleSensorBody.type = b2_staticBody;
+	circleSensorBody.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&circleSensorBody);
+
+	b2CircleShape circle;
+	circle.m_radius = PIXEL_TO_METERS(radius);
+
+	b2FixtureDef fixture;
+	fixture.shape = &circle;
+	fixture.density = 1.0f;
+	fixture.isSensor = true;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = pbody->height = radius;
+	pbody->score = score;
+
+	return pbody;
+}
+
+PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution, float angle)
 {
 	b2BodyDef body;
 	body.type = type;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
+	b->SetTransform(body.position, DEGTORAD * angle);		//Changes the angle that rect is created with.
+
 	b2PolygonShape box;
 	box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
 
@@ -252,13 +297,15 @@ PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int widt
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
+//Creates a rectangle sensor. Sensors are always static and detect contact. They do not return a collision however.
+PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height, float angle, int score)
 {
 	b2BodyDef rectSensorBody;
 	rectSensorBody.type = b2_staticBody;
 	rectSensorBody.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&rectSensorBody);
+	b->SetTransform(rectSensorBody.position, DEGTORAD * angle);
 
 	b2PolygonShape box;
 	box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
@@ -275,6 +322,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	b->SetUserData(pbody);
 	pbody->width = width;
 	pbody->height = height;
+	pbody->score = score;
 
 	return pbody;
 }
@@ -360,17 +408,17 @@ PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points,
 
 void ModulePhysics::BeginContact(b2Contact* contact)
 {
-	PhysBody* A = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-	PhysBody* B = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	PhysBody* physb_A = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	PhysBody* physb_B = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
-	if (A && A->listener != nullptr)
+	if (physb_A && physb_A->listener != NULL)
 	{
-		A->listener->OnCollision(A, B);
+		physb_A->listener->OnCollision(physb_A, physb_B);
 	}
 
-	if (B && B->listener != nullptr)
+	if (physb_B && physb_B->listener != NULL)
 	{
-		B->listener->OnCollision(B, A);
+		physb_B->listener->OnCollision(physb_B, physb_A);
 	}
 
 	LOG("COLLISION");
@@ -437,6 +485,7 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	return ret;
 }
 
+//Method to create a revolution joint given 2 bodies, the different relevant variables of a revoution joint and a pointer to a revolutionJoint.
 void ModulePhysics::CreateRevolutionJoint(PhysBody* dynamicBody, PhysBody* staticBody, int upperAngle, int lowerAngle, int offsetX, int offsetY, b2RevoluteJoint* revoluteJoint)
 {
 	b2RevoluteJointDef revJoint_def;
@@ -452,6 +501,7 @@ void ModulePhysics::CreateRevolutionJoint(PhysBody* dynamicBody, PhysBody* stati
 	revoluteJoint = (b2RevoluteJoint*)world->CreateJoint(&revJoint_def);				//Creates the joint on the world.
 }
 
+//Method to create a prismatic joint given 2 bodies and a pointer to a prismaticJoint
 void ModulePhysics::CreatePrismaticJoint(PhysBody* dynamicBody, PhysBody* staticBody, b2PrismaticJoint* prismaticJoint)
 {
 	b2PrismaticJointDef prismJoint_def;

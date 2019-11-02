@@ -27,7 +27,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody*	bellsprout_wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
 	PhysBody*	ball_below_flippers;		//Static Chain that stablishes the little ball below and in between the flippers.
 	PhysBody*	spinner;					//Sensor that detects if the ball has passed through the spinner at the right of the bellsprout wall.
-	
+
 
 	p2List<PhysBody*> dynamicBody_List;
 	p2List<PhysBody*> staticBody_List;
@@ -60,8 +60,10 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	Animation	mid_screen;
 
-	//Sensors
+	//--------------------------Sensor Declarations--------------------------
 	PhysBody* dying_sensor;
+	PhysBody* left_kicker_sensor;
+	PhysBody* right_kicker_sensor;
 	PhysBody* diglett_sensor1;
 	PhysBody* diglett_sensor2;
 	PhysBody* ball_catcher;
@@ -72,7 +74,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	//--------------------------Shape Declarations--------------------------
 	//Tweak until it feels right.
-	int backgroundExterior[114] = {
+	int backgroundExterior[132] = {
 	493, 780,
 	493, 235,
 	487, 202,
@@ -86,14 +88,14 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	340, 32,
 	311, 22,
 	280, 19,
-	240, 16, 
+	240, 16,
 	200, 19,
 	180, 25,
 	152, 33,
 	130, 42,
 	110, 54,
 	100, 62,
-	79, 82,  //Out of the initial step.
+	79, 82,
 	73, 82,
 	73, 44,
 	68, 33,
@@ -112,27 +114,36 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	59, 437,
 	67, 450,
 	74, 460,
-	80, 466, //Left Spike
-	80, 472, //Left Spike
+	80, 466,
+	80, 472,
 	74, 475,
 	69, 481,
 	65, 490,
-	65, 536,
-	57, 536,
-	46, 541,
-	35, 547,
-	27, 555,
-	20, 566,
-	12, 579, //Left canal
-	12, 686,
-	158, 780,
-	0, 780,
-	0, 0,
-	538, 0,
-	538, 780
+	65, 495,
+	89, 495,
+	93, 499,
+	95, 505,
+	95, 518,
+	93, 523,
+	89, 526, //Diglett zone
+	65, 526,
+	65, 535,
+	54, 535,
+	42, 540,
+	30, 548,
+	20, 561,
+	12, 577,
+	12, 684, //Left canal
+	21, 692,
+	62, 717,
+	153, 780,
+	-1, 780,
+	-1, -1,
+	539, -1,
+	539, 780
 	};
 
-	int backgroundInterior[120] = {
+	int backgroundInterior[138] = {
 	447, 780,
 	447, 239,
 	438, 205,
@@ -151,7 +162,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	174, 76,
 	152, 85,
 	129, 100,
-	108, 125, //Out of the initial step
+	108, 125,
 	107, 128,
 	112, 125,
 	135, 104,
@@ -164,35 +175,44 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	302, 86,
 	325, 96,
 	347, 110,
-	352, 114, //Up-Right Curve
+	352, 114,
 	355, 118,
-	366, 127, //Up-Right Curve
+	366, 127,
 	381, 146,
 	399, 169,
 	415, 201,
 	426, 236,
 	427, 284,
 	428, 307,
-	426, 335, //Right Curve
+	426, 335,
 	421, 365,
 	409, 395,
 	395, 424,
 	385, 442,
 	376, 456,
-	369, 465, //Right Spike
-	369, 469, //Right Spike
+	369, 465,
+	369, 469,
 	377, 474,
 	382, 480,
 	384, 487,
-	384, 536,
-	397, 536,
-	410, 542,
-	422, 551,
-	429, 562,
-	435, 579, //Right Canal
-	435, 686,
-	388, 715,
-	290, 780
+	384, 495,
+	359, 495,
+	356, 498,
+	353, 504,
+	353, 518,
+	356, 523,
+	360, 526,
+	384, 526,
+	384, 535,
+	395, 535,
+	406, 539,
+	415, 545,
+	425, 556,
+	433, 573,
+	433, 677,
+	428, 692,
+	389, 717,
+	296, 780
 	};
 
 	int left_Kicker[6] = {
@@ -261,7 +281,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	135, 266,
 	130, 249,
 	130, 229,
-	138, 211, //Topmost part of starmie wall
+	132, 211, //Topmost part of starmie wall
 	138, 185,
 	130, 205, //Left part of the wall
 	127, 219,
@@ -311,8 +331,8 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	322, 297,
 	322, 267,
 	322, 252,
-	332, 229,
-	357, 229,
+	332, 269,		//Bellsprout
+	357, 269,
 	369, 243,
 	369, 298,
 	367, 311,
@@ -431,7 +451,7 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	//void OnCollision(PhysBody* bodyA, PhysBody* bodyB); //This
 
 private:
 

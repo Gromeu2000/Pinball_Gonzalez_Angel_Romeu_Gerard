@@ -33,12 +33,14 @@ bool ModulePlayer::Start()
 	player.flipper_R.w = 66;
 	player.flipper_R.h = 45;
 
+	player.destroy_ball = false;
+
 	LOG("Loading player");
 
-	//ball texture
+	//All Player relevant elements of the pinball
 	//player.flippers_texture = App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
 	//----------------------------------------TEXTURES----------------------------------------------
-	player.pokeball_tex = App->textures->Load("sprites/ball_40px.png");
+	player.pokeball_tex = App->textures->Load("sprites/Ball_38px.png");
 	player.flipper_Left_tex = App->textures->Load("sprites/Left_Flipper.png");
 	player.flipper_Right_tex = App->textures->Load("sprites/Right_Flipper.png");
 
@@ -66,6 +68,8 @@ bool ModulePlayer::Start()
 	App->scene_intro->board.dynamicBody_List.add(player.left_flipper);
 	App->scene_intro->board.dynamicBody_List.add(player.right_flipper);
 
+	
+	//--------------------------------------AUDIO AND FONTS--------------------------------------
 	//set score to 0
 	score = 0;
 
@@ -94,9 +98,40 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
+void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+{
+	if (bodyB == App->scene_intro->board.dying_sensor)
+	{
+		player.destroy_ball = true;
+		player.lives -= 1;
+
+		
+
+		if (lives != 0)
+		{
+			//Audio de morirse (fx)
+		}
+		else
+		{
+			//Audio de fin del juego (PlayFx)
+			//Audio de fin del juego (PlayMusic)
+		}
+
+		score += 1000;
+
+	}
+
+	if (bodyB->score != 0)
+	{
+		/*App->audio->PlayFx(App->scene_intro->bonus_fx);*/
+		score += bodyB->score;
+	}
+}
+
 // Update: draw background
 update_status ModulePlayer::Update()
 {
+	//--------------------------------------INPUTS PLAYER--------------------------------------
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
 		player.right_flipper->body->ApplyTorque({ 150 }, true);
@@ -133,11 +168,13 @@ update_status ModulePlayer::Update()
 	
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		player.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 20, 0);
+		player.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 18, 0);
 		App->scene_intro->board.dynamicBody_List.add(player.ball);
 		App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
 	}
 	
+	
+	//--------------------------------------DEBUG--------------------------------------
 	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects
 	{
 		//Load left flipper
@@ -172,6 +209,7 @@ update_status ModulePlayer::Update()
 
 	//	//Destroy body
 
+
 	//	//Restart ball
 		lives--;
 		App->audio->PlayFx(6, 0);
@@ -189,10 +227,18 @@ update_status ModulePlayer::Update()
 		}
 
 		score = 0;
+
+		if (player.destroy_ball == true && lives != 0)
+		{
+			App->physics->world->DestroyBody(player.ball->body);
+
+			player.ball = App->physics->CreateCircle(b2_dynamicBody, 448, 752, 18, 0);
+			App->scene_intro->board.dynamicBody_List.add(player.ball);
+			App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
+
+			player.destroy_ball = false;
+		}
 	}
-
-
-
 
 	return UPDATE_CONTINUE;
 }
