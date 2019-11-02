@@ -44,28 +44,34 @@ bool ModuleSceneIntro::Start()
 
 	//Static Circles (Bouncers)
 	bouncers[0] = App->physics->CreateCircle(b2_staticBody, 234, 290, 18, 1);
-	bouncers[1] = App->physics->CreateCircle(b2_staticBody, 260, 209, 18, 1);
+	bouncers[1] = App->physics->CreateCircle(b2_staticBody, 256, 209, 18, 1);
 	bouncers[2] = App->physics->CreateCircle(b2_staticBody, 186, 234, 18, 1);
 
-
-
-	//Blit triangles
-
+	triangles[0] = App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.5, -1800 * DEGTORAD);
+	triangles[1] = App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.5,  1800 * DEGTORAD);
 
 	//SENSORS-------------------------------------------
 
-	board.dying_sensor			= App->physics->CreateCircleSensor( 270, 750, 50);
-	board.left_kicker_sensor	= App->physics->CreateRectangleSensor(120, 612, 5, 51, -30);
-	board.right_kicker_sensor	= App->physics->CreateRectangleSensor(330, 612, 5, 51, 30);
-	board.diglett_sensor1		= App->physics->CreateCircleSensor(90, 512, 20);
+	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(234, 290, 18,20);
+	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(256, 209, 18,20);
+	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(186, 234, 18,20);
+
+	board.triangle_sensors[0] = App->physics->CreateRectangleSensor(122, 617, 5, 60, -1800 * DEGTORAD);
+	board.triangle_sensors[1] = App->physics->CreateRectangleSensor(325, 617, 5, 60, 1800 * DEGTORAD);
 	
-	/*board.diglett_sensor2 = App->physics->CreateCircleSensor();
+	board.diglett_sensors[0] = App->physics->CreateCircleSensor(90, 512, 20,10);
+	board.diglett_sensors[1] = App->physics->CreateCircleSensor(365, 512, 20,10);
+	
+	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 100);
+
+	board.starmie_S = App->physics->CreateCircleSensor(162, 333, 30, 60);
+
+	board.dying_sensor	= App->physics->CreateRectangleSensor(220, 785, 5, 80, 5100 * DEGTORAD);
+	
+	/*
 	board.ball_catcher = App->physics->CreateCircleSensor();
-	board.bellsprout_S = App->physics->CreateCircleSensor();
-	board.starmie_S = App->physics->CreateCircleSensor();
-	board.voltorb_sensor[0] = App->physics->CreateCircleSensor();
-	board.voltorb_sensor[1] = App->physics->CreateCircleSensor();
-	board.voltorb_sensor[2] = App->physics->CreateCircleSensor();
+	
+	
 	board.triangle_sensors[0] = App->physics->CreateCircleSensor();
 	board.triangle_sensors[1] = App->physics->CreateCircleSensor();*/
 
@@ -90,7 +96,6 @@ bool ModuleSceneIntro::Start()
 	//LOAD ANIMATIONS------------------------------------------------
 	AddAnimationPushbacks();
 
-	//board.bonus_fx = App->audio->LoadFx("audio/FX/Restart.wav");
 
 	return ret;
 }
@@ -144,19 +149,38 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(board.background_tex, 154, 214, &board.voltorb_boost);
 
 		
-		//Load boosted voltorb
-		App->renderer->Blit(board.background_tex, 212, 270, &board.voltorb_boosted);
-		App->renderer->Blit(board.background_tex, 240, 186, &board.voltorb_boosted);
-		App->renderer->Blit(board.background_tex, 156, 214, &board.voltorb_boosted);
+		if(is_bouncer_hit[0] == true)
+		{
+			//Load boosted voltorb
+			App->renderer->Blit(board.background_tex, 212, 270, &board.voltorb_boosted);
+		}
+		
+		if (is_bouncer_hit[1] == true)
+		{
+			//Load boosted voltorb
+			App->renderer->Blit(board.background_tex, 240, 186, &board.voltorb_boosted);
+		}
+
+		if (is_bouncer_hit[2] == true)
+		{
+			//Load boosted voltorb
+			App->renderer->Blit(board.background_tex, 156, 214, &board.voltorb_boosted);
+		}
 
 		//Load blocker
 		App->renderer->Blit(board.background_tex, 263, 64, &board.blocker);
 
-		//Load left triangle when hit
-		App->renderer->Blit(board.background_tex, 95, 588, &board.triangle_boosted_L);
-
-		//Load right triangle when hit
-		App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
+		if (is_triangle_hit[0] == true)
+		{
+			//Load left triangle when hit
+			App->renderer->Blit(board.background_tex, 95, 588, &board.triangle_boosted_L);
+		}
+		
+		if (is_triangle_hit[1] == true)
+		{
+			//Load right triangle when hit
+			App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
+		}
 
 		//ANIMATIONS----------------------------------------
 

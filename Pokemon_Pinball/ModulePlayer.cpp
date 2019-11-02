@@ -22,6 +22,10 @@ ModulePlayer::~ModulePlayer()
 // Load assets
 bool ModulePlayer::Start()
 {
+
+	// Init pos player
+	setBall(PLAYER_POS_X, PLAYER_POS_Y);
+
 	//Load rects
 	player.flipper_L.x = 390;
 	player.flipper_L.y = 2276;
@@ -77,7 +81,7 @@ bool ModulePlayer::Start()
 	App->audio->LoadFx("audio/FX/050 Diglett Cry.wav");
 	App->audio->LoadFx("audio/FX/100 Voltorb Cry.wav");
 	App->audio->LoadFx("audio/FX/121 Starmie Cry.wav");
-	App->audio->LoadFx("audio/FX/132 Ditto Cry.wav");
+	App->audio->LoadFx("audio/FX/132 Bellsprout Cry.wav");
 	App->audio->LoadFx("audio/FX/Flipper.wav");
 	App->audio->LoadFx("audio/FX/Lose Ball.wav");
 	App->audio->LoadFx("audio/FX/Restart.wav");
@@ -102,29 +106,66 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	if (bodyB == App->scene_intro->board.dying_sensor)
 	{
-		player.destroy_ball = true;
-		player.lives -= 1;
+		//player.destroy_ball = true;
+		//setBall(PLAYER_POS_X, PLAYER_POS_Y);
+		player.lives --;
 
-		
-
-		if (lives != 0)
+		if (player.lives > 0)
 		{
-			//Audio de morirse (fx)
+			App->audio->PlayFx(6, 0);
 		}
 		else
 		{
-			//Audio de fin del juego (PlayFx)
-			//Audio de fin del juego (PlayMusic)
+			App->audio->PlayMusic("audio/Songs/Game Over.ogg");
 		}
 
-		score += 1000;
+		if (score > maxscore)
+		{
+			maxscore = score;
+		}
 
 	}
 
 	if (bodyB->score != 0)
 	{
-		/*App->audio->PlayFx(App->scene_intro->bonus_fx);*/
 		score += bodyB->score;
+	}
+
+	for (int i = 0; i < 3; i++) // check collision with bouncers
+	{
+		if (bodyB == App->scene_intro->board.voltorb_sensor[i])
+		{
+			App->audio->PlayFx(2, 0);
+			App->scene_intro->is_bouncer_hit[i] = true;
+		}
+		
+	}
+
+	for (int i = 0; i < 2; i++) //check collision with triangles
+	{
+		if (bodyB == App->scene_intro->App->scene_intro->board.triangle_sensors[i])
+		{
+			App->scene_intro->is_triangle_hit[i] = true;
+			App->audio->PlayFx(8, 0);
+		}
+	}
+
+	for (int i = 0; i < 2; i++) //check collision with digletts
+	{
+		if (bodyB == App->scene_intro->App->scene_intro->board.diglett_sensors[i])
+		{
+			App->audio->PlayFx(1, 0);
+		}
+	}
+
+	if (bodyB == App->scene_intro->board.bellsprout_S)
+	{
+		App->audio->PlayFx(4, 0);
+	}
+
+	if (bodyB == App->scene_intro->board.starmie_S)
+	{
+		App->audio->PlayFx(3, 0);
 	}
 }
 
@@ -138,10 +179,13 @@ update_status ModulePlayer::Update()
 
 		player.lastWasRight = true;
 		player.lastWasLeft = false;
+
+
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP)
 	{
 		player.right_flipper->body->ApplyTorque({ -150 }, true);
+		App->audio->PlayFx(5, 0);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
@@ -154,6 +198,7 @@ update_status ModulePlayer::Update()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_UP)
 	{
 		player.left_flipper->body->ApplyTorque({ 150 }, true);
+		App->audio->PlayFx(5, 0);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
@@ -189,56 +234,34 @@ update_status ModulePlayer::Update()
 	//Reset max score
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 	{
+		App->audio->PlayFx(7, 0);
+
 		if (score > maxscore)
 		{
 			maxscore = score;
 		}
 
 		//Destroybody
-		//Restart pos ball
-		score = 0;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN)
-	{
-		score=score + 1000;
-	}
-
-	//If ball out of boundaries (falta cambiar condicion)
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) {
-
-	//	//Destroy body
-
-
-	//	//Restart ball
-		lives--;
-		App->audio->PlayFx(6, 0);
-		if (score > maxscore) 
-		{
-			maxscore = score;
-		}
-
-		if (lives == 0) {
-
-			App->audio->PlayFx(7, 0);
-			//Destroybody
-			//Restart pos ball
-			maxscore = 0;
-		}
-
+		setBall(PLAYER_POS_X, PLAYER_POS_Y);
 		score = 0;
 
-		if (player.destroy_ball == true && lives != 0)
-		{
-			App->physics->world->DestroyBody(player.ball->body);
-
-			player.ball = App->physics->CreateCircle(b2_dynamicBody, 448, 752, 18, 0);
-			App->scene_intro->board.dynamicBody_List.add(player.ball);
-			App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
-
-			player.destroy_ball = false;
-		}
+		//Load music
+		App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 	}
+
+	
+
+		//if (player.destroy_ball == true && lives != 0)
+		//{
+		//	App->physics->world->DestroyBody(player.ball->body);
+		//
+		//	player.ball = App->physics->CreateCircle(b2_dynamicBody, 448, 752, 18, 0);
+		//	App->scene_intro->board.dynamicBody_List.add(player.ball);
+		//	App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
+		//
+		//	player.destroy_ball = false;
+		//}
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -253,6 +276,12 @@ void ModulePlayer::InitPlayer()
 void ModulePlayer::CreatePlunger()
 {
 	b2PrismaticJointDef plungerJoint;
+}
+
+void ModulePlayer::setBall(uint x, uint y)
+{
+	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0);
+	player.ball->listener = this;
 }
 
 

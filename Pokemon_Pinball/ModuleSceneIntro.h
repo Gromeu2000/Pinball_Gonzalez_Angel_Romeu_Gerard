@@ -64,13 +64,12 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody* dying_sensor;
 	PhysBody* left_kicker_sensor;
 	PhysBody* right_kicker_sensor;
-	PhysBody* diglett_sensor1;
-	PhysBody* diglett_sensor2;
 	PhysBody* ball_catcher;
 	PhysBody* bellsprout_S;
 	PhysBody* starmie_S;
 	PhysBody* voltorb_sensor[3];
 	PhysBody* triangle_sensors[2];
+	PhysBody* diglett_sensors[2];
 
 	//--------------------------Shape Declarations--------------------------
 	//Tweak until it feels right.
@@ -470,6 +469,10 @@ public:
 
 	// Bouncers
 	PhysBody* bouncers[3];
+	PhysBody* triangles[2];
+
+	bool is_bouncer_hit[3] = { false, false, false };
+	bool is_triangle_hit[2] = { false, false };
 };
 
 

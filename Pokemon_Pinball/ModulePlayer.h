@@ -7,8 +7,8 @@
 #include "p2Point.h"
 #include "Box2D/Box2D/Box2D.h"
 
-#define PLAYER_POS_X 
-#define PLAYER_POS_Y 
+#define PLAYER_POS_X 450
+#define PLAYER_POS_Y 500
 
 struct Player
 {
@@ -37,7 +37,7 @@ struct Player
 	SDL_Rect	flipper_R;
 
 	//lives
-	uint lives;
+	uint lives = 3;
 
 	bool lastWasRight;
 	bool lastWasLeft;
@@ -94,9 +94,11 @@ public:
 	void CreatePlunger();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB); //This
 
-	//Score
+	void setBall(uint x, uint y); // fixes ball on a fixed position
+	
+								  //Score
 	uint score = 0;
 	uint maxscore = 0;
 
-	uint lives = 3;
+	
 };
