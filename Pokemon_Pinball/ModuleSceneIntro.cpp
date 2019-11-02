@@ -41,21 +41,33 @@ bool ModuleSceneIntro::Start()
 	board.centerRight_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerRight_MiniWall, 18, 0);
 	board.bellsprout_wall			= App->physics->CreateChain(b2_staticBody, 0, 0, board.bellsprout_Wall, 86, 0);
 	board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
-	//board.left_flipper				= App->physics->CreateChain(b2_staticBody, 0, 0, board.Left_Flipper, 24, 0);
 
-	//Static Circles
-	board.left_anchor				= App->physics->CreateCircle(b2_staticBody, 158, 722, 7, 0);
-	board.right_anchor				= App->physics->CreateCircle(b2_staticBody, 288, 722, 7, 0);
-	
-	//Static Rectangles:
-	board.plunger_base				= App->physics->CreateRectangle(b2_staticBody, 469, 769, 34, 15, 0);
+	//Static Circles (Bouncers)
+	bouncers[0] = App->physics->CreateCircle(b2_staticBody, 234, 290, 20, 1);
+	bouncers[1] = App->physics->CreateCircle(b2_staticBody, 260, 209, 20, 1);
+	bouncers[2] = App->physics->CreateCircle(b2_staticBody, 176, 234, 20, 1);
 
-	//Dynamic Rectangles:
-	board.plunger_ram				= App->physics->CreateRectangle(b2_dynamicBody, 469, 750, 34, 40, 0);
+	//Blit triangles
 
-	//Flippers
-	//board.left_flipper				= App->physics->CreateFlipper(b2_dynamicBody, 143, 708, board.Left_Flipper, 24, 0);
-	App->physics->CreateFlippers();
+
+	//SENSORS-------------------------------------------
+
+	board.dying_sensor = App->physics->CreateCircle(b2_staticBody, SCREEN_HEIGHT + 50, SCREEN_WIDTH, 50, 20);
+	/*	board.diglett_sensor1 = App->physics->CreateCircle();
+		board.diglett_sensor2 = App->physics->CreateCircle();
+		board.ball_catcher = App->physics->CreateCircle();
+		board.bellsprout_S = App->physics->CreateCircle();
+		board.starmie_S = App->physics->CreateCircle();
+		board.voltorb_sensor[0] = App->physics->CreateCircle();
+		board.voltorb_sensor[1] = App->physics->CreateCircle();
+		board.voltorb_sensor[2] = App->physics->CreateCircle();
+		board.triangle_sensors[0] = App->physics->CreateCircle();
+		board.triangle_sensors[1] = App->physics->CreateCircle();*/
+
+
+	//OBJECTS---------------------------------------------
+
+
 
 	//Load music
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
@@ -63,7 +75,7 @@ bool ModuleSceneIntro::Start()
 	//Load textures
 	board.background_tex		= App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
 	board.mid_tex				= App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
-	board.pokeball_tex			= App->textures->Load("sprites/ball_40px.png");
+	
 
 	//Load fonts 
 	score						= App->fonts->Load("sprites/score.png", "0123456789", 1);
@@ -86,7 +98,6 @@ bool ModuleSceneIntro::CleanUp()
 	//Unload textures
 	App->textures->Unload(board.background_tex);
 	App->textures->Unload(board.mid_tex);
-	App->textures->Unload(board.pokeball_tex);
 
 	//Unload fonts
 	App->fonts->Unload(score);
@@ -97,13 +108,8 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		board.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 20, 0);
-		board.dynamicBody_List.add(board.ball);
-		board.dynamicBody_List.getLast()->data->listener = this;
-	}
-
+	App->player->player.plunger_ram->body->ApplyForce({ 0, -10 }, { 0, 0 }, true);		//Gets the plunger to its ready postion.
+	
 	//Load fonts (high score & score)
 	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
 	{	
@@ -185,31 +191,6 @@ update_status ModuleSceneIntro::Update()
 		sprintf_s(max_score, 10, "%7d", App->player->maxscore);
 		App->fonts->BlitText(289, 15, score, max_score, 0.7f);
 
-		//OBJECTS---------------------------------------------
-
-		//Blit collision bouncers
-		bouncers[0] = App->physics->CreateCircle(b2_staticBody, 234, 290, 19, 0);
-		bouncers[1] = App->physics->CreateCircle(b2_staticBody, 260, 209, 19, 0);
-		bouncers[2] = App->physics->CreateCircle(b2_staticBody, 176, 234, 19, 0);
-		
-		//Blit triangles
-
-
-		//SENSORS-------------------------------------------
-
-		board.dying_sensor = App->physics->CreateCircle(b2_staticBody, SCREEN_HEIGHT + 50, SCREEN_WIDTH, 50, 20);
-	/*	board.diglett_sensor1 = App->physics->CreateCircle();
-		board.diglett_sensor2 = App->physics->CreateCircle();
-		board.ball_catcher = App->physics->CreateCircle();
-		board.bellsprout_S = App->physics->CreateCircle();
-		board.starmie_S = App->physics->CreateCircle();
-		board.voltorb_sensor[0] = App->physics->CreateCircle();
-		board.voltorb_sensor[1] = App->physics->CreateCircle();
-		board.voltorb_sensor[2] = App->physics->CreateCircle();
-		board.triangle_sensors[0] = App->physics->CreateCircle();
-		board.triangle_sensors[1] = App->physics->CreateCircle();*/
-
-		//
 
 		int x;
 		int	y;
@@ -223,12 +204,20 @@ update_status ModuleSceneIntro::Update()
 				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 0)		//Type 0 means the shape of the fixture is a circle.
 				{
 					dynBody_iterator->data->GetPosition(x, y);
-					App->renderer->Blit(board.pokeball_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+					App->renderer->Blit(App->player->player.pokeball_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
 				}
 				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 2)		//Type 2 means the shape of the fixture is a polygon.
 				{
-					dynBody_iterator->data->GetPosition(x, y);
-					App->renderer->Blit(board.diglett_plunger_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+					if (dynBody_iterator->data == App->player->player.left_flipper)
+					{
+						dynBody_iterator->data->GetPosition(x, y);
+						App->renderer->Blit(App->player->player.flipper_Left_tex, x - 5, y + 5, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+					}
+					else if (dynBody_iterator->data == App->player->player.right_flipper)
+					{
+						dynBody_iterator->data->GetPosition(x, y);
+						App->renderer->Blit(App->player->player.flipper_Right_tex, x + 7, y - 15, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+					}
 				}
 				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 3)		//Type 3 means the shape of the fixture is a chain.
 				{

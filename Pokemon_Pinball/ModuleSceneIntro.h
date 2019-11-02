@@ -15,10 +15,6 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	//--------------------------PhysBodies declarations--------------------------
 	PhysBody*	background_exterior;		//Static Chain that stablishes the exerior background of the Pinball Machine's Board
 	PhysBody*	background_interior;		//Static Chain that stablishes the interior background of the Pinbal Machine' Board 
-	PhysBody*	left_flipper;				//Polygon that represents the left flipper.
-	PhysBody*	left_anchor;				//Static circle to which the left flipper attaches to with a revolution joint.
-	PhysBody*	right_flipper;				//Polygon that represents the right flipper.
-	PhysBody*	right_anchor;				//Static circle to which the right flipper attaches to with a revolution joint.
 	PhysBody*	stopper;					//Static chain that stablishes the stopper between the flippers.
 	PhysBody*	left_kicker;				//Static Chain that stablishes the left bumper triangle (kicker). It's restitution value (0 (no bounce) - 1 (bounces back with the same force)) needs to be modified to make it bounce the ball back.
 	PhysBody*	right_kicker;				//Static Chain that stablishes the right bumper triangle (kicker). It's restitution value (0 (no bounce) - 1 (bounces back with the same force)) needs to be modified to make it bounce the ball back.
@@ -31,9 +27,6 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody*	bellsprout_wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
 	PhysBody*	ball_below_flippers;		//Static Chain that stablishes the little ball below and in between the flippers.
 	PhysBody*	spinner;					//Sensor that detects if the ball has passed through the spinner at the right of the bellsprout wall.
-	PhysBody*	plunger_base;				//Static Rectangle that stablishes the plunger's base. Will have a spring joint where the plunger-ram will be attached to.
-	PhysBody*	plunger_ram;				//Dynamic Rectangle that stablishes the plunger's ram. Will be the one to send the ball inside the board. Will have a spring joint attached to p_base.
-	PhysBody*	ball;						//Dynamic circle that will act as the ball.
 	
 
 	p2List<PhysBody*> dynamicBody_List;
@@ -43,11 +36,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	//Textures
 	SDL_Texture*	background_tex;
 	SDL_Texture*	mid_tex;
-	SDL_Texture*	flipper_Left_tex;
-	SDL_Texture*	flipper_Right_tex;
-	SDL_Texture*	pokeball_tex;
 	SDL_Texture*	voltorb_tex;
-	SDL_Texture*	diglett_plunger_tex;
 
 	//Rects
 	SDL_Rect	background;
@@ -208,14 +197,14 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	int left_Kicker[6] = {
 	104, 585,
-	140, 655,
-	104, 630
+	140, 645,
+	104, 625
 	};
 
 	int right_Kicker[6] = {
 	345, 585,
-	309, 655,
-	345, 630
+	309, 645,
+	345, 625
 	};
 
 	int left_Arm[16] = {
@@ -224,8 +213,8 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	60, 584,
 	57, 586,
 	57, 660,
-	154, 724,
-	155, 715,
+	145, 715, //Final part
+	145, 703,
 	62, 653
 	};
 
@@ -235,8 +224,8 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	387, 584,
 	391, 586,
 	391, 660,
-	296, 724,
 	296, 715,
+	296, 703,
 	386, 653
 	};
 

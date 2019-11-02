@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"		//Temporarily added due to debug key
+#include "ModulePlayer.h"
 #include "p2Point.h"
 #include "math.h"
 
@@ -143,82 +144,47 @@ update_status ModulePhysics::PostUpdate()
 			//Mouse Joint Method: Checking if there is an object where the mouse is at.
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)		//Checks if the player has pressed the left button of the mouse, SDL_BUTTON_LEFT returns 1.
 			{
-				if (fixture->GetShape()->TestPoint(body->GetTransform(), b2Vec2(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()))))
+				//MouseJoint Method I
+				mouse_position.x = PIXEL_TO_METERS(App->input->GetMouseX());	//Gets the position of the mouse in the X axis.
+				mouse_position.y = PIXEL_TO_METERS(App->input->GetMouseY());	//Gets the position of the mouse in the Y axis. 
+
+				if (fixture->TestPoint(mouse_position))							//TestPoint() checks if a given position is inside a given object. Used to check if the point where the mouse was when it was clicked was inside the object being iterated.
 				{
-					LOG("touching");
-					clickedBody = body;
+					clicked = true;													//Sets to true the bool that checks if an object has been clicked on.
+					clickedObject = fixture->GetBody();							//Sets the pointer to b2Body of the object currently being iterated to clicked. Sets the object clicked.
+					//clickedObj = body; //Also works.
 				}
-				
-				//MouseJoint Method II
-				/*mouse_position.x = PIXELS_TO_METERS(App->input->GetMouseX());				//Gets the position of the mouse in the X axis.
-				mouse_position.y = PIXELS_TO_METERS(App->input->GetMouseY());				//Gets the position of the mouse in the Y axis.
-
-				clickedObject = (PhysBody*)body->GetUserData();								//Gets the data memebers of a given object and fills the data members of foundBody with them. GetUserData() is used to store application data.
-
-				if (clickedObject->Contains(mouse_position.x, mouse_position.y) == true)	//If the bool Contains() returns false, then it means that there is no object being clicked. (see above how TestPoint(mouse_position.x, mouse_position.y) is used to check whether or not the position passed as an argument is inside a given object.
-				{
-					clickedObject = (PhysBody*)body;													//Sets foundBody pointer to NULL.
-				}*/
 			}
 		}
 	}
 
 	//-----------------------------------------Mouse Joint Method-----------------------------------------
 	//MouseJoint Method I
-	if (clickedBody != nullptr && mouse_joint == nullptr)															//If clicked is true.
+	if (clicked == true)															//If clicked is true.
 	{
 		b2MouseJointDef mouseJoint_def;												//Defines a mouse joint frame.
 
 		mouseJoint_def.bodyA = ground;												//Sets the unmovable object anchor point of the joint. BodyA is the first attached object.
-		mouseJoint_def.bodyB = clickedBody;											//Sets the moving object anchor point of the joint. BodyB is the second attached object.
-		mouseJoint_def.target = b2Vec2(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));;										//Sets the position to where BodyB will move to. It sets where the clicked body will move towards.
+		mouseJoint_def.bodyB = clickedObject;											//Sets the moving object anchor point of the joint. BodyB is the second attached object.
+		mouseJoint_def.target = mouse_position;										//Sets the position to where BodyB will move to. It sets where the clicked body will move towards.
 		mouseJoint_def.dampingRatio = 0.5f;											//Sets the damping ratio of the joint.
 		mouseJoint_def.frequencyHz = 2.0f;											//Sets the response speed of the joint. It sets how fast the clicked object responds to the joint.
-		mouseJoint_def.maxForce = 100.0f * clickedBody->GetMass();					//Sets the maximum constrain force that can be exerted. Sets the limits of how much force will the joint exert on the clicked object.
+		mouseJoint_def.maxForce = 100.0f * clickedObject->GetMass();					//Sets the maximum constrain force that can be exerted. Sets the limits of how much force will the joint exert on the clicked object.
+
 		mouse_joint = (b2MouseJoint*)world->CreateJoint(&mouseJoint_def);			//Creates the actual joint with the data members of mouseJoint_def and sets its data members to mouse_joint.
 	}
 
 	if (mouse_joint && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)	//Checks if the player is still pressing the left mouse button.
 	{
-		if (clickedBody != nullptr)
-		{
-			b2Vec2 newPos;
-			newPos.x = PIXEL_TO_METERS(App->input->GetMouseX());
-			newPos.y = PIXEL_TO_METERS(App->input->GetMouseY());
-
-			mouse_joint->SetTarget(newPos); //Set Target updates the target's position, in this case the mouse's position.
-			App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetAnchorA().x), METERS_TO_PIXELS(mouse_joint->GetAnchorA().y),
-				METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), 255, 15, 255, 255);//Draws a line from the clicked object to the mouse. GetAnchorB() gets the current position of the clicked body.
-		}
+		mouse_joint->SetTarget({ PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()) });																			//Set Target updates the target's position, in this case the mouse's position.
+		App->renderer->DrawLine((App->input->GetMouseX()), (App->input->GetMouseY()), METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), 255, 255, 255);	//Draws a line from the clicked object to the mouse. GetAnchorB() gets the current position of the clicked body.
 	}
 
-	else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)
+	if (mouse_joint && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)		//Checks if the player has released the left mouse button.
 	{
-
-		if (clickedBody != nullptr)
-		{
-			world->DestroyJoint(mouse_joint);
-			mouse_joint = nullptr;
-			clickedBody = nullptr;
-
-		}
+		world->DestroyJoint(mouse_joint);											//Destroys the mouse_joint that was created in the world.
+		mouse_joint = nullptr;														//Sets the pointer of the mouse_joint back to nullptr.
 	}
-
-	
-	//MouseJoint Method II
-	/*if (clickedObject != NULL)													//Does not work bc clicked object is null the moment the ball gets out of the mouse position. Does not actualize AnchorB position.
-	{
-		b2MouseJointDef mouseJoint_def;												//Defines a mouse joint frame.
-
-		mouseJoint_def.bodyA		= ground;										//Sets the unmovable object anchor point of the joint. BodyA is the first attached object.
-		mouseJoint_def.bodyB		= clickedObject->body;							//Sets the moving object anchor point of the joint. BodyB is the second attached object.
-		mouseJoint_def.target		= mouse_position;								//Sets the position to where BodyB will move to. It sets where the clicked body will move towards.
-		mouseJoint_def.dampingRatio = 0.5f;											//Sets the damping ratio of the joint.
-		mouseJoint_def.frequencyHz	= 2.0f;											//Sets the response speed of the joint. It sets how fast the clicked object responds to the joint.
-		mouseJoint_def.maxForce		= 100.0f * clickedObject->body->GetMass();		//Sets the maximum constrain force that can be exerted. Sets the limits of how much force will the joint exert on the clicked object.
-		
-		mouse_joint = (b2MouseJoint*)world->CreateJoint(&mouseJoint_def);			//Creates the actual joint with the data members of mouseJoint_def and sets its data members to mouse_joint.
-	}*/
 
 	return UPDATE_CONTINUE;
 }
@@ -315,40 +281,40 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 
 PhysBody* ModulePhysics::CreateFlipper(b2BodyType type, int x, int y, int* points, int size, int restitution)
 {
-	b2BodyDef body;														//Declares the frame of the geometrical form.
+	b2BodyDef body;													//Declares the frame of the geometrical form.
 
-	body.type = type;													//Defines the body as static. Will remain unaffected by exterior forces.
+	body.type = type;												//Defines the body as static. Will remain unaffected by exterior forces.
 
-																		//Sets the type of frame to dynamic, which means that it can be affected by external forces.
+																	//Sets the type of frame to dynamic, which means that it can be affected by external forces.
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));		//Sets the position in the world where the shape will be placed at.
 
-	b2Body* b = world->CreateBody(&body);								//Creates a body given a definition.
+	b2Body* b = world->CreateBody(&body);							//Creates a body given a definition.
 
-	b2PolygonShape box;													//Defines that the shape that will be assigned to the b2Body* b (from b2BodyDef) will be a chain.
-	b2Vec2* p = new b2Vec2[size / 2];									//Creates the array of vectors that recieve the coordinate points and generates a new vector out of them.
+	b2PolygonShape box;												//Defines that the shape that will be assigned to the b2Body* b (from b2BodyDef) will be a chain.
+	b2Vec2* p = new b2Vec2[size / 2];								//Creates the array of vectors that recieve the coordinate points and generates a new vector out of them.
 
-	for (uint i = 0; i < size / 2; ++i)									//Runs a loop that fills the array of vectors with the given coordinate points.
+	for (uint i = 0; i < size / 2; ++i)								//Runs a loop that fills the array of vectors with the given coordinate points.
 	{
-		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);					//Assigns the first value of each pair of coordinates that are passed to the X axis / property of the vector.
-		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);					//Assigns the second value of each pair of coordinates that are passed to the Y axis / property of the vector.
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);				//Assigns the first value of each pair of coordinates that are passed to the X axis / property of the vector.
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);				//Assigns the second value of each pair of coordinates that are passed to the Y axis / property of the vector.
 	}
 
-	box.Set(p, size / 2);												//Creates a loop and automatically adjusts connectivity. The vector array and the total count of vectors are passed as an argument.
+	box.Set(p, size / 2);											//Creates a loop and automatically adjusts connectivity. The vector array and the total count of vectors are passed as an argument.
 
-																		//Fixture has a bool (isSensor) that if set to true, it identifies the body/shape as a sensor which detects contact but does not return a collision.
-	b2FixtureDef fixture;												//Definition of the fixture. It has multiple elements: Shape(circle), Density(Weight), Friction(How it drags along surfaces) and Restitution(how much it bounces back after impact)
-	fixture.shape = &box;												//Defines which shape will the fixture have. Assigns a shape, in this case a chain.
+																	//Fixture has a bool (isSensor) that if set to true, it identifies the body/shape as a sensor which detects contact but does not return a collision.
+	b2FixtureDef fixture;											//Definition of the fixture. It has multiple elements: Shape(circle), Density(Weight), Friction(How it drags along surfaces) and Restitution(how much it bounces back after impact)
+	fixture.shape = &box;											//Defines which shape will the fixture have. Assigns a shape, in this case a chain.
 	fixture.density = 1.0f;
-	fixture.restitution = restitution;									//Defines the restitution value of a body. It normally ranges from 0 (no bounce) to 1 (bounces back to the same position)
+	fixture.restitution = restitution;								//Defines the restitution value of a body. It normally ranges from 0 (no bounce) to 1 (bounces back to the same position)
 	
-	b->CreateFixture(&fixture);											//This method creates a fixture and adds it to a body. Used to assing parameters like denisity, friction, restitution...
+	b->CreateFixture(&fixture);										//This method creates a fixture and adds it to a body. Used to assing parameters like denisity, friction, restitution...
 
-	//delete p;															//As the information that the vector array had has been passed to the CreateLoop() method and the fixture has been created, the vector is not needed anymore and is deleted.
+	delete p;														//As the information that the vector array had has been passed to the CreateLoop() method and the fixture has been created, the vector is not needed anymore and is deleted.
 
-	PhysBody* pbody = new PhysBody();									//Creates a pointer to the PhysBody class, which keeps track of the body's position and rotation. 
-	pbody->body = b;													//Assigns the pointer to b2Body (*b) to pbody, which gives the phys body class access to the data members that b has. 
-	b->SetUserData(pbody);												//The SetUserData() method is used to store application specific data. Needs to be given a pointer.
-	pbody->width = pbody->height = 0;									//Sets the width and the height of the body to 0;
+	PhysBody* pbody = new PhysBody();								//Creates a pointer to the PhysBody class, which keeps track of the body's position and rotation. 
+	pbody->body = b;												//Assigns the pointer to b2Body (*b) to pbody, which gives the phys body class access to the data members that b has. 
+	b->SetUserData(pbody);											//The SetUserData() method is used to store application specific data. Needs to be given a pointer.
+	pbody->width = pbody->height = 0;								//Sets the width and the height of the body to 0;
 
 	return pbody;
 }
@@ -360,7 +326,7 @@ PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points,
 	body.type = type;												//Defines the body as static. Will remain unaffected by exterior forces.
 
 																	//Sets the type of frame to dynamic, which means that it can be affected by external forces.
-	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));	//Sets the position in the world where the shape will be placed at.
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));		//Sets the position in the world where the shape will be placed at.
 
 	b2Body* b = world->CreateBody(&body);							//Creates a body given a definition.
 
@@ -471,35 +437,35 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	return ret;
 }
 
-void ModulePhysics::CreateFlippers(/*PhysBody* dynamicB, PhysBody* staticB*/)
+void ModulePhysics::CreateRevolutionJoint(PhysBody* dynamicBody, PhysBody* staticBody, int upperAngle, int lowerAngle, int offsetX, int offsetY, b2RevoluteJoint* revoluteJoint)
 {
-	App->scene_intro->board.left_flipper = CreateRectangle(b2_dynamicBody, 153, 716, 64, 25, 0);
-	App->scene_intro->board.left_anchor = App->physics->CreateCircle(b2_staticBody, 158, 722, 7, 0);
+	b2RevoluteJointDef revJoint_def;
 
-	b2RevoluteJointDef def_l;
-
-	def_l.bodyA = App->scene_intro->board.left_flipper->body;
-	def_l.bodyB = App->scene_intro->board.left_anchor->body;
-	def_l.collideConnected = false;
-	def_l.upperAngle = DEGTORAD * 25;
-	def_l.lowerAngle = DEGTORAD * -25;
-	def_l.enableLimit = true;
-	def_l.localAnchorA.Set(PIXEL_TO_METERS(-12), PIXEL_TO_METERS(-6));
-	App->physics->left_Anchor = (b2RevoluteJoint*)world->CreateJoint(&def_l);
-
+	revJoint_def.bodyA				= dynamicBody->body;								//Sets bodyA as the dynamic part of the joint (the PhysBody* passed as an argument is dynamic)
+	revJoint_def.bodyB				= staticBody->body;									//Sets bodyB as the static part of the joint (the PhysBody* passed as an argument is static)
+	revJoint_def.collideConnected	= false;											//Determines if the joined objects will collide with each other or not.
+	revJoint_def.upperAngle			= DEGTORAD * upperAngle;							//Defines the maximum positive angle the dynamic body can reach (upwards).
+	revJoint_def.lowerAngle			= DEGTORAD * lowerAngle;							//Defines the maxumun negative angle the dynamic body can reach (downwards).
+	revJoint_def.enableLimit		= true;												//Enables the joint limits so .upperAngle and .lowerAngle have an effect.
+	revJoint_def.localAnchorA.Set(PIXEL_TO_METERS(offsetX), PIXEL_TO_METERS(offsetY));	//Sets how far is the origin of the dynamic body from the center of the static body.
 	
-	App->scene_intro->board.right_flipper = CreateRectangle(b2_dynamicBody, 300, 716, 64, 25, 0);
-	App->scene_intro->board.right_anchor = App->physics->CreateCircle(b2_staticBody, 288, 722, 7, 0);
-	
-	b2RevoluteJointDef def_r;
-
-	def_r.bodyA = App->scene_intro->board.right_flipper->body;
-	def_r.bodyB = App->scene_intro->board.right_anchor->body;
-	def_r.collideConnected = false;
-	def_r.upperAngle = DEGTORAD * 25;
-	def_r.lowerAngle = DEGTORAD * -25;
-	def_r.enableLimit = true;
-	def_r.localAnchorA.Set(PIXEL_TO_METERS(51), PIXEL_TO_METERS(12));
-	App->physics->right_Anchor = (b2RevoluteJoint*)world->CreateJoint(&def_r);
-
+	revoluteJoint = (b2RevoluteJoint*)world->CreateJoint(&revJoint_def);				//Creates the joint on the world.
 }
+
+void ModulePhysics::CreatePrismaticJoint(PhysBody* dynamicBody, PhysBody* staticBody, b2PrismaticJoint* prismaticJoint)
+{
+	b2PrismaticJointDef prismJoint_def;
+
+	prismJoint_def.bodyA = dynamicBody->body;		//Defines the dynamicBody of the joint. Checks the type of body from the passed argument. It could also be static or kinematic.
+	prismJoint_def.bodyB = staticBody->body;		//Defines the staticBody of the joint. Checks the type of body from the passed argument. It could also be dynamic or kinematic.
+	prismJoint_def.collideConnected = true;			//Defines whether or not the joined bodies will collide.
+	prismJoint_def.localAnchorA.Set(0, 1);			//Sets the local anchor point relative to the position of body A.
+	prismJoint_def.localAnchorB.Set(0, -1);			//Sets thelocal anchor point relative to the position of body B.
+	prismJoint_def.localAxisA.Set(0, -1);			//Local translation of body A.
+	prismJoint_def.enableLimit = true;				//Enables jointLimit so .lowerTranslation and .upperTranslation  have an effect.
+	prismJoint_def.lowerTranslation = -0.02;		//Sets the lower translation limit, normally in meters.
+	prismJoint_def.upperTranslation = 2.0;			//Sets the upper translation limit, normally in meters.
+	
+	prismaticJoint = (b2PrismaticJoint*)world->CreateJoint(&prismJoint_def);
+}
+

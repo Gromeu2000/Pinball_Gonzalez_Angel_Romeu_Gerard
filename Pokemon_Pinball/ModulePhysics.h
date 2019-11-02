@@ -48,7 +48,8 @@ public:
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(b2BodyType type, int x, int y, int* points, int size, int restitution);	//Method that creates chains. Has a bool to make the chain static or dynamic.
 	PhysBody* CreateFlipper(b2BodyType type, int x, int y, int* points, int size, int restitution); //Method that creates poligons with the given verexs.
-	void CreateFlippers(/*PhysBody* dynamicB, PhysBody* staticB*/);
+	void CreateRevolutionJoint(PhysBody* dynamicBody, PhysBody* staticBody, int upperAngle, int lowerAngle, int offsetX, int offsetY, b2RevoluteJoint* revoluteJoint);
+	void CreatePrismaticJoint(PhysBody* dynamicBody, PhysBody* staticBody, b2PrismaticJoint* prismaticJoint);
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
@@ -60,11 +61,11 @@ private:
 	b2World* world = nullptr;		//Creates a pointer to a b2World
 	b2MouseJoint* mouse_joint;		//Creates a pointer to a MouseJoint
 	b2Body* ground;					//Creates a pointer to a body. In this case this body will be used to set the anchor point in a mouseJoint.
-	b2Body* clickedBody;				
-	PhysBody* clickedObject;		//Body that will get the pointer of a clicked object.
+	b2Body* clickedObject;				
+	//PhysBody* clickedObject;		//Body that will get the pointer of a clicked object.
 
-	b2RevoluteJoint* left_Anchor;
-	b2RevoluteJoint* right_Anchor;
+	b2RevoluteJoint* left_Anchor;	//For the rectangle flipper method
+	b2RevoluteJoint* right_Anchor;	//For the rectangle flipper method
 
 	b2Vec2 mouse_position;
 	b2Vec2 object_position;
