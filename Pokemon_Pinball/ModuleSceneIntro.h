@@ -29,6 +29,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody*	centerLeft_miniwall;		//Static Chain that stablishes the center left wall just above the voltorbs.
 	PhysBody*	centerRight_miniwall;		//Static Chain that stablishes the center right wall just above the voltorbs.
 	PhysBody*	bellsprout_wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
+	PhysBody*	ball_below_flippers;		//Static Chain that stablishes the little ball below and in between the flippers.
 	PhysBody*	spinner;					//Sensor that detects if the ball has passed through the spinner at the right of the bellsprout wall.
 	PhysBody*	plunger_base;				//Static Rectangle that stablishes the plunger's base. Will have a spring joint where the plunger-ram will be attached to.
 	PhysBody*	plunger_ram;				//Dynamic Rectangle that stablishes the plunger's ram. Will be the one to send the ball inside the board. Will have a spring joint attached to p_base.
@@ -342,6 +343,81 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	338, 162,
 	324, 150 //Top part of the wall
 	};
+
+	int ball_Below_Flippers[14] = {
+	218, 778,
+	218, 767,
+	221, 765,
+	224, 764,
+	227, 765,
+	230, 767,
+	230, 778
+	};
+
+	//Flippers
+	int Left_Flipper[26] = {
+	0, 20,
+	0, 6,
+	5, 0,
+	22, 0,
+	45, 3,
+	64, 6,
+	67, 9,
+	67, 14,
+	64, 17,
+	50, 20,
+	36, 22,
+	22, 25,
+	8, 25
+	};
+
+	int Left_Flipper_Long[28] = {
+	0, 20,
+	0, 6,
+	5, 0,
+	19, 0,
+	31, 9,
+	42, 17,
+	53, 25,
+	64, 37,
+	64, 42,
+	61, 45,
+	53, 45,
+	37, 37,
+	22, 31,
+	2, 23
+	};
+
+	int Right_Flipper[26] = {
+	68, 20,
+	59, 25,
+	45, 25,
+	31, 23,
+	17, 20,
+	3, 17,
+	0, 14,
+	0, 9,
+	3, 6,
+	23, 3,
+	45, 0,
+	62, 0,
+	68, 6
+	};
+
+	int Right_Flipper_Long[20] = {
+	45, 0,
+	59, 0,
+	64, 6,
+	64, 20,
+	48, 28,
+	37, 34,
+	12, 45,
+	3, 45,
+	0, 42,
+	0, 37
+	};
+
+
 };
 
 //struct PinballBoardBodies				//Learn how to implement it with private elements instead of public.

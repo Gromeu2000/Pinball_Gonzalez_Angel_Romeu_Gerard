@@ -44,6 +44,7 @@ public:
 	
 	void InitPlayer();
 	void CreatePlunger();
+	//void CreateFlippers(PhysBody* dynamicB, PhysBody* staticB);
 
 	//Score
 	uint score = 0;

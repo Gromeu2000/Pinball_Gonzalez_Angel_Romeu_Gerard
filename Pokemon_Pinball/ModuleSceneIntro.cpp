@@ -40,12 +40,22 @@ bool ModuleSceneIntro::Start()
 	board.centerLeft_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerLeft_MiniWall, 16, 0);
 	board.centerRight_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerRight_MiniWall, 18, 0);
 	board.bellsprout_wall			= App->physics->CreateChain(b2_staticBody, 0, 0, board.bellsprout_Wall, 86, 0);
+	board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
+	//board.left_flipper				= App->physics->CreateChain(b2_staticBody, 0, 0, board.Left_Flipper, 24, 0);
 
+	//Static Circles
+	board.left_anchor				= App->physics->CreateCircle(b2_staticBody, 158, 722, 7, 0);
+	board.right_anchor				= App->physics->CreateCircle(b2_staticBody, 288, 722, 7, 0);
+	
 	//Static Rectangles:
 	board.plunger_base				= App->physics->CreateRectangle(b2_staticBody, 469, 769, 34, 15, 0);
 
 	//Dynamic Rectangles:
 	board.plunger_ram				= App->physics->CreateRectangle(b2_dynamicBody, 469, 750, 34, 40, 0);
+
+	//Flippers
+	//board.left_flipper				= App->physics->CreateFlipper(b2_dynamicBody, 143, 708, board.Left_Flipper, 24, 0);
+	App->physics->CreateFlippers();
 
 	//Load music
 	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
