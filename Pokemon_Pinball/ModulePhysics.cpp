@@ -143,15 +143,10 @@ update_status ModulePhysics::PostUpdate()
 			//Mouse Joint Method: Checking if there is an object where the mouse is at.
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)		//Checks if the player has pressed the left button of the mouse, SDL_BUTTON_LEFT returns 1.
 			{
-				//MouseJoint Method I
-				mouse_position.x = PIXELS_TO_METERS(App->input->GetMouseX());	//Gets the position of the mouse in the X axis.
-				mouse_position.y = PIXELS_TO_METERS(App->input->GetMouseY());	//Gets the position of the mouse in the Y axis. 
-
-				if (fixture->TestPoint(mouse_position))							//TestPoint() checks if a given position is inside a given object. Used to check if the point where the mouse was when it was clicked was inside the object being iterated.
+				if (fixture->GetShape()->TestPoint(body->GetTransform(), b2Vec2(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()))))
 				{
-					clicked = true;													//Sets to true the bool that checks if an object has been clicked on.
-					clickedObj = fixture->GetBody();							//Sets the pointer to b2Body of the object currently being iterated to clicked. Sets the object clicked.
-					//clickedObj = body; //Also works.
+					LOG("touching");
+					clickedBody = body;
 				}
 				
 				//MouseJoint Method II
@@ -170,31 +165,45 @@ update_status ModulePhysics::PostUpdate()
 
 	//-----------------------------------------Mouse Joint Method-----------------------------------------
 	//MouseJoint Method I
-	if (clicked == true)															//If clicked is true.
+	if (clickedBody != nullptr && mouse_joint == nullptr)															//If clicked is true.
 	{
 		b2MouseJointDef mouseJoint_def;												//Defines a mouse joint frame.
 
 		mouseJoint_def.bodyA = ground;												//Sets the unmovable object anchor point of the joint. BodyA is the first attached object.
-		mouseJoint_def.bodyB = clickedObj;											//Sets the moving object anchor point of the joint. BodyB is the second attached object.
-		mouseJoint_def.target = mouse_position;										//Sets the position to where BodyB will move to. It sets where the clicked body will move towards.
+		mouseJoint_def.bodyB = clickedBody;											//Sets the moving object anchor point of the joint. BodyB is the second attached object.
+		mouseJoint_def.target = b2Vec2(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));;										//Sets the position to where BodyB will move to. It sets where the clicked body will move towards.
 		mouseJoint_def.dampingRatio = 0.5f;											//Sets the damping ratio of the joint.
 		mouseJoint_def.frequencyHz = 2.0f;											//Sets the response speed of the joint. It sets how fast the clicked object responds to the joint.
-		mouseJoint_def.maxForce = 100.0f * clickedObj->GetMass();					//Sets the maximum constrain force that can be exerted. Sets the limits of how much force will the joint exert on the clicked object.
-
+		mouseJoint_def.maxForce = 100.0f * clickedBody->GetMass();					//Sets the maximum constrain force that can be exerted. Sets the limits of how much force will the joint exert on the clicked object.
 		mouse_joint = (b2MouseJoint*)world->CreateJoint(&mouseJoint_def);			//Creates the actual joint with the data members of mouseJoint_def and sets its data members to mouse_joint.
 	}
 
 	if (mouse_joint && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)	//Checks if the player is still pressing the left mouse button.
 	{
-		mouse_joint->SetTarget({ PIXELS_TO_METERS(App->input->GetMouseX()), PIXELS_TO_METERS(App->input->GetMouseY()) });																			//Set Target updates the target's position, in this case the mouse's position.
-		App->renderer->DrawLine((App->input->GetMouseX()), (App->input->GetMouseY()), METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), 255, 255, 255);	//Draws a line from the clicked object to the mouse. GetAnchorB() gets the current position of the clicked body.
+		if (clickedBody != nullptr)
+		{
+			b2Vec2 newPos;
+			newPos.x = PIXEL_TO_METERS(App->input->GetMouseX());
+			newPos.y = PIXEL_TO_METERS(App->input->GetMouseY());
+
+			mouse_joint->SetTarget(newPos); //Set Target updates the target's position, in this case the mouse's position.
+			App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetAnchorA().x), METERS_TO_PIXELS(mouse_joint->GetAnchorA().y),
+				METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), 255, 15, 255, 255);//Draws a line from the clicked object to the mouse. GetAnchorB() gets the current position of the clicked body.
+		}
 	}
 
-	if (mouse_joint && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)		//Checks if the player has released the left mouse button.
+	else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)
 	{
-		world->DestroyJoint(mouse_joint);											//Destroys the mouse_joint that was created in the world.
-		mouse_joint = nullptr;														//Sets the pointer of the mouse_joint back to nullptr.
+
+		if (clickedBody != nullptr)
+		{
+			world->DestroyJoint(mouse_joint);
+			mouse_joint = nullptr;
+			clickedBody = nullptr;
+
+		}
 	}
+
 	
 	//MouseJoint Method II
 	/*if (clickedObject != NULL)													//Does not work bc clicked object is null the moment the ball gets out of the mouse position. Does not actualize AnchorB position.
@@ -230,12 +239,12 @@ PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius,
 {
 	b2BodyDef body;
 	body.type = type;
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
 
 	b2CircleShape shape;
-	shape.m_radius = PIXELS_TO_METERS(radius);
+	shape.m_radius = PIXEL_TO_METERS(radius);
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
@@ -255,11 +264,11 @@ PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int widt
 {
 	b2BodyDef body;
 	body.type = type;
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
 	b2PolygonShape box;
-	box.SetAsBox(PIXELS_TO_METERS(width) * 0.5f, PIXELS_TO_METERS(height) * 0.5f);
+	box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
 
 	b2FixtureDef fixture;
 	fixture.shape = &box;
@@ -281,12 +290,12 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 {
 	b2BodyDef rectSensorBody;
 	rectSensorBody.type = b2_staticBody;
-	rectSensorBody.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+	rectSensorBody.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&rectSensorBody);
 
 	b2PolygonShape box;
-	box.SetAsBox(PIXELS_TO_METERS(width) * 0.5f, PIXELS_TO_METERS(height) * 0.5f);
+	box.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
 
 	b2FixtureDef fixture;
 	fixture.shape = &box;
@@ -311,7 +320,7 @@ PhysBody* ModulePhysics::CreateFlipper(b2BodyType type, int x, int y, int* point
 	body.type = type;													//Defines the body as static. Will remain unaffected by exterior forces.
 
 																		//Sets the type of frame to dynamic, which means that it can be affected by external forces.
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));		//Sets the position in the world where the shape will be placed at.
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));		//Sets the position in the world where the shape will be placed at.
 
 	b2Body* b = world->CreateBody(&body);								//Creates a body given a definition.
 
@@ -320,8 +329,8 @@ PhysBody* ModulePhysics::CreateFlipper(b2BodyType type, int x, int y, int* point
 
 	for (uint i = 0; i < size / 2; ++i)									//Runs a loop that fills the array of vectors with the given coordinate points.
 	{
-		p[i].x = PIXELS_TO_METERS(points[i * 2 + 0]);					//Assigns the first value of each pair of coordinates that are passed to the X axis / property of the vector.
-		p[i].y = PIXELS_TO_METERS(points[i * 2 + 1]);					//Assigns the second value of each pair of coordinates that are passed to the Y axis / property of the vector.
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);					//Assigns the first value of each pair of coordinates that are passed to the X axis / property of the vector.
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);					//Assigns the second value of each pair of coordinates that are passed to the Y axis / property of the vector.
 	}
 
 	box.Set(p, size / 2);												//Creates a loop and automatically adjusts connectivity. The vector array and the total count of vectors are passed as an argument.
@@ -351,7 +360,7 @@ PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points,
 	body.type = type;												//Defines the body as static. Will remain unaffected by exterior forces.
 
 																	//Sets the type of frame to dynamic, which means that it can be affected by external forces.
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));	//Sets the position in the world where the shape will be placed at.
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));	//Sets the position in the world where the shape will be placed at.
 
 	b2Body* b = world->CreateBody(&body);							//Creates a body given a definition.
 
@@ -360,8 +369,8 @@ PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points,
 
 	for (uint i = 0; i < size / 2; ++i)								//Runs a loop that fills the array of vectors with the given coordinate points.
 	{
-		p[i].x = PIXELS_TO_METERS(points[i * 2 + 0]);				//Assigns the first value of each pair of coordinates that are passed to the X axis / property of the vector.
-		p[i].y = PIXELS_TO_METERS(points[i * 2 + 1]);				//Assigns the second value of each pair of coordinates that are passed to the Y axis / property of the vector.
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);				//Assigns the first value of each pair of coordinates that are passed to the X axis / property of the vector.
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);				//Assigns the second value of each pair of coordinates that are passed to the Y axis / property of the vector.
 	}
 
 	shape.CreateLoop(p, size / 2);									//Creates a loop and automatically adjusts connectivity. The vector array and the total count of vectors are passed as an argument.
@@ -385,14 +394,20 @@ PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points,
 
 void ModulePhysics::BeginContact(b2Contact* contact)
 {
-	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
-	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	PhysBody* A = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	PhysBody* B = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
-	if (physA && physA->listener != NULL)
-		physA->listener->OnCollision(physA, physB);
+	if (A && A->listener != nullptr)
+	{
+		A->listener->OnCollision(A, B);
+	}
 
-	if (physB && physB->listener != NULL)
-		physB->listener->OnCollision(physB, physA);
+	if (B && B->listener != nullptr)
+	{
+		B->listener->OnCollision(B, A);
+	}
+
+	LOG("COLLISION");
 }
 
 void PhysBody::GetPosition(int& x, int &y) const
@@ -409,7 +424,7 @@ float PhysBody::GetRotation() const
 
 bool PhysBody::Contains(int x, int y) const
 {
-	b2Vec2 p(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+	b2Vec2 p(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	const b2Fixture* fixture = body->GetFixtureList();
 
@@ -430,8 +445,8 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	b2RayCastInput input;
 	b2RayCastOutput output;
 
-	input.p1.Set(PIXELS_TO_METERS(x1), PIXELS_TO_METERS(y1));
-	input.p2.Set(PIXELS_TO_METERS(x2), PIXELS_TO_METERS(y2));
+	input.p1.Set(PIXEL_TO_METERS(x1), PIXEL_TO_METERS(y1));
+	input.p2.Set(PIXEL_TO_METERS(x2), PIXEL_TO_METERS(y2));
 	input.maxFraction = 1.0f;
 
 	const b2Fixture* fixture = body->GetFixtureList();
@@ -440,7 +455,6 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	{
 		if (fixture->GetShape()->RayCast(&output, input, body->GetTransform(), 0) == true)
 		{
-			// do we want the normal ?
 
 			float fx = x2 - x1;
 			float fy = y2 - y1;
@@ -470,7 +484,7 @@ void ModulePhysics::CreateFlippers(/*PhysBody* dynamicB, PhysBody* staticB*/)
 	def_l.upperAngle = DEGTORAD * 25;
 	def_l.lowerAngle = DEGTORAD * -25;
 	def_l.enableLimit = true;
-	def_l.localAnchorA.Set(PIXELS_TO_METERS(-12), PIXELS_TO_METERS(-6));
+	def_l.localAnchorA.Set(PIXEL_TO_METERS(-12), PIXEL_TO_METERS(-6));
 	App->physics->left_Anchor = (b2RevoluteJoint*)world->CreateJoint(&def_l);
 
 	
@@ -485,7 +499,7 @@ void ModulePhysics::CreateFlippers(/*PhysBody* dynamicB, PhysBody* staticB*/)
 	def_r.upperAngle = DEGTORAD * 25;
 	def_r.lowerAngle = DEGTORAD * -25;
 	def_r.enableLimit = true;
-	def_r.localAnchorA.Set(PIXELS_TO_METERS(51), PIXELS_TO_METERS(12));
+	def_r.localAnchorA.Set(PIXEL_TO_METERS(51), PIXEL_TO_METERS(12));
 	App->physics->right_Anchor = (b2RevoluteJoint*)world->CreateJoint(&def_r);
 
 }

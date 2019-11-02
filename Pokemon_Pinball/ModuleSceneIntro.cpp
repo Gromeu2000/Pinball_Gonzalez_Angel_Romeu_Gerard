@@ -73,6 +73,8 @@ bool ModuleSceneIntro::Start()
 	//LOAD ANIMATIONS------------------------------------------------
 	AddAnimationPushbacks();
 
+	//board.bonus_fx = App->audio->LoadFx("audio/FX/Restart.wav");
+
 	return ret;
 }
 
@@ -99,6 +101,7 @@ update_status ModuleSceneIntro::Update()
 	{
 		board.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 20, 0);
 		board.dynamicBody_List.add(board.ball);
+		board.dynamicBody_List.getLast()->data->listener = this;
 	}
 
 	//Load fonts (high score & score)
@@ -173,6 +176,7 @@ update_status ModuleSceneIntro::Update()
 		//Mid screen animation
 		App->renderer->Blit(board.mid_tex, 153, 465, &(board.mid_screen.GetCurrentFrame()));
 	
+		//FONTS------------------------------------------------
 
 		//Blit fonts
 		sprintf_s(player_score, 10, "%7d", App->player->score);
@@ -181,7 +185,30 @@ update_status ModuleSceneIntro::Update()
 		sprintf_s(max_score, 10, "%7d", App->player->maxscore);
 		App->fonts->BlitText(289, 15, score, max_score, 0.7f);
 
+		//OBJECTS---------------------------------------------
+
+		//Blit collision bouncers
+		bouncers[0] = App->physics->CreateCircle(b2_staticBody, 234, 290, 19, 0);
+		bouncers[1] = App->physics->CreateCircle(b2_staticBody, 260, 209, 19, 0);
+		bouncers[2] = App->physics->CreateCircle(b2_staticBody, 176, 234, 19, 0);
 		
+		//Blit triangles
+
+
+		//SENSORS-------------------------------------------
+
+		board.dying_sensor = App->physics->CreateCircle(b2_staticBody, SCREEN_HEIGHT + 50, SCREEN_WIDTH, 50, 20);
+	/*	board.diglett_sensor1 = App->physics->CreateCircle();
+		board.diglett_sensor2 = App->physics->CreateCircle();
+		board.ball_catcher = App->physics->CreateCircle();
+		board.bellsprout_S = App->physics->CreateCircle();
+		board.starmie_S = App->physics->CreateCircle();
+		board.voltorb_sensor[0] = App->physics->CreateCircle();
+		board.voltorb_sensor[1] = App->physics->CreateCircle();
+		board.voltorb_sensor[2] = App->physics->CreateCircle();
+		board.triangle_sensors[0] = App->physics->CreateCircle();
+		board.triangle_sensors[1] = App->physics->CreateCircle();*/
+
 		int x;
 		int	y;
 
@@ -343,4 +370,8 @@ bool ModuleSceneIntro::SetAnimationRectPosition()
 	board.triangle_boosted_R.h = 82.6;
 
 	return true;
+}
+
+void ModuleSceneIntro::OnCollision(PhysBody* A, PhysBody* B)
+{
 }

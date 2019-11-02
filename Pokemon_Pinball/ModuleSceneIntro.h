@@ -71,7 +71,15 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	Animation	mid_screen;
 
-	
+	//Sensors
+	PhysBody* dying_sensor;
+	PhysBody* diglett_sensor1;
+	PhysBody* diglett_sensor2;
+	PhysBody* ball_catcher;
+	PhysBody* bellsprout_S;
+	PhysBody* starmie_S;
+	PhysBody* voltorb_sensor[3];
+	PhysBody* triangle_sensors[2];
 
 	//--------------------------Shape Declarations--------------------------
 	//Tweak until it feels right.
@@ -434,6 +442,7 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 private:
 
@@ -446,10 +455,12 @@ public:
 	bool AddAnimationPushbacks();		//Load animations
 
 	//Score
-	
 	char player_score[10];
 	char max_score[10];
 	int score = -1;
+
+	// Bouncers
+	PhysBody* bouncers[3];
 };
 
 

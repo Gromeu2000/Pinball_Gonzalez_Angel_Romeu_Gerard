@@ -7,10 +7,10 @@
 #define GRAVITY_Y -5.0f
 
 #define PIXELS_PER_METER 50.0f // if touched change METER_PER_PIXEL too
-#define METERS_PER_PIXEL 0.02f // this is 1 / PIXELS_PER_METER !
+#define METER_PER_PIXEL 0.02f // this is 1 / PIXELS_PER_METER !
 
 #define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
-#define PIXELS_TO_METERS(p)  ((float) METERS_PER_PIXEL * p)
+#define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
 
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
@@ -60,7 +60,7 @@ private:
 	b2World* world = nullptr;		//Creates a pointer to a b2World
 	b2MouseJoint* mouse_joint;		//Creates a pointer to a MouseJoint
 	b2Body* ground;					//Creates a pointer to a body. In this case this body will be used to set the anchor point in a mouseJoint.
-	b2Body* clickedObj;				
+	b2Body* clickedBody;				
 	PhysBody* clickedObject;		//Body that will get the pointer of a clicked object.
 
 	b2RevoluteJoint* left_Anchor;
