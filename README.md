@@ -1,6 +1,6 @@
 ﻿# Pokemon Pinball
 
-This a version of a the Pokemon Pinball for Game Boy made by Gerard Romeu and Ángel González, tow students from UPC.
+This a version of a the Pokemon Pinball for Game Boy made by Gerard Romeu and Ángel González, two students from UPC.
 
 # Creators' repositories 
 
