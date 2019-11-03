@@ -83,7 +83,7 @@ update_status ModulePlayer::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
 	{
-		player.plunger_ram->body->ApplyForce({ 0, -600 }, { 0, 0 }, true);	//Releases the plunger, sending the ball in the board.
+		player.plunger_ram->body->ApplyForce({ 0, -650 }, { 0, 0 }, true);	//Releases the plunger, sending the ball in the board.
 	}
 	
 	//-----------------------------------------------------GAMEPLAY LOGIC-----------------------------------------------------
@@ -92,7 +92,7 @@ update_status ModulePlayer::Update()
 	{
 		setDittoBall(48, 56);				//Ball appears at Ditto Hole
 		score += 1000;
-		player.double_ball = true;
+		//player.double_ball = true;
 
 		resetTextures();
 	}
@@ -121,12 +121,14 @@ update_status ModulePlayer::Update()
 
 		resetTextures();
 
+		player.lives = 3;
 		score = 0;
 
 		//Load music
 		App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 	}
 
+	//-----------------------------------------BALL DESTRUCTION-----------------------------------------
 	//Destruction of the ball and ball respawn at plunger's position.
 	if (player.destroy_ball == true && player.lives != 0)
 	{
@@ -140,6 +142,7 @@ update_status ModulePlayer::Update()
 	if (player.double_ball == true && player.destroy_ditto_ball == true)
 	{
 		App->physics->world->DestroyBody(player.ditto_ball->body);
+		
 		player.double_ball = false;
 		player.destroy_ditto_ball = false;
 	}
@@ -170,12 +173,13 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//Ball has been lost
 	if (bodyB == App->scene_intro->board.dying_sensor)
 	{
-		if (bodyB == player.ditto_ball)
+		if (bodyA == player.ditto_ball && player.double_ball == true)
 		{
 			App->audio->PlayFx(6, 0);
 			player.destroy_ditto_ball = true;
 		}
-		else
+		
+		else if (bodyA == player.ball)
 		{
 			player.lives--;
 			player.destroy_ball = true;
@@ -295,7 +299,8 @@ void ModulePlayer::setBall(uint x, uint y)
 {
 	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.7f);		//Creates a new ball to play with.
 	App->scene_intro->board.dynamicBody_List.add(player.ball);							//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
-	player.ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
+	//player.ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
+	App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
 }
 
 //Creates the extra ball that appears when the combo score is achieved.
@@ -303,7 +308,8 @@ void ModulePlayer::setDittoBall(uint x, uint y)
 {
 	player.ditto_ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.7f);		//Creates the ditto ball.
 	App->scene_intro->board.dynamicBody_List.add(player.ditto_ball);						//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
-	player.ball->listener = this;															//Adds a contact listener to the ball so sensors can detect a collision.
+	//player.ditto_ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
+	App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
 }
 
 bool ModulePlayer::LoadTextures()
