@@ -82,6 +82,8 @@ bool ModulePlayer::Start()
 	App->audio->LoadFx("audio/FX/Lose Ball.wav");
 	App->audio->LoadFx("audio/FX/Restart.wav");
 	App->audio->LoadFx("audio/FX/Triangles.wav");
+	App->audio->LoadFx("audio/FX/Po.wav");
+	App->audio->LoadFx("audio/FX/149 Ditto Cry.wav");
 
 	return true;
 }
@@ -163,6 +165,28 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	{
 		App->audio->PlayFx(3, 0);
 	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (bodyB == App->scene_intro->board.light_sensor[i])
+		{
+			App->audio->PlayFx(9, 0);
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (bodyB == App->scene_intro->board.toplight_sensor[i])
+		{
+			App->audio->PlayFx(9, 0);
+		}
+	}
+
+	if (bodyB == App->scene_intro->board.ditto_hole_sensor) 
+	{
+		App->audio->PlayFx(10, 0);
+	}
+	
 }
 
 // Update: draw background

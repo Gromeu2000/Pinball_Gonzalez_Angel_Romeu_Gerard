@@ -480,6 +480,8 @@ public:
 	
 	bool is_bouncer_hit[3] = { false, false, false };
 	bool is_triangle_hit[2] = { false, false };
+	bool is_light_sensor_hit[4] = { false, false, false, false };
+	bool is_top_light_sensor_hit[3] = { false, false, false };
 };
 
 

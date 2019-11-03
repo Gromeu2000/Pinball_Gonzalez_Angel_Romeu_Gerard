@@ -43,9 +43,9 @@ bool ModuleSceneIntro::Start()
 	//board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
 
 	//Static Circles (Bouncers)
-	board.bouncers[0]			= App->physics->CreateCircle(b2_staticBody, 234, 290, 18, 1);
-	board.bouncers[1]			= App->physics->CreateCircle(b2_staticBody, 256, 209, 18, 1);
-	board.bouncers[2]			= App->physics->CreateCircle(b2_staticBody, 186, 234, 18, 1);
+	board.bouncers[0]			= App->physics->CreateCircle(b2_staticBody, 235, 295, 22, 1);
+	board.bouncers[1]			= App->physics->CreateCircle(b2_staticBody, 263, 212, 22, 1);
+	board.bouncers[2]			= App->physics->CreateCircle(b2_staticBody, 180, 239, 22, 1);
 	board.triangles[0]			= App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.5, -1800 * DEGTORAD);
 	board.triangles[1]			= App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.5,  1800 * DEGTORAD);
 	board.left_diglett_bouncer	= App->physics->CreateCircle(b2_staticBody, 78, 511, 18, 0.9f);
@@ -64,9 +64,9 @@ bool ModuleSceneIntro::Start()
 	board.toplight_sensor[1] = App->physics->CreateRectangleSensor(223, 160, 11, 17);
 	board.toplight_sensor[2] = App->physics->CreateRectangleSensor(284, 163, 11, 17);
 
-	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(234, 290, 22, 20);
-	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(256, 209, 22, 20);
-	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(186, 234, 22, 20);
+	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 295, 25, 20);
+	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(263, 212, 25, 20);
+	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(180, 239, 25, 20);
 
 	board.left_wall_sensor = App->physics->CreateRectangleSensor(118, 414, 4, 12, 45, 10);
 	board.right_wall_sensor = App->physics->CreateRectangleSensor(330, 412, 4, 12, -45, 10);
