@@ -81,6 +81,11 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody* triangle_sensors[2];
 	PhysBody* diglett_sensors[2];
 
+	bool is_bouncer_hit[3] = { false, false, false };
+	bool is_triangle_hit[2] = { false, false };
+	bool is_light_sensor_hit[4] = { false, false, false, false };
+	bool is_top_light_sensor_hit[3] = { false, false, false };
+
 	//--------------------------Shape Declarations--------------------------
 	//Tweak until it feels right.
 	int backgroundExterior[132] = {
@@ -287,15 +292,15 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	179, 319,
 	153, 293,
 	141, 278,
-	135, 266,
-	130, 249,
-	130, 229,
+	130, 266, //Interior side
+	126, 249,
+	126, 229,
 	132, 211, //Topmost part of starmie wall
 	138, 185,
 	130, 205, //Left part of the wall
-	127, 219,
-	125, 229,
-	125, 300,
+	126, 219,
+	123, 229,
+	123, 300,
 	129, 318,
 	135, 335,
 	147, 353
@@ -316,21 +321,21 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	256, 120,
 	260, 121,
 	261, 127,
-	261, 158,
-	259, 160,
-	252, 160,
-	249, 157,
-	249, 127,
-	251, 122
+	261, 155,
+	259, 157,
+	252, 157,
+	249, 154,
+	249, 125,
+	251, 120
 	};
 
 	int bellsprout_Wall[86] = {
-	311, 141, //Top part of the wall
-	311, 235,
-	307, 258,
-	305, 277,
+	315, 144,		//Top part of the wall
+	315, 235,
+	312, 258,
+	311, 277,
 	302, 297,
-	294, 315,
+	296, 315,
 	294, 328,
 	301, 334,
 	304, 339,
@@ -349,10 +354,10 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	362, 337,
 	356, 353,
 	351, 366,
-	344, 377,
+	345, 377,
 	334, 391,
-	325, 403,
-	325, 407,
+	324, 403,		//Number wall
+	323, 407,
 	337, 420,
 	342, 418,
 	352, 402,
@@ -442,14 +447,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	0, 42,
 	0, 37
 	};
-
-
 };
-
-//struct PinballBoardBodies				//Learn how to implement it with private elements instead of public.
-//{
-//	
-//};
 
 class ModuleSceneIntro : public Module
 {
@@ -460,28 +458,22 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-	//void OnCollision(PhysBody* bodyA, PhysBody* bodyB); //This
 
 private:
 
 public:
 	PinballBoardElements board;			//As it is a class, it needs to be a pointer to be accessed from outside.
-	//PinballBoardBodies* body;
 	
 	bool InitializeBoard();				//Initializes all elements of the board.
 	bool SetAnimationRectPosition();	//Sets each rect's data members with their corresponding measures.
 	bool AddAnimationPushbacks();		//Load animations
+	bool AddShapes();					//Loads all shapes
+	bool AddSensors();					//Loads all sensors
 
 	//Score
 	char player_score[10];
 	char max_score[10];
 	int score = -1;
-
-	
-	bool is_bouncer_hit[3] = { false, false, false };
-	bool is_triangle_hit[2] = { false, false };
-	bool is_light_sensor_hit[4] = { false, false, false, false };
-	bool is_top_light_sensor_hit[3] = { false, false, false };
 };
 
 

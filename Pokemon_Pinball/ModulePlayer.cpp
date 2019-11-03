@@ -27,6 +27,7 @@ bool ModulePlayer::Start()
 	setBall(PLAYER_POS_X, PLAYER_POS_Y);
 
 	player.destroy_ball = false;
+	player.double_ball = false;
 
 	//Diglett Plunger Rect
 	player.diglett_plunger.x = 451;
@@ -101,94 +102,6 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
-void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
-{
-	if (bodyB == App->scene_intro->board.dying_sensor)
-	{
-		//player.destroy_ball = true;
-		//setBall(PLAYER_POS_X, PLAYER_POS_Y);
-		player.lives --;
-		player.destroy_ball = true;
-		if (player.lives > 0)
-		{
-			App->audio->PlayFx(6, 0);
-		}
-		else
-		{
-			App->audio->PlayMusic("audio/Songs/Game Over.ogg");
-		}
-
-		if (score > maxscore)
-		{
-			maxscore = score;
-		}
-	}
-
-	if (bodyB->score != 0)
-	{
-		score += bodyB->score;
-	}
-
-	for (int i = 0; i < 3; i++) // check collision with bouncers
-	{
-		if (bodyB == App->scene_intro->board.voltorb_sensor[i])
-		{
-			App->audio->PlayFx(2, 0);
-			App->scene_intro->is_bouncer_hit[i] = true;
-		}
-		
-	}
-
-	for (int i = 0; i < 2; i++) //check collision with triangles
-	{
-		if (bodyB == App->scene_intro->App->scene_intro->board.triangle_sensors[i])
-		{
-			App->scene_intro->is_triangle_hit[i] = true;
-			App->audio->PlayFx(8, 0);
-		}
-	}
-
-	for (int i = 0; i < 2; i++) //check collision with digletts
-	{
-		if (bodyB == App->scene_intro->App->scene_intro->board.diglett_sensors[i])
-		{
-			App->audio->PlayFx(1, 0);
-		}
-	}
-
-	if (bodyB == App->scene_intro->board.bellsprout_S)
-	{
-		App->audio->PlayFx(4, 0);
-	}
-
-	if (bodyB == App->scene_intro->board.starmie_S)
-	{
-		App->audio->PlayFx(3, 0);
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (bodyB == App->scene_intro->board.light_sensor[i])
-		{
-			App->audio->PlayFx(9, 0);
-		}
-	}
-
-	for (int i = 0; i < 3; i++)
-	{
-		if (bodyB == App->scene_intro->board.toplight_sensor[i])
-		{
-			App->audio->PlayFx(9, 0);
-		}
-	}
-
-	if (bodyB == App->scene_intro->board.ditto_hole_sensor) 
-	{
-		App->audio->PlayFx(10, 0);
-	}
-	
-}
-
 // Update: draw background
 update_status ModulePlayer::Update()
 {
@@ -237,18 +150,18 @@ update_status ModulePlayer::Update()
 		App->scene_intro->board.dynamicBody_List.add(player.ball);
 		App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
 	}
-	
-	
-	//--------------------------------------DEBUG--------------------------------------
-	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects
-	{
-		//Load left flipper
-		App->renderer->Blit(player.diglett_plunger_tex, 451, 594, &player.diglett_plunger);
-	}
 
 	//GAMEPLAY LOGIC-------------------------------------------------------------
 
-	//Reset max score
+	//Combo Score
+	if (App->scene_intro->board.is_bouncer_hit[0] == true && App->scene_intro->board.is_bouncer_hit[1] == true && App->scene_intro->board.is_bouncer_hit[2] == true && App->scene_intro->board.is_triangle_hit[0] == true && App->scene_intro->board.is_triangle_hit[1] == true && player.double_ball == false)
+	{
+		setBall(48, 56);				//Ball appears at Ditto Hole
+		score += 1000;
+		player.double_ball = true;
+	}
+	
+	//Reset game.
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
 	{
 		App->audio->PlayFx(7, 0);
@@ -259,6 +172,7 @@ update_status ModulePlayer::Update()
 		}
 
 		//Destroybody
+		App->physics->world->DestroyBody(player.ball->body);
 		setBall(PLAYER_POS_X, PLAYER_POS_Y);
 		score = 0;
 
@@ -266,15 +180,123 @@ update_status ModulePlayer::Update()
 		App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 	}
 
+	//Destruction of the ball and ball respawn at plunger's position.
 	if (player.destroy_ball == true && player.lives != 0)
 	{
-		App->physics->world->DestroyBody(player.ball->body);
-		setBall(PLAYER_POS_X, PLAYER_POS_Y);
+		if (player.double_ball == true)										//In case combo score has been achieved the ball destroyed will be the extra ball.
+		{
+			App->physics->world->DestroyBody(player.extra_ball->body);
+			player.double_ball = false;
+		}
+		else
+		{
+			App->physics->world->DestroyBody(player.ball->body);			//In case combo sscore has been achieved the ball destroyed will be the extra ball.
+			setBall(PLAYER_POS_X, PLAYER_POS_Y);
+		}
 		
 		player.destroy_ball = false;
 	}
 	
 	return UPDATE_CONTINUE;
+}
+
+void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+{
+	//Ball has been lost
+	if (bodyB == App->scene_intro->board.dying_sensor)
+	{
+		if (player.double_ball == true)
+		{
+			if (player.lives > 0)
+			{
+				App->audio->PlayFx(6, 0);
+			}
+			player.destroy_ball = true;
+		}
+		else
+		{
+			player.lives--;
+			player.destroy_ball = true;
+			if (player.lives > 0)
+			{
+				App->audio->PlayFx(6, 0);
+			}
+			else
+			{
+				App->audio->PlayMusic("audio/Songs/Game Over.ogg");
+			}
+
+			if (score > maxscore)
+			{
+				maxscore = score;
+			}
+		}
+	}
+
+	//If the body that has collided had a score parameter, that value is added to the score.
+	if (bodyB->score != 0)
+	{
+		score += bodyB->score;
+	}
+
+	for (int i = 0; i < 3; i++) // check collision with bouncers
+	{
+		if (bodyB == App->scene_intro->board.voltorb_sensor[i])
+		{
+			App->audio->PlayFx(2, 0);
+			App->scene_intro->board.is_bouncer_hit[i] = true;
+			//App->scene_intro->board.is_bouncer_hit[i] = false;
+		}
+	}
+
+	for (int i = 0; i < 2; i++) //check collision with triangles
+	{
+		if (bodyB == App->scene_intro->App->scene_intro->board.triangle_sensors[i])
+		{
+			App->scene_intro->board.is_triangle_hit[i] = true;
+			App->audio->PlayFx(8, 0);
+		}
+	}
+
+	for (int i = 0; i < 2; i++) //check collision with digletts
+	{
+		if (bodyB == App->scene_intro->App->scene_intro->board.diglett_sensors[i])
+		{
+			App->audio->PlayFx(1, 0);
+		}
+	}
+
+	if (bodyB == App->scene_intro->board.bellsprout_S)
+	{
+		App->audio->PlayFx(4, 0);
+	}
+
+	if (bodyB == App->scene_intro->board.starmie_S)
+	{
+		App->audio->PlayFx(3, 0);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (bodyB == App->scene_intro->board.light_sensor[i])
+		{
+			App->audio->PlayFx(9, 0);
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (bodyB == App->scene_intro->board.toplight_sensor[i])
+		{
+			App->audio->PlayFx(9, 0);
+		}
+	}
+
+	if (bodyB == App->scene_intro->board.ditto_hole_sensor)
+	{
+		App->audio->PlayFx(10, 0);
+	}
+
 }
 
 void ModulePlayer::InitPlayer()
@@ -286,9 +308,17 @@ void ModulePlayer::InitPlayer()
 //Creates/Resets the ball back to the plunger so it can be set in play again. 
 void ModulePlayer::setBall(uint x, uint y)
 {
-	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.6f);		//Creates a new ball to play with.
+	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.5f);		//Creates a new ball to play with.
 	App->scene_intro->board.dynamicBody_List.add(player.ball);							//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
-	player.ball->listener = this;
+	player.ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
+}
+
+//Creates the extra ball that appears when the combo score is achieved.
+void ModulePlayer::setExtraBall(uint x, uint y)
+{
+	player.extra_ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.5f);		//Creates the extra ball.
+	App->scene_intro->board.dynamicBody_List.add(player.extra_ball);					//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
+	player.ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
 }
 
 

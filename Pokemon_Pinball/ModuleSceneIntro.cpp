@@ -25,70 +25,9 @@ bool ModuleSceneIntro::Start()
 
 	InitializeBoard();
 
-	//Load Shapes:
-	//----------------------------Static Shapes----------------------------
-	//Static Chains:
-	//Background Chains. All chains have their pivot at (0, 0) due to Ric's vector drawing program
-	board.background_exterior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundExterior, 132, 0);
-	board.background_interior		= App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundInterior, 138, 0);
-	board.left_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Kicker, 6, 0);
-	board.right_kicker				= App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Kicker, 6, 0);
-	board.left_arm					= App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Arm, 16, 0);
-	board.right_arm					= App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Arm, 16, 0);
-	board.topLeft_wall				= App->physics->CreateChain(b2_staticBody, 0, 0, board.topLeft_Wall, 36, 0);
-	board.starmie_wall				= App->physics->CreateChain(b2_staticBody, 0, 0, board.starmie_Wall, 38, 0);
-	board.centerLeft_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerLeft_MiniWall, 16, 0);
-	board.centerRight_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerRight_MiniWall, 18, 0);
-	board.bellsprout_wall			= App->physics->CreateChain(b2_staticBody, 0, 0, board.bellsprout_Wall, 86, 0);
-	//board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
+	AddShapes();
 
-	//Static Circles (Bouncers)
-	board.bouncers[0]			= App->physics->CreateCircle(b2_staticBody, 235, 295, 22, 1);
-	board.bouncers[1]			= App->physics->CreateCircle(b2_staticBody, 263, 212, 22, 1);
-	board.bouncers[2]			= App->physics->CreateCircle(b2_staticBody, 180, 239, 22, 1);
-	board.triangles[0]			= App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.5, -1800 * DEGTORAD);
-	board.triangles[1]			= App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.5,  1800 * DEGTORAD);
-	board.left_diglett_bouncer	= App->physics->CreateCircle(b2_staticBody, 78, 511, 18, 0.9f);
-	board.right_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 372, 511, 18, 0.9f);
-
-
-	//SENSORS-------------------------------------------
-	board.ditto_hole_sensor = App->physics->CreateCircleSensor(48, 56, 23, 200);
-
-	board.light_sensor[0] = App->physics->CreateRectangleSensor(38, 614, 11, 17, 0, 10);
-	board.light_sensor[1] = App->physics->CreateRectangleSensor(83, 614, 11, 17, 0, 10);
-	board.light_sensor[2] = App->physics->CreateRectangleSensor(363, 614, 11, 17, 0, 10);
-	board.light_sensor[3] = App->physics->CreateRectangleSensor(408, 614, 11, 17, 0, 10);
-	
-	board.toplight_sensor[0] = App->physics->CreateRectangleSensor(161, 191, 11, 17);
-	board.toplight_sensor[1] = App->physics->CreateRectangleSensor(223, 160, 11, 17);
-	board.toplight_sensor[2] = App->physics->CreateRectangleSensor(284, 163, 11, 17);
-
-	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 295, 25, 20);
-	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(263, 212, 25, 20);
-	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(180, 239, 25, 20);
-
-	board.left_wall_sensor = App->physics->CreateRectangleSensor(118, 414, 4, 12, 45, 10);
-	board.right_wall_sensor = App->physics->CreateRectangleSensor(330, 412, 4, 12, -45, 10);
-
-	board.triangle_sensors[0] = App->physics->CreateRectangleSensor(126, 621, 5, 60, -1800 * DEGTORAD);
-	board.triangle_sensors[1] = App->physics->CreateRectangleSensor(325, 617, 5, 60, 1800 * DEGTORAD);
-	
-	board.diglett_sensors[0] = App->physics->CreateCircleSensor(84, 511, 20,10);
-	board.diglett_sensors[1] = App->physics->CreateCircleSensor(365, 511, 20,10);
-	
-	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 100);
-
-	board.starmie_S = App->physics->CreateCircleSensor(162, 333, 30, 60);
-
-	board.dying_sensor	= App->physics->CreateRectangleSensor(220, 785, 5, 80, 5100 * DEGTORAD);
-	
-	/*
-	board.ball_catcher = App->physics->CreateCircleSensor();
-	
-	
-	board.triangle_sensors[0] = App->physics->CreateCircleSensor();
-	board.triangle_sensors[1] = App->physics->CreateCircleSensor();*/
+	AddSensors();
 
 
 	//OBJECTS---------------------------------------------
@@ -164,19 +103,19 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(board.background_tex, 154, 214, &board.voltorb_boost);
 
 		
-		if(is_bouncer_hit[0] == true)
+		if(board.is_bouncer_hit[0] == true)
 		{
 			//Load boosted voltorb
 			App->renderer->Blit(board.background_tex, 212, 270, &board.voltorb_boosted);
 		}
 		
-		if (is_bouncer_hit[1] == true)
+		if (board.is_bouncer_hit[1] == true)
 		{
 			//Load boosted voltorb
 			App->renderer->Blit(board.background_tex, 240, 186, &board.voltorb_boosted);
 		}
 
-		if (is_bouncer_hit[2] == true)
+		if (board.is_bouncer_hit[2] == true)
 		{
 			//Load boosted voltorb
 			App->renderer->Blit(board.background_tex, 156, 214, &board.voltorb_boosted);
@@ -185,13 +124,13 @@ update_status ModuleSceneIntro::Update()
 		//Load blocker
 		App->renderer->Blit(board.background_tex, 263, 64, &board.blocker);
 
-		if (is_triangle_hit[0] == true)
+		if (board.is_triangle_hit[0] == true)
 		{
 			//Load left triangle when hit
 			App->renderer->Blit(board.background_tex, 95, 588, &board.triangle_boosted_L);
 		}
 		
-		if (is_triangle_hit[1] == true)
+		if (board.is_triangle_hit[1] == true)
 		{
 			//Load right triangle when hit
 			App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
@@ -412,6 +351,82 @@ bool ModuleSceneIntro::SetAnimationRectPosition()
 	board.triangle_boosted_R.y = 2242.8;
 	board.triangle_boosted_R.w = 46.2;
 	board.triangle_boosted_R.h = 82.6;
+
+	return true;
+}
+
+bool ModuleSceneIntro::AddShapes()
+{
+	//Load Shapes:
+	//----------------------------Static Shapes----------------------------
+	//Static Chains:
+	//Background Chains. All chains have their pivot at (0, 0) due to Ric's vector drawing program
+	board.background_exterior = App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundExterior, 132, 0);
+	board.background_interior = App->physics->CreateChain(b2_staticBody, 0, 0, board.backgroundInterior, 138, 0);
+	board.left_kicker = App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Kicker, 6, 0);
+	board.right_kicker = App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Kicker, 6, 0);
+	board.left_arm = App->physics->CreateChain(b2_staticBody, 0, 0, board.left_Arm, 16, 0);
+	board.right_arm = App->physics->CreateChain(b2_staticBody, 0, 0, board.right_Arm, 16, 0);
+	board.topLeft_wall = App->physics->CreateChain(b2_staticBody, 0, 0, board.topLeft_Wall, 36, 0);
+	board.starmie_wall = App->physics->CreateChain(b2_staticBody, 0, 0, board.starmie_Wall, 38, 0);
+	board.centerLeft_miniwall = App->physics->CreateChain(b2_staticBody, 0, 0, board.centerLeft_MiniWall, 16, 0);
+	board.centerRight_miniwall = App->physics->CreateChain(b2_staticBody, 0, 0, board.centerRight_MiniWall, 18, 0);
+	board.bellsprout_wall = App->physics->CreateChain(b2_staticBody, 0, 0, board.bellsprout_Wall, 86, 0);
+	//board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
+
+	//Static Circles (Bouncers)
+	board.bouncers[0] = App->physics->CreateCircle(b2_staticBody, 235, 295, 18, 1);
+	board.bouncers[1] = App->physics->CreateCircle(b2_staticBody, 259, 214, 18, 1);
+	board.bouncers[2] = App->physics->CreateCircle(b2_staticBody, 183, 239, 18, 1);
+
+	board.triangles[0] = App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.5, -1800 * DEGTORAD);
+	board.triangles[1] = App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.5, 1800 * DEGTORAD);
+
+	board.left_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 78, 511, 18, 0.9f);
+	board.right_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 372, 511, 18, 0.9f);
+
+	return true;
+}
+
+bool ModuleSceneIntro::AddSensors()
+{
+	//SENSORS-------------------------------------------
+	board.ditto_hole_sensor = App->physics->CreateCircleSensor(48, 56, 23, 200);
+
+	board.light_sensor[0] = App->physics->CreateRectangleSensor(38, 614, 11, 17, 0, 10);
+	board.light_sensor[1] = App->physics->CreateRectangleSensor(83, 614, 11, 17, 0, 10);
+	board.light_sensor[2] = App->physics->CreateRectangleSensor(363, 614, 11, 17, 0, 10);
+	board.light_sensor[3] = App->physics->CreateRectangleSensor(408, 614, 11, 17, 0, 10);
+
+	board.toplight_sensor[0] = App->physics->CreateRectangleSensor(161, 191, 11, 17);
+	board.toplight_sensor[1] = App->physics->CreateRectangleSensor(223, 160, 11, 17);
+	board.toplight_sensor[2] = App->physics->CreateRectangleSensor(284, 163, 11, 17);
+
+	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 295, 21, 20);
+	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(259, 214, 21, 20);
+	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(183, 239, 21, 20);
+
+	board.left_wall_sensor = App->physics->CreateRectangleSensor(118, 414, 4, 12, 45, 10);
+	board.right_wall_sensor = App->physics->CreateRectangleSensor(330, 412, 4, 12, -45, 10);
+
+	board.triangle_sensors[0] = App->physics->CreateRectangleSensor(126, 621, 5, 60, -1800 * DEGTORAD);
+	board.triangle_sensors[1] = App->physics->CreateRectangleSensor(325, 617, 5, 60, 1800 * DEGTORAD);
+
+	board.diglett_sensors[0] = App->physics->CreateCircleSensor(84, 511, 20, 10);
+	board.diglett_sensors[1] = App->physics->CreateCircleSensor(365, 511, 20, 10);
+
+	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 100);
+
+	board.starmie_S = App->physics->CreateCircleSensor(162, 333, 30, 60);
+
+	board.dying_sensor = App->physics->CreateRectangleSensor(220, 785, 5, 80, 5100 * DEGTORAD);
+
+	/*
+	board.ball_catcher = App->physics->CreateCircleSensor();
+
+
+	board.triangle_sensors[0] = App->physics->CreateCircleSensor();
+	board.triangle_sensors[1] = App->physics->CreateCircleSensor();*/
 
 	return true;
 }
