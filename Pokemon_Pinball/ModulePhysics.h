@@ -43,12 +43,12 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(b2BodyType type, int x, int y, int radius, int restitution, float friction = 0);					//Method that creates circles. Now accepts BodyType, restitution and friction as arguments.
+	PhysBody* CreateCircle(b2BodyType type, int x, int y, int radius, float restitution, float friction = 0);					//Method that creates circles. Now accepts BodyType, restitution and friction as arguments.
 	PhysBody* CreateCircleSensor(int x, int y, int radius, int score = 0);													//Method that creates circle sensors. Now accepts score as an argument.
-	PhysBody* CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution, float angle = 0.0f);	//Method that creates rectangles. Now accepts BodyType, restitution and angle as arguments.
+	PhysBody* CreateRectangle(b2BodyType type, int x, int y, int width, int height, float restitution, float angle = 0.0f);	//Method that creates rectangles. Now accepts BodyType, restitution and angle as arguments.
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, float angle = 0.0f, int score = 0);				//Method that creates rectangle sensors. Now accepts angle and score as arguments.
-	PhysBody* CreateChain(b2BodyType type, int x, int y, int* points, int size, int restitution);							//Method that creates chains. Now accepts BodyType and restitution as arguments.
-	PhysBody* CreateFlipper(b2BodyType type, int x, int y, int* points, int size, int restitution);							//Method that creates poligons with the given verexs. Now accepts BodyType and restitution as arguments.
+	PhysBody* CreateChain(b2BodyType type, int x, int y, int* points, int size, float restitution);							//Method that creates chains. Now accepts BodyType and restitution as arguments.
+	PhysBody* CreateFlipper(b2BodyType type, int x, int y, int* points, int size, float restitution);							//Method that creates poligons with the given verexs. Now accepts BodyType and restitution as arguments.
 
 	//Method to create a revolution joint, accepts as arguments all variables relevant for this joint except collideConnected, which will be always set to true. Can be used to create any joint.
 	void CreateRevolutionJoint(PhysBody* dynamicBody, PhysBody* staticBody, int upperAngle, int lowerAngle, int offsetX, int offsetY, b2RevoluteJoint* revoluteJoint);

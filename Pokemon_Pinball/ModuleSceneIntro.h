@@ -67,8 +67,6 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	//--------------------------SENSOR DECLARATIONS--------------------------
 	PhysBody* dying_sensor;
-	PhysBody* left_kicker_sensor;
-	PhysBody* right_kicker_sensor;
 	PhysBody* ball_catcher;
 	PhysBody* bellsprout_S;
 	PhysBody* starmie_S;

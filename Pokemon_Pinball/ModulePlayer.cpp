@@ -35,8 +35,10 @@ bool ModulePlayer::CleanUp()
 	LOG("Unloading player");
 
 	//Unload textures
-	App->textures->Unload(player.flippers_texture);
+	App->textures->Unload(player.flipper_Left_tex);
+	App->textures->Unload(player.flipper_Right_tex);
 	App->textures->Unload(player.pokeball_tex);
+	App->textures->Unload(player.ditto_ball_tex);
 	App->textures->Unload(player.diglett_plunger_tex);
 
 	return true;
@@ -291,7 +293,7 @@ bool ModulePlayer::InitializePlayer()
 //Creates/Resets the ball back to the plunger so it can be set in play again. 
 void ModulePlayer::setBall(uint x, uint y)
 {
-	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.6f);		//Creates a new ball to play with.
+	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.7f);		//Creates a new ball to play with.
 	App->scene_intro->board.dynamicBody_List.add(player.ball);							//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
 	player.ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
 }
@@ -299,7 +301,7 @@ void ModulePlayer::setBall(uint x, uint y)
 //Creates the extra ball that appears when the combo score is achieved.
 void ModulePlayer::setDittoBall(uint x, uint y)
 {
-	player.ditto_ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.6f);		//Creates the ditto ball.
+	player.ditto_ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.7f);		//Creates the ditto ball.
 	App->scene_intro->board.dynamicBody_List.add(player.ditto_ball);						//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
 	player.ball->listener = this;															//Adds a contact listener to the ball so sensors can detect a collision.
 }

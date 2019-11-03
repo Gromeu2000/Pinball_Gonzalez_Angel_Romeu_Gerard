@@ -216,7 +216,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius, int restitution, float friction)
+PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius, float restitution, float friction)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -270,7 +270,7 @@ PhysBody* ModulePhysics::CreateCircleSensor(int x, int y, int radius, int score)
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution, float angle)
+PhysBody* ModulePhysics::CreateRectangle(b2BodyType type, int x, int y, int width, int height, float restitution, float angle)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -328,7 +328,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateFlipper(b2BodyType type, int x, int y, int* points, int size, int restitution)
+PhysBody* ModulePhysics::CreateFlipper(b2BodyType type, int x, int y, int* points, int size, float restitution)
 {
 	b2BodyDef body;													//Declares the frame of the geometrical form.
 
@@ -368,7 +368,7 @@ PhysBody* ModulePhysics::CreateFlipper(b2BodyType type, int x, int y, int* point
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points, int size, int restitution)
+PhysBody* ModulePhysics::CreateChain(b2BodyType type, int x, int y, int* points, int size, float restitution)
 {
 	b2BodyDef body;													//Declares the frame of the geometrical form.
 	
