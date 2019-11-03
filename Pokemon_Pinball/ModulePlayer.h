@@ -20,6 +20,7 @@ struct Player
 	PhysBody*	plunger_base;				//Static Rectangle that stablishes the plunger's base. Will have a spring joint where the plunger-ram will be attached to.
 	PhysBody*	plunger_ram;				//Dynamic Rectangle that stablishes the plunger's ram. Will be the one to send the ball inside the board. Will have a spring joint attached to p_base.
 	PhysBody*	ball;						//Dynamic circle that will act as the ball.
+	PhysBody*	extra_ball;					//Dynamic circle that will act as the extra ball that appears when the combo score is achieved.
 	
 	b2RevoluteJoint* left_Anchor_Joint;
 	b2RevoluteJoint* right_Anchor_Joint;
@@ -41,6 +42,8 @@ struct Player
 	bool lastWasRight;
 	bool lastWasLeft;
 	bool destroy_ball;
+	bool double_ball;
+	bool voltorb_activated;
 	
 	//-----------------------Shapes---------------------
 	int Left_Flipper[16] = {
@@ -52,11 +55,6 @@ struct Player
 	64, 6,
 	67, 9,
 	67, 14,
-	/*64, 17,
-	50, 20,
-	36, 22,
-	22, 25,
-	8, 25*/
 	};
 
 	int Right_Flipper[16] = {
@@ -68,11 +66,6 @@ struct Player
 	3, 6,
 	0, 9,
 	0, 14,
-	/*3, 17,
-	17, 20,
-	31, 23,
-	45, 25,
-	59, 25*/
 	};
 };
 
@@ -93,7 +86,8 @@ public:
 	void CreatePlunger();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB); //This
 
-	void setBall(uint x, uint y); // fixes ball on a fixed position
+	void setBall(uint x, uint y);		//Creates a new ball at the given position.
+	void setExtraBall(uint x, uint y);	//Creates an extra ball at the given position.
 	
 								  //Score
 	uint score = 0;
