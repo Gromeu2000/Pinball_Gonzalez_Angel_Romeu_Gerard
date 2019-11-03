@@ -303,13 +303,13 @@ bool ModuleSceneIntro::AddAnimationPushbacks()
 
 	board.diglett_Left_Side.PushBack({ 552, 2115, 35, 42 });
 	board.diglett_Left_Side.PushBack({ 588, 2115, 31, 42 });
-	board.diglett_Left_Side.PushBack({ 622, 2115, 25, 42 });
+	//board.diglett_Left_Side.PushBack({ 622, 2115, 25, 42 });
 	board.diglett_Left_Side.loop = true;
 	board.diglett_Left_Side.speed = 0.06;
 
-	board.diglett_Right_Side.PushBack({ 938, 2115, 37, 42 });
+	board.diglett_Right_Side.PushBack({ 938, 2115, 43, 42 });
 	board.diglett_Right_Side.PushBack({ 902, 2115, 37, 43 });
-	board.diglett_Right_Side.PushBack({ 973, 2115, 37, 42 });
+	//board.diglett_Right_Side.PushBack({ 973, 2115, 50, 42 });
 	board.diglett_Right_Side.loop = true;
 	board.diglett_Right_Side.speed = 0.06;
 
@@ -488,13 +488,9 @@ bool ModuleSceneIntro::AddSensors()
 	board.light_sensor[2] = App->physics->CreateRectangleSensor(363, 614, 11, 17, 0, 10);
 	board.light_sensor[3] = App->physics->CreateRectangleSensor(408, 614, 11, 17, 0, 10);
 
-	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 297, 21, 20);
-	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(259, 214, 21, 20);
-	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(183, 239, 21, 20);
-
-	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 295, 21, 20);
-	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(259, 214, 21, 20);
-	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(183, 239, 21, 20);
+	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 297, 22, 20);
+	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(259, 214, 22, 20);
+	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(183, 239, 22, 20);
 
 	board.left_wall_sensor = App->physics->CreateRectangleSensor(118, 414, 4, 12, 45, 10);
 	board.right_wall_sensor = App->physics->CreateRectangleSensor(330, 412, 4, 12, -45, 10);
