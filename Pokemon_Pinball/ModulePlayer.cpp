@@ -26,18 +26,13 @@ bool ModulePlayer::Start()
 	// Init pos player
 	setBall(PLAYER_POS_X, PLAYER_POS_Y);
 
-	//Load rects
-	player.flipper_L.x = 390;
-	player.flipper_L.y = 2276;
-	player.flipper_L.w = 64;
-	player.flipper_L.h = 46;
-
-	player.flipper_R.x = 955;
-	player.flipper_R.y = 2276;
-	player.flipper_R.w = 66;
-	player.flipper_R.h = 45;
-
 	player.destroy_ball = false;
+
+	//Diglett Plunger Rect
+	player.diglett_plunger.x = 451;
+	player.diglett_plunger.y = 594;
+	player.diglett_plunger.w = 42;
+	player.diglett_plunger.h = 110;
 
 	LOG("Loading player");
 
@@ -47,10 +42,11 @@ bool ModulePlayer::Start()
 	player.pokeball_tex = App->textures->Load("sprites/Ball_38px.png");
 	player.flipper_Left_tex = App->textures->Load("sprites/Left_Flipper.png");
 	player.flipper_Right_tex = App->textures->Load("sprites/Right_Flipper.png");
+	player.diglett_plunger_tex = App->textures->Load("sprites/diglett_plunger.png");
 
 	//----------------------------------------PLUNGER----------------------------------------------
 	//Diglett Plunger
-	player.plunger_ram = App->physics->CreateRectangle(b2_dynamicBody, 469, 750, 34, 15, 0);
+	player.plunger_ram = App->physics->CreateRectangle(b2_dynamicBody, 469, 750, 34, 20, 0);
 	player.plunger_base = App->physics->CreateRectangle(b2_staticBody, 469, 769, 34, 15, 0);
 
 	App->physics->CreatePrismaticJoint(player.plunger_ram, player.plunger_base, player.plunger_Joint);
@@ -58,15 +54,15 @@ bool ModulePlayer::Start()
 	//----------------------------------------FLIPPERS----------------------------------------------
 	//Flippers
 	//Left flipper
-	player.left_flipper = App->physics->CreateFlipper(b2_dynamicBody, 143, 708, player.Left_Flipper, 16, 0);				//Creates the right flipper object
-	player.left_anchor = App->physics->CreateCircle(b2_staticBody, 158, 722, 7, 0);											//Creates the anchor point of the flipper
+	player.left_flipper = App->physics->CreateFlipper(b2_dynamicBody, 133, 705, player.Left_Flipper, 16, 0);					//Creates the left flipper object
+	player.left_anchor = App->physics->CreateCircle(b2_staticBody, 148, 719, 7, 0);												//Creates the anchor point of the flipper
 
-	App->physics->CreateRevolutionJoint(player.left_flipper, player.left_anchor, 25, -25, 9, 10, player.left_Anchor_Joint);
+	App->physics->CreateRevolutionJoint(player.left_flipper, player.left_anchor, 25, -25, 9, 10, player.left_Anchor_Joint);		//Creates the joint that seams together the flipper with its anchor
 
-	player.right_flipper = App->physics->CreateFlipper(b2_dynamicBody, 300, 716, player.Right_Flipper, 16, 0);
-	player.right_anchor = App->physics->CreateCircle(b2_staticBody, 288, 722, 7, 0);
+	player.right_flipper = App->physics->CreateFlipper(b2_dynamicBody, 310, 705, player.Right_Flipper, 16, 0);					//Creates the right flipper object
+	player.right_anchor = App->physics->CreateCircle(b2_staticBody, 298, 719, 7, 0);											//Creates the anchor point of the flipper
 
-	App->physics->CreateRevolutionJoint(player.right_flipper, player.right_anchor, 25, -25, 60, 10, player.right_Anchor_Joint);
+	App->physics->CreateRevolutionJoint(player.right_flipper, player.right_anchor, 25, -25, 60, 10, player.right_Anchor_Joint);	//Creates the joint that seams together the flipper with its anchor
 	//App->physics->CreateFlippers(); //Metode de crear flippers pero com a rectangles
 
 	App->scene_intro->board.dynamicBody_List.add(player.left_flipper);
@@ -98,6 +94,7 @@ bool ModulePlayer::CleanUp()
 	//Unload textures
 	App->textures->Unload(player.flippers_texture);
 	App->textures->Unload(player.pokeball_tex);
+	App->textures->Unload(player.diglett_plunger_tex);
 
 	return true;
 }
@@ -109,7 +106,7 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		//player.destroy_ball = true;
 		//setBall(PLAYER_POS_X, PLAYER_POS_Y);
 		player.lives --;
-
+		player.destroy_ball = true;
 		if (player.lives > 0)
 		{
 			App->audio->PlayFx(6, 0);
@@ -123,7 +120,6 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			maxscore = score;
 		}
-
 	}
 
 	if (bodyB->score != 0)
@@ -175,7 +171,7 @@ update_status ModulePlayer::Update()
 	//--------------------------------------INPUTS PLAYER--------------------------------------
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
-		player.right_flipper->body->ApplyTorque({ 150 }, true);
+		player.right_flipper->body->ApplyTorque({ 200 }, true);
 
 		player.lastWasRight = true;
 		player.lastWasLeft = false;
@@ -184,20 +180,20 @@ update_status ModulePlayer::Update()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP)
 	{
-		player.right_flipper->body->ApplyTorque({ -150 }, true);
+		player.right_flipper->body->ApplyTorque({ -200 }, true);
 		App->audio->PlayFx(5, 0);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
-		player.left_flipper->body->ApplyTorque({ -150 }, true);
+		player.left_flipper->body->ApplyTorque({ -200 }, true);
 
 		player.lastWasLeft = true;
 		player.lastWasRight = false;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_UP)
 	{
-		player.left_flipper->body->ApplyTorque({ 150 }, true);
+		player.left_flipper->body->ApplyTorque({ 200 }, true);
 		App->audio->PlayFx(5, 0);
 	}
 
@@ -208,12 +204,12 @@ update_status ModulePlayer::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
 	{
-		player.plunger_ram->body->ApplyForce({ 0, -500 }, { 0, 0 }, true);	//Releases the plunger, sending the ball in the board.
+		player.plunger_ram->body->ApplyForce({ 0, -550 }, { 0, 0 }, true);	//Releases the plunger, sending the ball in the board.
 	}
 	
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		player.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 18, 0);
+		player.ball = App->physics->CreateCircle(b2_dynamicBody, App->input->GetMouseX(), App->input->GetMouseY(), 18, 0, 0.6f);
 		App->scene_intro->board.dynamicBody_List.add(player.ball);
 		App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
 	}
@@ -223,10 +219,7 @@ update_status ModulePlayer::Update()
 	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects
 	{
 		//Load left flipper
-		App->renderer->Blit(player.flippers_texture, 146, 710, &player.flipper_L);
-
-		//Load right flipper
-		App->renderer->Blit(player.flippers_texture, 238, 710, &player.flipper_R);
+		App->renderer->Blit(player.diglett_plunger_tex, 451, 594, &player.diglett_plunger);
 	}
 
 	//GAMEPLAY LOGIC-------------------------------------------------------------
@@ -249,20 +242,14 @@ update_status ModulePlayer::Update()
 		App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 	}
 
+	if (player.destroy_ball == true && player.lives != 0)
+	{
+		App->physics->world->DestroyBody(player.ball->body);
+		setBall(PLAYER_POS_X, PLAYER_POS_Y);
+		
+		player.destroy_ball = false;
+	}
 	
-
-		//if (player.destroy_ball == true && lives != 0)
-		//{
-		//	App->physics->world->DestroyBody(player.ball->body);
-		//
-		//	player.ball = App->physics->CreateCircle(b2_dynamicBody, 448, 752, 18, 0);
-		//	App->scene_intro->board.dynamicBody_List.add(player.ball);
-		//	App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
-		//
-		//	player.destroy_ball = false;
-		//}
-	
-
 	return UPDATE_CONTINUE;
 }
 
@@ -272,15 +259,11 @@ void ModulePlayer::InitPlayer()
 	player.lastWasLeft = false;
 }
 
-//This
-void ModulePlayer::CreatePlunger()
-{
-	b2PrismaticJointDef plungerJoint;
-}
-
+//Creates/Resets the ball back to the plunger so it can be set in play again. 
 void ModulePlayer::setBall(uint x, uint y)
 {
-	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0);
+	player.ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.6f);		//Creates a new ball to play with.
+	App->scene_intro->board.dynamicBody_List.add(player.ball);							//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
 	player.ball->listener = this;
 }
 

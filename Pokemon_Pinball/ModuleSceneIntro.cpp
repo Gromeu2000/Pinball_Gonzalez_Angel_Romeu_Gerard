@@ -40,27 +40,42 @@ bool ModuleSceneIntro::Start()
 	board.centerLeft_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerLeft_MiniWall, 16, 0);
 	board.centerRight_miniwall		= App->physics->CreateChain(b2_staticBody, 0, 0, board.centerRight_MiniWall, 18, 0);
 	board.bellsprout_wall			= App->physics->CreateChain(b2_staticBody, 0, 0, board.bellsprout_Wall, 86, 0);
-	board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
+	//board.ball_below_flippers		= App->physics->CreateChain(b2_staticBody, 0, 0, board.ball_Below_Flippers, 14, 0);
 
 	//Static Circles (Bouncers)
-	bouncers[0] = App->physics->CreateCircle(b2_staticBody, 234, 290, 18, 1);
-	bouncers[1] = App->physics->CreateCircle(b2_staticBody, 256, 209, 18, 1);
-	bouncers[2] = App->physics->CreateCircle(b2_staticBody, 186, 234, 18, 1);
+	board.bouncers[0]			= App->physics->CreateCircle(b2_staticBody, 234, 290, 18, 1);
+	board.bouncers[1]			= App->physics->CreateCircle(b2_staticBody, 256, 209, 18, 1);
+	board.bouncers[2]			= App->physics->CreateCircle(b2_staticBody, 186, 234, 18, 1);
+	board.triangles[0]			= App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.5, -1800 * DEGTORAD);
+	board.triangles[1]			= App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.5,  1800 * DEGTORAD);
+	board.left_diglett_bouncer	= App->physics->CreateCircle(b2_staticBody, 78, 511, 18, 0.9f);
+	board.right_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 372, 511, 18, 0.9f);
 
-	triangles[0] = App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.5, -1800 * DEGTORAD);
-	triangles[1] = App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.5,  1800 * DEGTORAD);
 
 	//SENSORS-------------------------------------------
+	board.ditto_hole_sensor = App->physics->CreateCircleSensor(48, 56, 23, 200);
 
-	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(234, 290, 18,20);
-	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(256, 209, 18,20);
-	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(186, 234, 18,20);
+	board.light_sensor[0] = App->physics->CreateRectangleSensor(38, 614, 11, 17, 0, 10);
+	board.light_sensor[1] = App->physics->CreateRectangleSensor(83, 614, 11, 17, 0, 10);
+	board.light_sensor[2] = App->physics->CreateRectangleSensor(363, 614, 11, 17, 0, 10);
+	board.light_sensor[3] = App->physics->CreateRectangleSensor(408, 614, 11, 17, 0, 10);
+	
+	board.toplight_sensor[0] = App->physics->CreateRectangleSensor(161, 191, 11, 17);
+	board.toplight_sensor[1] = App->physics->CreateRectangleSensor(223, 160, 11, 17);
+	board.toplight_sensor[2] = App->physics->CreateRectangleSensor(284, 163, 11, 17);
 
-	board.triangle_sensors[0] = App->physics->CreateRectangleSensor(122, 617, 5, 60, -1800 * DEGTORAD);
+	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(234, 290, 22, 20);
+	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(256, 209, 22, 20);
+	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(186, 234, 22, 20);
+
+	board.left_wall_sensor = App->physics->CreateRectangleSensor(118, 414, 4, 12, 45, 10);
+	board.right_wall_sensor = App->physics->CreateRectangleSensor(330, 412, 4, 12, -45, 10);
+
+	board.triangle_sensors[0] = App->physics->CreateRectangleSensor(126, 621, 5, 60, -1800 * DEGTORAD);
 	board.triangle_sensors[1] = App->physics->CreateRectangleSensor(325, 617, 5, 60, 1800 * DEGTORAD);
 	
-	board.diglett_sensors[0] = App->physics->CreateCircleSensor(90, 512, 20,10);
-	board.diglett_sensors[1] = App->physics->CreateCircleSensor(365, 512, 20,10);
+	board.diglett_sensors[0] = App->physics->CreateCircleSensor(84, 511, 20,10);
+	board.diglett_sensors[1] = App->physics->CreateCircleSensor(365, 511, 20,10);
 	
 	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 100);
 
@@ -130,8 +145,8 @@ update_status ModuleSceneIntro::Update()
 	App->player->player.plunger_ram->body->ApplyForce({ 0, -10 }, { 0, 0 }, true);		//Gets the plunger to its ready postion.
 	
 	//Load fonts (high score & score)
-	if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
-	{	
+	//if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
+	//{	
 		//TEXTURES-----------------------------------------
 
 		//Load background
@@ -249,12 +264,12 @@ update_status ModuleSceneIntro::Update()
 					if (dynBody_iterator->data == App->player->player.left_flipper)
 					{
 						dynBody_iterator->data->GetPosition(x, y);
-						App->renderer->Blit(App->player->player.flipper_Left_tex, x - 5, y + 5, NULL, 1.0f, dynBody_iterator->data->GetRotation());		//Fix rotation blit
+						App->renderer->Blit(App->player->player.flipper_Left_tex, x, y - 1, NULL, 1.0f, dynBody_iterator->data->GetRotation(), 2, 2);	//The last two arguments are how far from the center of roation the origin of the texture is.
 					}
 					else if (dynBody_iterator->data == App->player->player.right_flipper)
 					{
 						dynBody_iterator->data->GetPosition(x, y);
-						App->renderer->Blit(App->player->player.flipper_Right_tex, x + 7, y - 15, NULL, 1.0f, dynBody_iterator->data->GetRotation());	//Fix rotation blit
+						App->renderer->Blit(App->player->player.flipper_Right_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation(), -4, 3);		//The last two arguments are how far from the center of roation the origin of the texture is.
 					}
 				}
 				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 3)		//Type 3 means the shape of the fixture is a chain.
@@ -267,7 +282,7 @@ update_status ModuleSceneIntro::Update()
 		}
 
 		return UPDATE_CONTINUE;
-	}
+	//}
 }
 
 bool ModuleSceneIntro::InitializeBoard()

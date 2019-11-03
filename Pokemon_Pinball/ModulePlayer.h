@@ -33,8 +33,7 @@ struct Player
 	SDL_Texture*	flippers_texture;
 
 	//Rects
-	SDL_Rect	flipper_L;
-	SDL_Rect	flipper_R;
+	SDL_Rect diglett_plunger;
 
 	//lives
 	uint lives = 3;
@@ -45,7 +44,7 @@ struct Player
 	
 	//-----------------------Shapes---------------------
 	int Left_Flipper[16] = {
-	0, 20,
+	3, 20,
 	0, 6,
 	5, 0,
 	22, 0,
@@ -61,7 +60,7 @@ struct Player
 	};
 
 	int Right_Flipper[16] = {
-	68, 20,
+	65, 20,
 	68, 6,
 	62, 0,
 	45, 0,

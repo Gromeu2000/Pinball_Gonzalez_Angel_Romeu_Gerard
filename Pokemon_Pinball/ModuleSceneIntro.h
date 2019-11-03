@@ -27,10 +27,15 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody*	bellsprout_wall;			//Static Chain that stablishes the wall bellsprout is at. (Revise name)
 	PhysBody*	ball_below_flippers;		//Static Chain that stablishes the little ball below and in between the flippers.
 	PhysBody*	spinner;					//Sensor that detects if the ball has passed through the spinner at the right of the bellsprout wall.
+	
+	// Bouncers
+	PhysBody* bouncers[3];					//Static circles that stablish the 3 voltorb bouncers. 
+	PhysBody* triangles[2];					//Static chains that stablish the 2 kicker triangles.
+	PhysBody* left_diglett_bouncer;			//Static circle that will bump the ball away when the left Diglett is hit.
+	PhysBody* right_diglett_bouncer;		//Static circle that will bump the ball away when the right Diglett is hit.
 
-
-	p2List<PhysBody*> dynamicBody_List;
-	p2List<PhysBody*> staticBody_List;
+	p2List<PhysBody*> dynamicBody_List;		//List of dynamic Bodies, used to process all objects and assign an object its correspondent texture.
+	p2List<PhysBody*> staticBody_List;		//List of static Bodies, used to process all objects and assign an object its correspondent texture.
 
 	//--------------------------Animation declarations--------------------------
 	//Textures
@@ -67,6 +72,11 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	PhysBody* ball_catcher;
 	PhysBody* bellsprout_S;
 	PhysBody* starmie_S;
+	PhysBody* ditto_hole_sensor;
+	PhysBody* left_wall_sensor;
+	PhysBody* right_wall_sensor;
+	PhysBody* light_sensor[4];
+	PhysBody* toplight_sensor[3];
 	PhysBody* voltorb_sensor[3];
 	PhysBody* triangle_sensors[2];
 	PhysBody* diglett_sensors[2];
@@ -119,12 +129,12 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	69, 481,
 	65, 490,
 	65, 495,
-	89, 495,
-	93, 499,
-	95, 505,
-	95, 518,
-	93, 523,
-	89, 526, //Diglett zone
+	85, 495, //Diglett start
+	89, 499,
+	91, 505,
+	91, 518,
+	89, 523,
+	85, 526, //Diglett end
 	65, 526,
 	65, 535,
 	54, 535,
@@ -161,9 +171,9 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	174, 76,
 	152, 85,
 	129, 100,
-	108, 125,
-	107, 128,
-	112, 125,
+	110, 117, //Tip of curve
+	109, 120,
+	112, 119,
 	135, 104,
 	164, 89,
 	189, 81,
@@ -194,13 +204,13 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	377, 474,
 	382, 480,
 	384, 487,
-	384, 495,
-	359, 495,
-	356, 498,
-	353, 504,
-	353, 518,
-	356, 523,
-	360, 526,
+	384, 495, //Diglett start
+	363, 495,
+	360, 498,
+	357, 504,
+	357, 518,
+	360, 523, 
+	364, 526, //Diglett end
 	384, 526,
 	384, 535,
 	395, 535,
@@ -216,13 +226,13 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	int left_Kicker[6] = {
 	104, 585,
-	140, 645,
+	140, 650,
 	104, 625
 	};
 
 	int right_Kicker[6] = {
 	345, 585,
-	309, 645,
+	309, 650,
 	345, 625
 	};
 
@@ -232,8 +242,8 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	60, 584,
 	57, 586,
 	57, 660,
-	145, 715, //Final part
-	145, 703,
+	136, 705, //Final part 
+	140, 700,
 	62, 653
 	};
 
@@ -243,8 +253,8 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	387, 584,
 	391, 586,
 	391, 660,
-	296, 715,
-	296, 703,
+	316, 704,
+	310, 699,	//Final Part		
 	386, 653
 	};
 
@@ -315,13 +325,13 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	};
 
 	int bellsprout_Wall[86] = {
-	310, 141, //Top part of the wall
-	310, 235,
+	311, 141, //Top part of the wall
+	311, 235,
 	307, 258,
 	305, 277,
 	302, 297,
-	297, 315,
-	297, 328,
+	294, 315,
+	294, 328,
 	301, 334,
 	304, 339,
 	307, 339,
@@ -360,15 +370,15 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	324, 150 //Top part of the wall
 	};
 
-	int ball_Below_Flippers[14] = {
+	/*int ball_Below_Flippers[14] = {
 	218, 778,
-	218, 767,
-	221, 765,
-	224, 764,
-	227, 765,
-	230, 767,
+	218, 772,
+	221, 770,
+	224, 769,
+	227, 770,
+	230, 772,
 	230, 778
-	};
+	};*/
 
 	//Flippers
 	int Left_Flipper[26] = {
@@ -467,10 +477,7 @@ public:
 	char max_score[10];
 	int score = -1;
 
-	// Bouncers
-	PhysBody* bouncers[3];
-	PhysBody* triangles[2];
-
+	
 	bool is_bouncer_hit[3] = { false, false, false };
 	bool is_triangle_hit[2] = { false, false };
 };
