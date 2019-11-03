@@ -139,7 +139,7 @@ update_status ModulePlayer::Update()
 	}
 
 	//Destruction of the Ditto Ball.
-	if (player.double_ball == true && player.destroy_ditto_ball == true)
+	if (player.double_ball == true /*&&player.destroy_ditto_ball == true*/)
 	{
 		App->physics->world->DestroyBody(player.ditto_ball->body);
 		
@@ -173,7 +173,7 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//Ball has been lost
 	if (bodyB == App->scene_intro->board.dying_sensor)
 	{
-		if (bodyA == player.ditto_ball && player.double_ball == true)
+		if (bodyA == player.ditto_ball /*&& player.double_ball == true*/)
 		{
 			App->audio->PlayFx(6, 0);
 			player.destroy_ditto_ball = true;
@@ -308,7 +308,7 @@ void ModulePlayer::setDittoBall(uint x, uint y)
 {
 	player.ditto_ball = App->physics->CreateCircle(b2_dynamicBody, x, y, 18, 0, 0.7f);		//Creates the ditto ball.
 	App->scene_intro->board.dynamicBody_List.add(player.ditto_ball);						//Adds the ball to dynamicBody_List so it can be blitted with the texture later.
-	//player.ditto_ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
+	//player.ditto_ball->listener = this;													//Adds a contact listener to the ball so sensors can detect a collision.
 	App->scene_intro->board.dynamicBody_List.getLast()->data->listener = this;
 }
 
