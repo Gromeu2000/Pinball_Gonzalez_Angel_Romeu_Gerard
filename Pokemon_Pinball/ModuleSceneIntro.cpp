@@ -188,6 +188,11 @@ update_status ModuleSceneIntro::Update()
 	//Mid screen animation
 	App->renderer->Blit(board.mid_tex, 153, 465, &(board.mid_screen.GetCurrentFrame()));
 
+	//Arrows animation
+	App->renderer->Blit(board.background_tex, 208, 425, &(board.arrows.GetCurrentFrame()));
+	App->renderer->Blit(board.background_tex, 276, 385, &(board.arrows1.GetCurrentFrame()));
+	App->renderer->Blit(board.background_tex, 141, 386, &(board.arrows2.GetCurrentFrame()));
+
 	//FONTS------------------------------------------------
 
 	//Blit fonts
@@ -350,6 +355,27 @@ bool ModuleSceneIntro::AddAnimationPushbacks()
 	board.mid_screen.PushBack({ 1684, 109, 137, 90 });
 	board.mid_screen.loop = true;
 	board.mid_screen.speed = 0.009;
+
+	board.arrows.PushBack({759, 2175, 31,31});
+	board.arrows.PushBack({ 759, 2175, 31,31 });
+	board.arrows.PushBack({ 0,0,0,0 });
+	board.arrows.PushBack({ 0,0,0,0 });
+	board.arrows.loop = true;
+	board.arrows.speed = 0.09;
+
+	board.arrows1.PushBack({ 796, 2175, 28,31 });
+	board.arrows1.PushBack({ 796, 2175, 28,31 });
+	board.arrows1.PushBack({ 0,0,0,0 });
+	board.arrows1.PushBack({ 0,0,0,0 });
+	board.arrows1.loop = true;
+	board.arrows1.speed = 0.09;
+
+	board.arrows2.PushBack({ 726, 2175, 28,31 });
+	board.arrows2.PushBack({ 726, 2175, 28,31 });
+	board.arrows2.PushBack({ 0,0,0,0 });
+	board.arrows2.PushBack({ 0,0,0,0 });
+	board.arrows2.loop = true;
+	board.arrows2.speed = 0.09;
 
 	return true;
 }

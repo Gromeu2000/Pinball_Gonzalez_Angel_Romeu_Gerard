@@ -62,6 +62,9 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	Animation	pikachu;
 	Animation	bellsprout;
 	Animation	starmie2;
+	Animation	arrows;
+	Animation	arrows1;
+	Animation	arrows2;
 
 	Animation	mid_screen;
 
