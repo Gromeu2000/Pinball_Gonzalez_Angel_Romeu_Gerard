@@ -10,9 +10,7 @@ class ModuleSceneIntro;
 
 struct PinballBoardElements		//Learn how to conver it into a class without recieving a nullptr at execution start.
 {
-	bool		debugMode;					//Bool for the debug mode, blits or unblits all images on screen.
-
-	//--------------------------PhysBodies declarations--------------------------
+	//--------------------------PHYSBODIES DECLARATIONS--------------------------
 	PhysBody*	background_exterior;		//Static Chain that stablishes the exerior background of the Pinball Machine's Board
 	PhysBody*	background_interior;		//Static Chain that stablishes the interior background of the Pinbal Machine' Board 
 	PhysBody*	stopper;					//Static chain that stablishes the stopper between the flippers.
@@ -37,7 +35,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	p2List<PhysBody*> dynamicBody_List;		//List of dynamic Bodies, used to process all objects and assign an object its correspondent texture.
 	p2List<PhysBody*> staticBody_List;		//List of static Bodies, used to process all objects and assign an object its correspondent texture.
 
-	//--------------------------Animation declarations--------------------------
+	//--------------------------ANIMATIONS DECLARATIONS--------------------------
 	//Textures
 	SDL_Texture*	background_tex;
 	SDL_Texture*	mid_tex;
@@ -67,7 +65,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 
 	Animation	mid_screen;
 
-	//--------------------------Sensor Declarations--------------------------
+	//--------------------------SENSOR DECLARATIONS--------------------------
 	PhysBody* dying_sensor;
 	PhysBody* left_kicker_sensor;
 	PhysBody* right_kicker_sensor;
@@ -88,7 +86,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	bool is_light_sensor_hit[4] = { false, false, false, false };
 	bool is_top_light_sensor_hit[3] = { false, false, false };
 
-	//--------------------------Shape Declarations--------------------------
+	//--------------------------SHAPE DECLARATIONS--------------------------
 	//Tweak until it feels right.
 	int backgroundExterior[132] = {
 	493, 780,
@@ -376,79 +374,6 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	338, 162,
 	324, 150 //Top part of the wall
 	};
-
-	/*int ball_Below_Flippers[14] = {
-	218, 778,
-	218, 772,
-	221, 770,
-	224, 769,
-	227, 770,
-	230, 772,
-	230, 778
-	};*/
-
-	//Flippers
-	int Left_Flipper[26] = {
-	0, 20,
-	0, 6,
-	5, 0,
-	22, 0,
-	45, 3,
-	64, 6,
-	67, 9,
-	67, 14,
-	64, 17,
-	50, 20,
-	36, 22,
-	22, 25,
-	8, 25
-	};
-
-	int Left_Flipper_Long[28] = {
-	0, 20,
-	0, 6,
-	5, 0,
-	19, 0,
-	31, 9,
-	42, 17,
-	53, 25,
-	64, 37,
-	64, 42,
-	61, 45,
-	53, 45,
-	37, 37,
-	22, 31,
-	2, 23
-	};
-
-	int Right_Flipper[26] = {
-	68, 20,
-	59, 25,
-	45, 25,
-	31, 23,
-	17, 20,
-	3, 17,
-	0, 14,
-	0, 9,
-	3, 6,
-	23, 3,
-	45, 0,
-	62, 0,
-	68, 6
-	};
-
-	int Right_Flipper_Long[20] = {
-	45, 0,
-	59, 0,
-	64, 6,
-	64, 20,
-	48, 28,
-	37, 34,
-	12, 45,
-	3, 45,
-	0, 42,
-	0, 37
-	};
 };
 
 class ModuleSceneIntro : public Module
@@ -468,6 +393,8 @@ public:
 	
 	bool InitializeBoard();				//Initializes all elements of the board.
 	bool SetAnimationRectPosition();	//Sets each rect's data members with their corresponding measures.
+	bool LoadTextures();				//Loads all textures.
+	bool LoadAudio();					//Loads all board relevant audio.
 	bool AddAnimationPushbacks();		//Load animations
 	bool AddShapes();					//Loads all shapes
 	bool AddSensors();					//Loads all sensors

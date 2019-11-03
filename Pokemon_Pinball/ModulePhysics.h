@@ -43,13 +43,17 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(b2BodyType type, int x, int y, int radius, int restitution, int friction = 0);
-	PhysBody* CreateCircleSensor(int x, int y, int radius, int score = 0);
-	PhysBody* CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution, float angle = 0.0f);
-	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, float angle = 0.0f, int score = 0);
-	PhysBody* CreateChain(b2BodyType type, int x, int y, int* points, int size, int restitution);	//Method that creates chains. Has a bool to make the chain static or dynamic.
-	PhysBody* CreateFlipper(b2BodyType type, int x, int y, int* points, int size, int restitution); //Method that creates poligons with the given verexs.
+	PhysBody* CreateCircle(b2BodyType type, int x, int y, int radius, int restitution, float friction = 0);					//Method that creates circles. Now accepts BodyType, restitution and friction as arguments.
+	PhysBody* CreateCircleSensor(int x, int y, int radius, int score = 0);													//Method that creates circle sensors. Now accepts score as an argument.
+	PhysBody* CreateRectangle(b2BodyType type, int x, int y, int width, int height, int restitution, float angle = 0.0f);	//Method that creates rectangles. Now accepts BodyType, restitution and angle as arguments.
+	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, float angle = 0.0f, int score = 0);				//Method that creates rectangle sensors. Now accepts angle and score as arguments.
+	PhysBody* CreateChain(b2BodyType type, int x, int y, int* points, int size, int restitution);							//Method that creates chains. Now accepts BodyType and restitution as arguments.
+	PhysBody* CreateFlipper(b2BodyType type, int x, int y, int* points, int size, int restitution);							//Method that creates poligons with the given verexs. Now accepts BodyType and restitution as arguments.
+
+	//Method to create a revolution joint, accepts as arguments all variables relevant for this joint except collideConnected, which will be always set to true. Can be used to create any joint.
 	void CreateRevolutionJoint(PhysBody* dynamicBody, PhysBody* staticBody, int upperAngle, int lowerAngle, int offsetX, int offsetY, b2RevoluteJoint* revoluteJoint);
+
+	//Method to create a prismatic joint, accepts as arguments the two bodies to join and a pointer to a prismatic joint. Will be used to create a very specific joint.
 	void CreatePrismaticJoint(PhysBody* dynamicBody, PhysBody* staticBody, b2PrismaticJoint* prismaticJoint);
 
 	// b2ContactListener ---
@@ -63,15 +67,12 @@ private:
 
 	b2MouseJoint* mouse_joint;		//Creates a pointer to a MouseJoint
 	b2Body* ground;					//Creates a pointer to a body. In this case this body will be used to set the anchor point in a mouseJoint.
-	b2Body* clickedObject;				
-	//PhysBody* clickedObject;		//Body that will get the pointer of a clicked object.
+	b2Body* clickedObject;			//Creates a pointer to the body that has been clicked. Will be used to set the moving point in  a mouseJoint.
 
 	b2RevoluteJoint* left_Anchor;	//For the rectangle flipper method
 	b2RevoluteJoint* right_Anchor;	//For the rectangle flipper method
 
-	b2Vec2 mouse_position;
-	b2Vec2 object_position;
-	bool clicked;
-
-	friend class ModuleSceneIntro; //Gives the ModuleSceneIntro class access to private methods and variables from class ModulePhysics. (friend class) Temporal.
+	b2Vec2 mouse_position;			//Vector that will act as a buffer for the mouse's position for a given point in time.
+	b2Vec2 object_position;			//Vector that will act as a buffer for the object position for a given point in time.
+	bool clicked;					//Will be used to check whether or not a body has been clicked.
 };

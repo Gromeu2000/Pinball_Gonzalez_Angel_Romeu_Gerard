@@ -20,7 +20,7 @@ struct Player
 	PhysBody*	plunger_base;				//Static Rectangle that stablishes the plunger's base. Will have a spring joint where the plunger-ram will be attached to.
 	PhysBody*	plunger_ram;				//Dynamic Rectangle that stablishes the plunger's ram. Will be the one to send the ball inside the board. Will have a spring joint attached to p_base.
 	PhysBody*	ball;						//Dynamic circle that will act as the ball.
-	PhysBody*	extra_ball;					//Dynamic circle that will act as the extra ball that appears when the combo score is achieved.
+	PhysBody*	ditto_ball;					//Dynamic circle that will act as the extra ball that appears when the combo score is achieved.
 	
 	b2RevoluteJoint* left_Anchor_Joint;
 	b2RevoluteJoint* right_Anchor_Joint;
@@ -30,6 +30,7 @@ struct Player
 	SDL_Texture*	flipper_Left_tex;
 	SDL_Texture*	flipper_Right_tex;
 	SDL_Texture*	pokeball_tex;
+	SDL_Texture*	ditto_ball_tex;
 	SDL_Texture*	diglett_plunger_tex;
 	SDL_Texture*	flippers_texture;
 
@@ -42,6 +43,7 @@ struct Player
 	bool lastWasRight;
 	bool lastWasLeft;
 	bool destroy_ball;
+	bool destroy_ditto_ball;
 	bool double_ball;
 	bool voltorb_activated;
 	
@@ -82,17 +84,18 @@ public:
 public:
 	Player player;
 	
-	void InitPlayer();
-	void CreatePlunger();
-	void OnCollision(PhysBody* bodyA, PhysBody* bodyB); //This
+	bool InitializePlayer();							//Initializes all the player relevant elements at Start().
+	bool LoadTextures();								//Loads all player relevant textures.
+	bool LoadAudio();									//Loads all player relevant audio.
+	bool AddShapes();									//Loads all shapes
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
-	void setBall(uint x, uint y);		//Creates a new ball at the given position.
-	void setExtraBall(uint x, uint y);	//Creates an extra ball at the given position.
-	void resetTextures();				//When comobo is done, unload activated textures
-								  
-	uint score = 0;			//Score
+	void setBall(uint x, uint y);						//Creates a new ball at the given position.
+	void setDittoBall(uint x, uint y);					//Creates a Ditto ball at the given position.
+	void resetTextures();								//When combo is done, unload activated textures
+
+	//Score
+	uint score = 0;			
 	uint maxscore = 0;
 	uint prevscore = 0;
-
-	
 };

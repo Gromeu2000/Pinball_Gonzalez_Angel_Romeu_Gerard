@@ -25,32 +25,6 @@ bool ModuleSceneIntro::Start()
 
 	InitializeBoard();
 
-	AddShapes();
-
-	AddSensors();
-
-
-	//OBJECTS---------------------------------------------
-
-
-
-	//Load music
-	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
-
-	//Load textures
-	board.background_tex		= App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
-	board.mid_tex				= App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
-	
-
-	//Load fonts 
-	score						= App->fonts->Load("sprites/score.png", "0123456789", 1);
-
-	App->renderer->camera.x = App->renderer->camera.y = 0;
-
-	//LOAD ANIMATIONS------------------------------------------------
-	AddAnimationPushbacks();
-
-
 	return ret;
 }
 
@@ -63,17 +37,20 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(board.background_tex);
 	App->textures->Unload(board.mid_tex);
 
-	/*p2List_item<PhysBody*>* dynBody_iterator = board.dynamicBody_List.getFirst();
+	//Unload fonts
+	App->fonts->Unload(score);
+
+	p2List_item<PhysBody*>* dynBody_iterator = board.dynamicBody_List.getFirst();
 
 	while (dynBody_iterator != NULL)
 	{
-		board.dynamicBody_List.del(dynBody_iterator);
+		delete dynBody_iterator->data;
+		dynBody_iterator->data = NULL;
 
 		dynBody_iterator = dynBody_iterator->next;
-	}*/
+	}
 
-	//Unload fonts
-	App->fonts->Unload(score);
+	board.dynamicBody_List.clear();
 
 	return true;
 }
@@ -83,194 +60,214 @@ update_status ModuleSceneIntro::Update()
 {
 	App->player->player.plunger_ram->body->ApplyForce({ 0, -10 }, { 0, 0 }, true);		//Gets the plunger to its ready postion.
 	
-	//if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
-	//{	
-		//TEXTURES-----------------------------------------
+	//-----------------------------------------SPRITES AND FONTS BLIT-----------------------------------------
+	//Load background
+	App->renderer->Blit(board.background_tex, 0, 0, &board.background);
 
-		//Load background
-		App->renderer->Blit(board.background_tex, 0, 0, &board.background);
-		
-		//Load voltorb
-		App->renderer->Blit(board.background_tex, 210, 270, &board.voltorb_boost);
-		App->renderer->Blit(board.background_tex, 238, 186, &board.voltorb_boost);
-		App->renderer->Blit(board.background_tex, 154, 214, &board.voltorb_boost);
+	//Load voltorb
+	App->renderer->Blit(board.background_tex, 210, 270, &board.voltorb_boost);
+	App->renderer->Blit(board.background_tex, 238, 186, &board.voltorb_boost);
+	App->renderer->Blit(board.background_tex, 154, 214, &board.voltorb_boost);
 
-		
-		if(board.is_bouncer_hit[0] == true)
+
+	if (board.is_bouncer_hit[0] == true)
+	{
+		//Load boosted voltorb
+		App->renderer->Blit(board.background_tex, 212, 270, &board.voltorb_boosted);
+	}
+
+	if (board.is_bouncer_hit[1] == true)
+	{
+		//Load boosted voltorb
+		App->renderer->Blit(board.background_tex, 240, 186, &board.voltorb_boosted);
+	}
+
+	if (board.is_bouncer_hit[2] == true)
+	{
+		//Load boosted voltorb
+		App->renderer->Blit(board.background_tex, 156, 214, &board.voltorb_boosted);
+	}
+
+	//Load blocker
+	App->renderer->Blit(board.background_tex, 263, 64, &board.blocker);
+
+	if (board.is_triangle_hit[0] == true)
+	{
+		//Load left triangle when hit
+		App->renderer->Blit(board.background_tex, 95, 588, &board.triangle_boosted_L);
+	}
+
+	if (board.is_triangle_hit[1] == true)
+	{
+		//Load right triangle when hit
+		App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
+	}
+
+	if (board.is_top_light_sensor_hit[0] == true)
+	{
+		// Load top lights
+		App->renderer->Blit(board.background_tex, 150, 160, &board.lights);
+	}
+
+	if (board.is_top_light_sensor_hit[1] == true)
+	{
+		// Load top lights
+		App->renderer->Blit(board.background_tex, 211, 130, &board.lights);
+
+	}
+
+	if (board.is_top_light_sensor_hit[2] == true)
+	{
+		// Load top lights
+		App->renderer->Blit(board.background_tex, 273, 132, &board.lights);
+	}
+
+	if (board.is_light_sensor_hit[0] == true)
+	{
+		//Load bottom lights
+		App->renderer->Blit(board.background_tex, 25, 576, &board.lights);
+	}
+
+	if (board.is_light_sensor_hit[1] == true)
+	{
+		//Load bottom lights
+		App->renderer->Blit(board.background_tex, 70, 576, &board.lights);
+	}
+
+	if (board.is_light_sensor_hit[2] == true)
+	{
+		//Load bottom lights
+		App->renderer->Blit(board.background_tex, 353, 576, &board.lights);
+	}
+
+	if (board.is_light_sensor_hit[3] == true)
+	{
+		//Load bottom lights
+		App->renderer->Blit(board.background_tex, 398, 576, &board.lights);
+	}
+
+	//----------------------------------------ANIMATIONS----------------------------------------
+	//Little starmie animation
+	App->renderer->Blit(board.background_tex, -3, 420, &(board.starmie1.GetCurrentFrame()));
+
+	//Left dugtrios animation
+	App->renderer->Blit(board.background_tex, -3, 472, &(board.dugtrio_L.GetCurrentFrame()));
+
+	//Right dugtrios animation
+	App->renderer->Blit(board.background_tex, 379, 472, &(board.dugtrio_R.GetCurrentFrame()));
+
+	//Diglett at left side animation
+	App->renderer->Blit(board.background_tex, 64, 490, &(board.diglett_Left_Side.GetCurrentFrame()));
+
+	//Diglett at right side animation
+	App->renderer->Blit(board.background_tex, 347, 490, &(board.diglett_Right_Side.GetCurrentFrame()));
+
+	if (App->player->player.lastWasRight == true)
+	{
+		//Pikachu right animation
+		App->renderer->Blit(board.background_tex, 385, 686, &(board.pikachu.GetCurrentFrame()));
+	}
+
+	else if (App->player->player.lastWasLeft == true)
+	{
+		//Pikachu left animation
+		App->renderer->Blit(board.background_tex, 18, 686, &(board.pikachu.GetCurrentFrame()));
+	}
+
+	//Bellsprout animation
+	App->renderer->Blit(board.background_tex, 294, 224, &(board.bellsprout.GetCurrentFrame()));
+
+	//Starmie2 animation
+	App->renderer->Blit(board.background_tex, 122, 293, &(board.starmie2.GetCurrentFrame()));
+
+	//Mid screen animation
+	App->renderer->Blit(board.mid_tex, 153, 465, &(board.mid_screen.GetCurrentFrame()));
+
+	//FONTS------------------------------------------------
+
+	//Blit fonts
+	sprintf_s(player_score, 10, "%7d", App->player->score);
+	App->fonts->BlitText(130, 625, score, player_score, 0.7f);
+
+	sprintf_s(max_score, 10, "%7d", App->player->maxscore);
+	App->fonts->BlitText(395, 35, score, max_score, 0.7f);
+
+	sprintf_s(prev_score, 10, "%7d", App->player->prevscore);
+	App->fonts->BlitText(289, 15, score, prev_score, 0.7f);
+
+
+	//-----------------------------------------DYNAMIC BODIES BLIT-----------------------------------------
+	int x;
+	int	y;
+
+	if (board.dynamicBody_List.getFirst() != NULL)
+	{
+		p2List_item<PhysBody*>* dynBody_iterator = board.dynamicBody_List.getFirst();
+
+		while (dynBody_iterator != NULL)
 		{
-			//Load boosted voltorb
-			App->renderer->Blit(board.background_tex, 212, 270, &board.voltorb_boosted);
-		}
-		
-		if (board.is_bouncer_hit[1] == true)
-		{
-			//Load boosted voltorb
-			App->renderer->Blit(board.background_tex, 240, 186, &board.voltorb_boosted);
-		}
-
-		if (board.is_bouncer_hit[2] == true)
-		{
-			//Load boosted voltorb
-			App->renderer->Blit(board.background_tex, 156, 214, &board.voltorb_boosted);
-		}
-
-		//Load blocker
-		App->renderer->Blit(board.background_tex, 263, 64, &board.blocker);
-
-		if (board.is_triangle_hit[0] == true)
-		{
-			//Load left triangle when hit
-			App->renderer->Blit(board.background_tex, 95, 588, &board.triangle_boosted_L);
-		}
-		
-		if (board.is_triangle_hit[1] == true)
-		{
-			//Load right triangle when hit
-			App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
-		}
-
-		if (board.is_top_light_sensor_hit[0] == true)
-		{
-			// Load top lights
-			App->renderer->Blit(board.background_tex, 150, 160, &board.lights);
-		}
-
-		if (board.is_top_light_sensor_hit[1] == true)
-		{
-			// Load top lights
-			App->renderer->Blit(board.background_tex, 211, 130, &board.lights);
-			
-		}
-		
-		if (board.is_top_light_sensor_hit[2] == true)
-		{
-			// Load top lights
-			App->renderer->Blit(board.background_tex, 273, 132, &board.lights);
-		}
-
-		if (board.is_light_sensor_hit[0] == true)
-		{
-			//Load bottom lights
-			App->renderer->Blit(board.background_tex, 25, 576, &board.lights);
-		}
-		
-		if (board.is_light_sensor_hit[1] == true)
-		{
-			//Load bottom lights
-			App->renderer->Blit(board.background_tex, 70, 576, &board.lights);
-		}
-		
-		if (board.is_light_sensor_hit[2] == true)
-		{
-			//Load bottom lights
-			App->renderer->Blit(board.background_tex, 353, 576, &board.lights);
-		}
-		
-		if (board.is_light_sensor_hit[3] == true)
-		{
-			//Load bottom lights
-			App->renderer->Blit(board.background_tex, 398, 576, &board.lights);
-		}
-
-		//ANIMATIONS----------------------------------------
-
-		//Little starmie animation
-		App->renderer->Blit(board.background_tex, -3, 420, &(board.starmie1.GetCurrentFrame()));
-
-		//Left dugtrios animation
-		App->renderer->Blit(board.background_tex, -3, 472, &(board.dugtrio_L.GetCurrentFrame()));
-
-		//Right dugtrios animation
-		App->renderer->Blit(board.background_tex, 379, 472, &(board.dugtrio_R.GetCurrentFrame()));
-
-		//Diglett at left side animation
-		App->renderer->Blit(board.background_tex, 64, 490, &(board.diglett_Left_Side.GetCurrentFrame()));
-
-		//Diglett at right side animation
-		App->renderer->Blit(board.background_tex, 347, 490, &(board.diglett_Right_Side.GetCurrentFrame()));
-
-		if (App->player->player.lastWasRight == true)
-		{
-			//Pikachu right animation
-			App->renderer->Blit(board.background_tex, 385, 686, &(board.pikachu.GetCurrentFrame()));
-		}
-
-		else if (App->player->player.lastWasLeft == true)
-		{
-			//Pikachu left animation
-			App->renderer->Blit(board.background_tex, 18, 686, &(board.pikachu.GetCurrentFrame()));
-		}
-
-		//Bellsprout animation
-		App->renderer->Blit(board.background_tex, 294, 224, &(board.bellsprout.GetCurrentFrame()));
-
-		//Starmie2 animation
-		App->renderer->Blit(board.background_tex, 122, 293, &(board.starmie2.GetCurrentFrame()));
-
-		//Mid screen animation
-		App->renderer->Blit(board.mid_tex, 153, 465, &(board.mid_screen.GetCurrentFrame()));
-	
-		//FONTS------------------------------------------------
-
-		//Blit fonts
-		sprintf_s(player_score, 10, "%7d", App->player->score);
-		App->fonts->BlitText(130, 625, score, player_score, 0.7f);
-
-		sprintf_s(max_score, 10, "%7d", App->player->maxscore);
-		App->fonts->BlitText(395, 35, score, max_score, 0.7f);
-
-		sprintf_s(prev_score, 10, "%7d", App->player->prevscore);
-		App->fonts->BlitText(289, 15, score, prev_score, 0.7f);
-
-
-		int x;
-		int	y;
-
-		if (board.dynamicBody_List.getFirst() != NULL)
-		{
-			p2List_item<PhysBody*>* dynBody_iterator = board.dynamicBody_List.getFirst();
-
-			while (dynBody_iterator != NULL)
+			if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 0)		//Type 0 means the shape of the fixture is a circle.
 			{
-				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 0)		//Type 0 means the shape of the fixture is a circle.
+				/*dynBody_iterator->data->GetPosition(x, y);
+				App->renderer->Blit(App->player->player.pokeball_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());*/
+				
+				if (dynBody_iterator->data == App->player->player.ball)
 				{
 					dynBody_iterator->data->GetPosition(x, y);
 					App->renderer->Blit(App->player->player.pokeball_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
 				}
-				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 2)		//Type 2 means the shape of the fixture is a polygon.
-				{
-					if (dynBody_iterator->data == App->player->player.left_flipper)
-					{
-						dynBody_iterator->data->GetPosition(x, y);
-						App->renderer->Blit(App->player->player.flipper_Left_tex, x, y - 1, NULL, 1.0f, dynBody_iterator->data->GetRotation(), 2, 2);	//The last two arguments are how far from the center of roation the origin of the texture is.
-					}
-					else if (dynBody_iterator->data == App->player->player.right_flipper)
-					{
-						dynBody_iterator->data->GetPosition(x, y);
-						App->renderer->Blit(App->player->player.flipper_Right_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation(), -4, 3);		//The last two arguments are how far from the center of roation the origin of the texture is.
-					}
-				}
-				if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 3)		//Type 3 means the shape of the fixture is a chain.
+				
+				else if (dynBody_iterator->data == App->player->player.ditto_ball)
 				{
 					dynBody_iterator->data->GetPosition(x, y);
-					App->renderer->Blit(board.voltorb_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
+					App->renderer->Blit(App->player->player.ditto_ball_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());
 				}
-				dynBody_iterator = dynBody_iterator->next;
 			}
-		}
+			if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 2)		//Type 2 means the shape of the fixture is a polygon.
+			{
+				if (dynBody_iterator->data == App->player->player.left_flipper)
+				{
+					dynBody_iterator->data->GetPosition(x, y);
+					App->renderer->Blit(App->player->player.flipper_Left_tex, x, y - 1, NULL, 1.0f, dynBody_iterator->data->GetRotation(), 2, 2);	//The last two arguments are how far from the center of roation the origin of the texture is.
+				}
+				else if (dynBody_iterator->data == App->player->player.right_flipper)
+				{
+					dynBody_iterator->data->GetPosition(x, y);
+					App->renderer->Blit(App->player->player.flipper_Right_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation(), -4, 3);		//The last two arguments are how far from the center of roation the origin of the texture is.
+				}
+			}
 
-		if (App->player->player.lives == 0) 
-{
-			App->renderer->Blit(board.background_tex, 178, 692, &board.again);
+			dynBody_iterator = dynBody_iterator->next;
 		}
+	}
 
-		return UPDATE_CONTINUE;
-	//}
+	if (App->player->player.lives == 0)
+	{
+		App->renderer->Blit(board.background_tex, 178, 692, &board.again);
+	}
+
+	return UPDATE_CONTINUE;
 }
 
 bool ModuleSceneIntro::InitializeBoard()
 {
-	board.debugMode = true;
+	App->renderer->camera.x = App->renderer->camera.y = 0;
+
+	//LOAD TEXTURES------------------------------------------------
+	LoadTextures();
+
+	//LOAD ANIMATIONS------------------------------------------------
+	AddAnimationPushbacks();
+
+	//LOAD SHAPES------------------------------------------------
+	AddShapes();
+	
+	//LOAD SENSORS------------------------------------------------
+	AddSensors();
+
+	//LOAD AUDIO------------------------------------------------
+	LoadAudio();
+	
 	return true;
 }
 
@@ -394,6 +391,26 @@ bool ModuleSceneIntro::SetAnimationRectPosition()
 	board.again.y = 2303;
 	board.again.w = 89;
 	board.again.h = 20;
+
+	return true;
+}
+
+bool ModuleSceneIntro::LoadTextures()
+{
+	//Load sprites
+	board.background_tex = App->textures->Load("sprites/Pokemon_Pinball_Board_Spritesheet.png");
+	board.mid_tex = App->textures->Load("sprites/Pokemon_Pinball_Special_Sprites_Spritesheet.png");
+
+	//Load fonts 
+	score = App->fonts->Load("sprites/score.png", "0123456789", 1);
+
+	return true;
+}
+
+bool ModuleSceneIntro::LoadAudio()
+{
+	//Load music
+	App->audio->PlayMusic("audio/Songs/Main_Theme.ogg");
 
 	return true;
 }

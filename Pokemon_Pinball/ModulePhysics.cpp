@@ -20,7 +20,7 @@ ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app,
 {
 	world = NULL;
 	mouse_joint = NULL;
-	debug = true;
+	debug = false;
 }
 
 // Destructor
@@ -216,7 +216,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius, int restitution, int friction)
+PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius, int restitution, float friction)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -230,7 +230,7 @@ PhysBody* ModulePhysics::CreateCircle(b2BodyType type, int x, int y, int radius,
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 	fixture.restitution = restitution;
-	fixture.friction = 1.0f;						//Implement this only on the ball, pass it as an argument.
+	fixture.friction = friction;					
 
 	b->CreateFixture(&fixture);
 
