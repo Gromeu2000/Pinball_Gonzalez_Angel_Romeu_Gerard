@@ -39,7 +39,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	//Textures
 	SDL_Texture*	background_tex;
 	SDL_Texture*	mid_tex;
-	SDL_Texture*	voltorb_tex;
+	SDL_Texture*	kicker;
 
 	//Rects
 	SDL_Rect	background;

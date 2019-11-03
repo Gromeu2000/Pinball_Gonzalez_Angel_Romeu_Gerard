@@ -146,6 +146,9 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(board.background_tex, 398, 576, &board.lights);
 	}
 
+	// Blit kicker
+	App->renderer->Blit(App->player->player.diglett_plunger_tex, 442, 656, &App->player->player.diglett_plunger);
+
 	//----------------------------------------ANIMATIONS----------------------------------------
 	//Little starmie animation
 	App->renderer->Blit(board.background_tex, -3, 420, &(board.starmie1.GetCurrentFrame()));

@@ -319,10 +319,10 @@ bool ModulePlayer::LoadTextures()
 	
 	//---------------------------------------ANIMATION---------------------------------------
 	//Diglett Plunger Rect
-	player.diglett_plunger.x = 451;
-	player.diglett_plunger.y = 594;
+	player.diglett_plunger.x = 0;
+	player.diglett_plunger.y = 0;
 	player.diglett_plunger.w = 42;
-	player.diglett_plunger.h = 110;
+	player.diglett_plunger.h = 130;
 
 	return true;
 }
