@@ -52,6 +52,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	SDL_Rect	blocker;
 	SDL_Rect	triangle_boosted_L;
 	SDL_Rect	triangle_boosted_R;
+	SDL_Rect	lights;
 
 	//Animations
 	Animation	dugtrio_R;

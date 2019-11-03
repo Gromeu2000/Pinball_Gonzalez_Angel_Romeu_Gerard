@@ -197,6 +197,9 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
 		}
 
+		// Load top lights
+		App->renderer->Blit(board.background_tex, 302, 588, &board.lights);
+
 		//ANIMATIONS----------------------------------------
 
 		//Little starmie animation
@@ -412,6 +415,11 @@ bool ModuleSceneIntro::SetAnimationRectPosition()
 	board.triangle_boosted_R.y = 2242.8;
 	board.triangle_boosted_R.w = 46.2;
 	board.triangle_boosted_R.h = 82.6;
+
+	board.lights.x = 903;
+	board.lights.y = 2242.8;
+	board.lights.w = 46.2;
+	board.lights.h = 82.6;
 
 	return true;
 }
