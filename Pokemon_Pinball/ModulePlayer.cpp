@@ -139,7 +139,7 @@ update_status ModulePlayer::Update()
 	}
 
 	//Destruction of the Ditto Ball.
-	if (player.double_ball == true /*&&player.destroy_ditto_ball == true*/)
+	if (player.double_ball == true)
 	{
 		App->physics->world->DestroyBody(player.ditto_ball->body);
 		
@@ -173,7 +173,7 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//Ball has been lost
 	if (bodyB == App->scene_intro->board.dying_sensor)
 	{
-		if (bodyA == player.ditto_ball /*&& player.double_ball == true*/)
+		if (bodyA == player.ditto_ball)
 		{
 			App->audio->PlayFx(6, 0);
 			player.destroy_ditto_ball = true;
@@ -389,12 +389,12 @@ bool ModulePlayer::AddShapes()
 	player.left_flipper = App->physics->CreateFlipper(b2_dynamicBody, 133, 705, player.Left_Flipper, 16, 0);					//Creates the left flipper object
 	player.left_anchor = App->physics->CreateCircle(b2_staticBody, 148, 719, 7, 0);												//Creates the anchor point of the flipper
 
-	App->physics->CreateRevolutionJoint(player.left_flipper, player.left_anchor, 25, -25, 9, 10, player.left_Anchor_Joint);		//Creates the joint that seams together the flipper with its anchor
+	App->physics->CreateRevolutionJoint(player.left_flipper, player.left_anchor, 30, -30, 9, 10, player.left_Anchor_Joint); //25 -25		//Creates the joint that seams together the flipper with its anchor
 
 	player.right_flipper = App->physics->CreateFlipper(b2_dynamicBody, 310, 705, player.Right_Flipper, 16, 0);					//Creates the right flipper object
 	player.right_anchor = App->physics->CreateCircle(b2_staticBody, 298, 719, 7, 0);											//Creates the anchor point of the flipper
 
-	App->physics->CreateRevolutionJoint(player.right_flipper, player.right_anchor, 25, -25, 60, 10, player.right_Anchor_Joint);	//Creates the joint that seams together the flipper with its anchor
+	App->physics->CreateRevolutionJoint(player.right_flipper, player.right_anchor, 30, -30, 60, 10, player.right_Anchor_Joint);	 //25 -25//Creates the joint that seams together the flipper with its anchor
 
 	App->scene_intro->board.dynamicBody_List.add(player.left_flipper);
 	App->scene_intro->board.dynamicBody_List.add(player.right_flipper);

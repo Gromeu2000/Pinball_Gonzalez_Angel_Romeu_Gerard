@@ -260,7 +260,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	391, 586,
 	391, 660,
 	316, 704,
-	310, 699,	//Final Part		
+	300, 704,	//Final Part		
 	386, 653
 	};
 

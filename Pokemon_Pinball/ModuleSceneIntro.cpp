@@ -149,7 +149,7 @@ update_status ModuleSceneIntro::Update()
 	// Blit kicker
 	int x1, y1;
 	App->player->player.plunger_ram->GetPosition(x1, y1);
-	App->renderer->Blit(App->player->player.diglett_plunger_tex, x1 - 10, y1, &App->player->player.diglett_plunger);
+	App->renderer->Blit(App->player->player.diglett_plunger_tex, x1 - 9, y1, &App->player->player.diglett_plunger);
 
 	//----------------------------------------ANIMATIONS----------------------------------------
 	//Little starmie animation
@@ -218,8 +218,7 @@ update_status ModuleSceneIntro::Update()
 		{
 			if (dynBody_iterator->data->body->GetFixtureList()->GetShape()->GetType() == 0)		//Type 0 means the shape of the fixture is a circle.
 			{
-				/*dynBody_iterator->data->GetPosition(x, y);
-				App->renderer->Blit(App->player->player.pokeball_tex, x, y, NULL, 1.0f, dynBody_iterator->data->GetRotation());*/
+				//Out of the ifs it puts the textures in all balls, but in the ifs it only puts the texture in the last created ball.
 				
 				if (dynBody_iterator->data == App->player->player.ball)
 				{
@@ -489,7 +488,7 @@ bool ModuleSceneIntro::AddSensors()
 	board.light_sensor[2] = App->physics->CreateRectangleSensor(363, 614, 11, 17, 0, 10);
 	board.light_sensor[3] = App->physics->CreateRectangleSensor(408, 614, 11, 17, 0, 10);
 
-	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 296, 21, 20);
+	board.voltorb_sensor[0] = App->physics->CreateCircleSensor(235, 297, 21, 20);
 	board.voltorb_sensor[1] = App->physics->CreateCircleSensor(259, 214, 21, 20);
 	board.voltorb_sensor[2] = App->physics->CreateCircleSensor(183, 239, 21, 20);
 
@@ -508,7 +507,7 @@ bool ModuleSceneIntro::AddSensors()
 
 	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 100);
 
-	board.starmie_S = App->physics->CreateCircleSensor(158, 333, 28, 60);
+	board.starmie_S = App->physics->CreateCircleSensor(169, 352, 14, 60);
 
 	board.dying_sensor = App->physics->CreateRectangleSensor(220, 785, 5, 80, 5100 * DEGTORAD);
 
