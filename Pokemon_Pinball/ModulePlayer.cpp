@@ -76,7 +76,7 @@ bool ModulePlayer::Start()
 
 	//Loading FX
 	App->audio->LoadFx("audio/FX/050 Diglett Cry.wav");
-	App->audio->LoadFx("audio/FX/100 Voltorb Cry.wav");
+	App->audio->LoadFx("audio/FX/voltorb.wav");
 	App->audio->LoadFx("audio/FX/121 Starmie Cry.wav");
 	App->audio->LoadFx("audio/FX/132 Bellsprout Cry.wav");
 	App->audio->LoadFx("audio/FX/Flipper.wav");
@@ -159,6 +159,8 @@ update_status ModulePlayer::Update()
 		setBall(48, 56);				//Ball appears at Ditto Hole
 		score += 1000;
 		player.double_ball = true;
+
+		resetTextures();
 	}
 	
 	//Reset game.
@@ -171,9 +173,14 @@ update_status ModulePlayer::Update()
 			maxscore = score;
 		}
 
+		prevscore = score;
+
 		//Destroybody
 		App->physics->world->DestroyBody(player.ball->body);
 		setBall(PLAYER_POS_X, PLAYER_POS_Y);
+
+		resetTextures();
+
 		score = 0;
 
 		//Load music
@@ -230,6 +237,12 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			{
 				maxscore = score;
 			}
+
+			prevscore = score;
+
+			resetTextures();
+
+			score = 0;
 		}
 	}
 
@@ -245,7 +258,6 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			App->audio->PlayFx(2, 0);
 			App->scene_intro->board.is_bouncer_hit[i] = true;
-			//App->scene_intro->board.is_bouncer_hit[i] = false;
 		}
 	}
 
@@ -280,6 +292,7 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	{
 		if (bodyB == App->scene_intro->board.light_sensor[i])
 		{
+			App->scene_intro->board.is_light_sensor_hit[i] = true;
 			App->audio->PlayFx(9, 0);
 		}
 	}
@@ -288,6 +301,7 @@ void ModulePlayer::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	{
 		if (bodyB == App->scene_intro->board.toplight_sensor[i])
 		{
+			App->scene_intro->board.is_top_light_sensor_hit[i] = true;
 			App->audio->PlayFx(9, 0);
 		}
 	}
@@ -321,6 +335,29 @@ void ModulePlayer::setExtraBall(uint x, uint y)
 	player.ball->listener = this;														//Adds a contact listener to the ball so sensors can detect a collision.
 }
 
+void ModulePlayer::resetTextures()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		App->scene_intro->board.is_bouncer_hit[i] = { false };
+	}
 
+	for (int i = 0; i < 2; i++)
+	{
+		App->scene_intro->board.is_triangle_hit[i] = { false };
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		App->scene_intro->board.is_light_sensor_hit[i] = { false };
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		App->scene_intro->board.is_top_light_sensor_hit[i] = { false };
+	}
+	
+	
+}
 
 

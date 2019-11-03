@@ -13,7 +13,13 @@ You can play the originall game here->https://kbhgames.com/game/pokemon-pinball
 
 # Differences
 
+- FX are different from the original game.
+- There is not the "catch a pokemon" mode.
+- To optimize and make the game more clear, the camera is fixed.
 
+# Combo
+
+If you hit all bouncers and triangles you get and extra ball.
 
 # Controls 
 
@@ -25,7 +31,11 @@ Down arrow - Kicker
 
 R - Restart game
 
-F1 - Degug
+# Debug Keys
+
+- F1 - See all oobjects (Debug)
+
+- 1_Key - Create a cricle on mouse position
 
 # Projet repository
 

@@ -83,19 +83,12 @@ update_status ModuleSceneIntro::Update()
 {
 	App->player->player.plunger_ram->body->ApplyForce({ 0, -10 }, { 0, 0 }, true);		//Gets the plunger to its ready postion.
 	
-	//Load fonts (high score & score)
 	//if (App->physics->debug == false) //Temporal measure to debug. Switches between the pinball map and the objects.
 	//{	
 		//TEXTURES-----------------------------------------
 
 		//Load background
 		App->renderer->Blit(board.background_tex, 0, 0, &board.background);
-
-		//Load ditto
-		App->renderer->Blit(board.background_tex, 4, 60, &board.ditto);
-
-		//Load expanded ditto
-		//App->renderer->Blit(element->background_tex, 7, 70, &element->ditto_expanded);
 		
 		//Load voltorb
 		App->renderer->Blit(board.background_tex, 210, 270, &board.voltorb_boost);
@@ -136,8 +129,48 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->Blit(board.background_tex, 302, 588, &board.triangle_boosted_R);
 		}
 
-		// Load top lights
-		App->renderer->Blit(board.background_tex, 302, 588, &board.lights);
+		if (board.is_top_light_sensor_hit[0] == true)
+		{
+			// Load top lights
+			App->renderer->Blit(board.background_tex, 150, 160, &board.lights);
+		}
+
+		if (board.is_top_light_sensor_hit[1] == true)
+		{
+			// Load top lights
+			App->renderer->Blit(board.background_tex, 211, 130, &board.lights);
+			
+		}
+		
+		if (board.is_top_light_sensor_hit[2] == true)
+		{
+			// Load top lights
+			App->renderer->Blit(board.background_tex, 273, 132, &board.lights);
+		}
+
+		if (board.is_light_sensor_hit[0] == true)
+		{
+			//Load bottom lights
+			App->renderer->Blit(board.background_tex, 25, 576, &board.lights);
+		}
+		
+		if (board.is_light_sensor_hit[1] == true)
+		{
+			//Load bottom lights
+			App->renderer->Blit(board.background_tex, 70, 576, &board.lights);
+		}
+		
+		if (board.is_light_sensor_hit[2] == true)
+		{
+			//Load bottom lights
+			App->renderer->Blit(board.background_tex, 353, 576, &board.lights);
+		}
+		
+		if (board.is_light_sensor_hit[3] == true)
+		{
+			//Load bottom lights
+			App->renderer->Blit(board.background_tex, 398, 576, &board.lights);
+		}
 
 		//ANIMATIONS----------------------------------------
 
@@ -184,7 +217,10 @@ update_status ModuleSceneIntro::Update()
 		App->fonts->BlitText(130, 625, score, player_score, 0.7f);
 
 		sprintf_s(max_score, 10, "%7d", App->player->maxscore);
-		App->fonts->BlitText(289, 15, score, max_score, 0.7f);
+		App->fonts->BlitText(395, 35, score, max_score, 0.7f);
+
+		sprintf_s(prev_score, 10, "%7d", App->player->prevscore);
+		App->fonts->BlitText(289, 15, score, prev_score, 0.7f);
 
 
 		int x;
@@ -223,6 +259,11 @@ update_status ModuleSceneIntro::Update()
 			}
 		}
 
+		if (App->player->player.lives == 0) 
+{
+			App->renderer->Blit(board.background_tex, 178, 692, &board.again);
+		}
+
 		return UPDATE_CONTINUE;
 	//}
 }
@@ -259,7 +300,6 @@ bool ModuleSceneIntro::AddAnimationPushbacks()
 	board.diglett_Left_Side.PushBack({ 622, 2115, 25, 42 });
 	board.diglett_Left_Side.loop = true;
 	board.diglett_Left_Side.speed = 0.06;
-
 
 	board.diglett_Right_Side.PushBack({ 938, 2115, 37, 42 });
 	board.diglett_Right_Side.PushBack({ 902, 2115, 37, 43 });
@@ -320,16 +360,6 @@ bool ModuleSceneIntro::SetAnimationRectPosition()
 	board.background.w = 539;
 	board.background.h = 780;
 
-	board.ditto.x = 463.4;
-	board.ditto.y = 1664.6;
-	board.ditto.w = 74.2;
-	board.ditto.h = 127.4;
-
-	board.ditto_expanded.x = 557.2;
-	board.ditto_expanded.y = 872.2;
-	board.ditto_expanded.w = 110.6;
-	board.ditto_expanded.h = 191.8;
-
 	board.voltorb_boost.x = 726.6;
 	board.voltorb_boost.y = 1639.4;
 	board.voltorb_boost.w = 47.6;
@@ -355,10 +385,15 @@ bool ModuleSceneIntro::SetAnimationRectPosition()
 	board.triangle_boosted_R.w = 46.2;
 	board.triangle_boosted_R.h = 82.6;
 
-	board.lights.x = 903;
-	board.lights.y = 2242.8;
-	board.lights.w = 46.2;
-	board.lights.h = 82.6;
+	board.lights.x = 705;
+	board.lights.y = 1857;
+	board.lights.w = 20;
+	board.lights.h = 20;
+
+	board.again.x = 729;
+	board.again.y = 2303;
+	board.again.w = 89;
+	board.again.h = 20;
 
 	return true;
 }
@@ -387,8 +422,8 @@ bool ModuleSceneIntro::AddShapes()
 	board.bouncers[1] = App->physics->CreateCircle(b2_staticBody, 259, 214, 18, 1);
 	board.bouncers[2] = App->physics->CreateCircle(b2_staticBody, 183, 239, 18, 1);
 
-	board.triangles[0] = App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.5, -1800 * DEGTORAD);
-	board.triangles[1] = App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.5, 1800 * DEGTORAD);
+	board.triangles[0] = App->physics->CreateRectangle(b2_staticBody, 122, 617, 5, 60, 1.1, -1800 * DEGTORAD);
+	board.triangles[1] = App->physics->CreateRectangle(b2_staticBody, 325, 617, 5, 60, 1.1, 1800 * DEGTORAD);
 
 	board.left_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 78, 511, 18, 0.9f);
 	board.right_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 372, 511, 18, 0.9f);
@@ -425,16 +460,9 @@ bool ModuleSceneIntro::AddSensors()
 
 	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 100);
 
-	board.starmie_S = App->physics->CreateCircleSensor(162, 333, 30, 60);
+	board.starmie_S = App->physics->CreateCircleSensor(158, 333, 28, 60);
 
 	board.dying_sensor = App->physics->CreateRectangleSensor(220, 785, 5, 80, 5100 * DEGTORAD);
-
-	/*
-	board.ball_catcher = App->physics->CreateCircleSensor();
-
-
-	board.triangle_sensors[0] = App->physics->CreateCircleSensor();
-	board.triangle_sensors[1] = App->physics->CreateCircleSensor();*/
 
 	return true;
 }

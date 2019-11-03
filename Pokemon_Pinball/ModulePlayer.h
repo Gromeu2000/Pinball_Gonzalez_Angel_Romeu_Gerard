@@ -88,10 +88,11 @@ public:
 
 	void setBall(uint x, uint y);		//Creates a new ball at the given position.
 	void setExtraBall(uint x, uint y);	//Creates an extra ball at the given position.
-	
-								  //Score
-	uint score = 0;
+	void resetTextures();				//When comobo is done, unload activated textures
+								  
+	uint score = 0;			//Score
 	uint maxscore = 0;
+	uint prevscore = 0;
 
 	
 };

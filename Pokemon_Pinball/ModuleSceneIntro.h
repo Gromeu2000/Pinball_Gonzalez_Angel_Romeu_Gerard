@@ -53,6 +53,7 @@ struct PinballBoardElements		//Learn how to conver it into a class without recie
 	SDL_Rect	triangle_boosted_L;
 	SDL_Rect	triangle_boosted_R;
 	SDL_Rect	lights;
+	SDL_Rect	again;
 
 	//Animations
 	Animation	dugtrio_R;
@@ -474,6 +475,7 @@ public:
 	//Score
 	char player_score[10];
 	char max_score[10];
+	char prev_score[10];
 	int score = -1;
 };
 
