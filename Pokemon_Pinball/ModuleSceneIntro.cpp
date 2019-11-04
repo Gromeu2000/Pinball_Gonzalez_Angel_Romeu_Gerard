@@ -303,13 +303,11 @@ bool ModuleSceneIntro::AddAnimationPushbacks()
 
 	board.diglett_Left_Side.PushBack({ 552, 2115, 35, 42 });
 	board.diglett_Left_Side.PushBack({ 588, 2115, 31, 42 });
-	//board.diglett_Left_Side.PushBack({ 622, 2115, 25, 42 });
 	board.diglett_Left_Side.loop = true;
 	board.diglett_Left_Side.speed = 0.06;
 
 	board.diglett_Right_Side.PushBack({ 938, 2115, 43, 42 });
 	board.diglett_Right_Side.PushBack({ 902, 2115, 37, 43 });
-	//board.diglett_Right_Side.PushBack({ 973, 2115, 50, 42 });
 	board.diglett_Right_Side.loop = true;
 	board.diglett_Right_Side.speed = 0.06;
 
@@ -469,8 +467,8 @@ bool ModuleSceneIntro::AddShapes()
 	board.bouncers[1] = App->physics->CreateCircle(b2_staticBody, 259, 214, 18, 0.9f);
 	board.bouncers[2] = App->physics->CreateCircle(b2_staticBody, 183, 239, 18, 0.9f);
 
-	board.triangles[0] = App->physics->CreateRectangle(b2_staticBody, 120, 621, 5, 58, 0.95f, -30);
-	board.triangles[1] = App->physics->CreateRectangle(b2_staticBody, 329, 617, 5, 60, .095f, 30);
+	board.triangles[0] = App->physics->CreateRectangle(b2_staticBody, 121, 621, 5, 58, 0.95f, -30);
+	board.triangles[1] = App->physics->CreateRectangle(b2_staticBody, 328, 618, 5, 60, 0.95f, 30);
 
 	board.left_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 78, 511, 18, 0.9f);
 	board.right_diglett_bouncer = App->physics->CreateCircle(b2_staticBody, 372, 511, 18, 0.9f);
@@ -501,7 +499,7 @@ bool ModuleSceneIntro::AddSensors()
 	board.diglett_sensors[0] = App->physics->CreateCircleSensor(84, 511, 20, 10);
 	board.diglett_sensors[1] = App->physics->CreateCircleSensor(365, 511, 20, 10);
 
-	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 100);
+	board.bellsprout_S = App->physics->CreateCircleSensor(345, 250, 25, 500);
 
 	board.starmie_S = App->physics->CreateCircleSensor(169, 352, 14, 60);
 
