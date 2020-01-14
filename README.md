@@ -1,6 +1,6 @@
 ﻿# Pokemon Pinball
 
-This is a simple recreation of 1999's Pokemon Pinball for the Game Boy Colour. It was made from scratch in C++ using Visual Studio and with the Box2D physics library. This game was made by Gerard Romeu and Ángel González, two 2nd year Bachelor Degree in Video Game Design and Development at UPC CITM, Barcelona .
+This is a simple recreation of 1999's Pokemon Pinball for the Game Boy Colour. It was made from scratch in C++ using Visual Studio and with the Box2D physics library. This game was made by Gerard Romeu and Ángel González, two 2nd year  students of the Bachelor Degree in Video Game Design and Development at UPC CITM/TTC, Barcelona .
 
 
 
@@ -60,6 +60,11 @@ Every time one of the aforementioned elements are hit, they will light up. Once 
   - 2 Key --> Creates an extra ball wherever the mouse is at.
 
 
+
+# Work distribution
+
+* **Ángel González:**
+* **Gerard Romeu:** 
 
 
 
